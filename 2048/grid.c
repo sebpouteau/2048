@@ -154,7 +154,7 @@ void play (grid g, dir d){
 }
 
 static void fusion (grid g,int i1,int j1,int i2,int j2){
-  set_tile(g,i1,j2,get_tile(g,i1,j1)+get_tile(g,i2,j2));
+  set_tile(g,i1,j1,get_tile(g,i1,j1)+get_tile(g,i2,j2));
   set_tile(g,i2,j2,0);
 }
 static void incrementation(int *i1, int *i2, int incrementationI1, int incrementationI2){
