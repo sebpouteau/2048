@@ -134,7 +134,7 @@ static void grid_case_empty(grid g){
       }
     }
   }
-  g->nbr_case_empty=a+1;
+  g->nbr_case_empty=a;
 }
 
 

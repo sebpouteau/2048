@@ -8,38 +8,60 @@
 #include <time.h>
 
 static void display_grid(grid g,int *ch);
-
+static void display_gameOver(bool *continuer,int *reponse_valide);
 int main(int argc,char **argv){
-  grid g = new_grid();
-  srand(time(NULL));
-  int ch=0;
-  display_grid(g,&ch);
-  while(!game_over(g)){
-    switch(ch){
-    case KEY_UP:
-      play(g,UP);
-      break;
-    case KEY_DOWN:
-      play(g,DOWN);
-      break;
-    case KEY_RIGHT:
-      play(g,RIGHT);
-      break;
-    case KEY_LEFT:
-      play(g,LEFT);
-      break;
-    }
+  bool continuer=true;
+  while (continuer){
+    grid g = new_grid();
+    srand(time(NULL));
+    int ch=0;
     display_grid(g,&ch);
+    while(!game_over(g)){
+      switch(ch){
+      case KEY_UP:
+	play(g,UP);
+	break;
+      case KEY_DOWN:
+	play(g,DOWN);
+	break;
+      case KEY_RIGHT:
+	play(g,RIGHT);
+	break;
+      case KEY_LEFT:
+	play(g,LEFT);
+	break;
+      }
+      display_grid(g,&ch);
+    }
+    int reponse_valide = 0;
+    while (reponse_valide == 0)
+      display_gameOver(&continuer,&reponse_valide);
   }
-
   return EXIT_SUCCESS;
 }
 
 
 
+static void display_gameOver(bool *continuer,int *reponse_valide){
+  keypad(stdscr, TRUE);
+  int ch=0;  
+    mvprintw(21,5,"GAME OVER");
+    mvprintw(23,2,"Voulez-vous rejouer? y or n ? ");
+    refresh(); 
+    cbreak();   
+    ch=getch();
+    if(ch==110){
+      *continuer=false;
+    *reponse_valide = 1;
+    }
+    if(ch==121)
+      *reponse_valide = 1;
+    endwin();    
+}  
 
+   
+ 
 static void display_grid(grid g,int *ch){
-
   initscr();
   clear();
   newwin(0,0,40,40);
@@ -103,9 +125,8 @@ static void display_grid(grid g,int *ch){
 	    attron(COLOR_PAIR(6));
 	    break;
 	  }
-	
+	  //recuperation d'un nombre et coloration
 	  char buff[5];
-	  
 	  sprintf(buff, "%d", get_tile(g,i,j));
 	  mvprintw(x,y,buff);
 	  attroff(COLOR_PAIR(1));
