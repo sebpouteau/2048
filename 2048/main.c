@@ -12,8 +12,10 @@ int main(int argc,char **argv){
       set_tile(g,i,j,2);
     }
   }
+  set_tile(g,0,1,0);
+  set_tile(g,0,2,4);
   display_grid(g);
-  do_move(g,UP);
+  do_move(g,LEFT);
   display_grid(g);
   do_move(g,DOWN);
   display_grid(g);

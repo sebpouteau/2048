@@ -31,8 +31,10 @@ new_grid (){
     assert (g->case_empty[i] = malloc(sizeof(int)*2));   // creation deuxieme colonne du tableau de case vide
   }
   g->nbr_case_empty=16;
+  add_tile(g);
+  add_tile(g);
+
   g->score = 0;
-  grid_case_empty(g);
   return g;
 }
 
@@ -59,6 +61,9 @@ unsigned long int grid_score (grid g){
   assert(g!=NULL);
   return g->score;
 }
+static void modif_grid_score(grid g,unsigned long int ajout_score){
+  g->score+=ajout_score;
+}
 
 tile get_tile(grid g,int x, int y){
   assert( 0<=x && x<GRID_SIDE && 0<=y && y<GRID_SIDE); // verification si coordonnées sont dans la grille
@@ -73,7 +78,7 @@ void set_tile(grid g,int x, int y, tile t){
 
 bool game_over(grid g){
   assert (g!=NULL);
-  return can_move(g,UP)==false && can_move(g,LEFT)==false && can_move(g,RIGHT)==false && can_move(g,DOWN)==false; //si aucun deplacement alors retourne true sinon retourne false
+  return (can_move(g,UP)==false && can_move(g,LEFT)==false && can_move(g,RIGHT)==false && can_move(g,DOWN)==false); //si aucun deplacement alors retourne true sinon retourne false
 }
 
 bool can_move(grid g,dir d){
@@ -149,6 +154,7 @@ void add_tile (grid g){
 void play (grid g, dir d){
   if(can_move(g, d)){
     do_move(g, d);
+    grid_case_empty(g);
     add_tile(g);
   }
 }
@@ -163,39 +169,40 @@ static void incrementation(int *i1, int *i2, int incrementationI1, int increment
 }
 
 static void deplacement(grid g,int i, int j,int indenti, int indentj ){  
-for (int cpt=0;cpt<GRID_SIDE;cpt++){
-  int tmpi=i;
-  int tmpj=j;
-  int cpti=i+indenti;
-  int cptj=j+indentj;
-  while (cpti<GRID_SIDE && cptj<GRID_SIDE && 0<=cpti && 0<=cptj){
-    if ( (tmpi==cpti && tmpj==cptj) || get_tile(g,cpti,cptj)==0 ){
-      incrementation(&cpti,&cptj,indenti,indentj); 
-    }
-    else if (get_tile(g,tmpi,tmpj)==0){
+  for (int cpt=0;cpt<GRID_SIDE;cpt++){
+    int tmpi=i;
+    int tmpj=j;
+    int cpti=i+indenti;
+    int cptj=j+indentj;
+    while (cpti<GRID_SIDE && cptj<GRID_SIDE && 0<=cpti && 0<=cptj){
+      if ( (tmpi==cpti && tmpj==cptj) || get_tile(g,cpti,cptj)==0 ){
+	incrementation(&cpti,&cptj,indenti,indentj); 
+      }
+      else if (get_tile(g,tmpi,tmpj)==0){
 	fusion(g,tmpi,tmpj,cpti,cptj);
+      }
+      else if (get_tile(g,cpti,cptj)==get_tile(g,tmpi,tmpj)){
+	fusion(g,tmpi,tmpj,cpti,cptj);
+	modif_grid_score(g,get_tile(g,tmpi,tmpj));
+	incrementation(&tmpi,&tmpj,indenti,indentj);
+	incrementation(&cpti,&cptj,indenti,indentj);
+      }
+      else{
+	incrementation(&tmpi,&tmpj,indenti,indentj);
+      }
     }
-    else if (get_tile(g,cpti,cptj)==get_tile(g,tmpi,tmpj)){
-      fusion(g,tmpi,tmpj,cpti,cptj);
-      incrementation(&tmpi,&tmpj,indenti,indentj);
-      incrementation(&cpti,&cptj,indenti,indentj);
-    }
-    else{
-      incrementation(&tmpi,&tmpj,indenti,indentj);
-    }
+    if (indenti==-1 || indenti==1)
+      j++;
+    else
+      i++;
   }
-  if (indenti==-1 || indenti==1)
-    j++;
-  else
-    i++;
- }
 }
 
 static bool possible(grid g, int i,int j,int a,int b){
   int tmpi=i;
   int tmpj=j;
   for (int cpt=0;cpt<4;cpt++){
-    while(i<3 && i>=0 && j<3 && j>=0){
+    while(i<4-a && i>=0-a && j<4-b && j>=0-b){
       if ((get_tile(g,i,j)==get_tile(g,i+a,j+b)&&get_tile(g,i,j)!=0)||(get_tile(g,i,j)==0 && get_tile(g,i+a,j+b))){
 	return true;
       }
