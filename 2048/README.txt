@@ -4,8 +4,9 @@ Réalisé par:
 Ysabelle emery, Jimmy Gouraud, Yordan Kirov, Sébastien Pouteau
 
 
-Compilation grace a la commande make.
+Compilation grace a la commande make. 
 make 
+Attention il faut avoir ncurses d'installé !!
 
 création de deux tests et du Jeu 2048.
 
