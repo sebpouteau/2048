@@ -7,42 +7,42 @@
 #include <curses.h>
 #include <time.h>
 
-static void display_grid(grid g,int *ch);
+static void display_grid(grid g);
 static void display_gameOver(bool *continuer,int *reponse_valide);
 static bool objectif_atteint(grid g);
 static long maximum_tile(grid g);
 
 int main(int argc,char **argv){
 
-  bool continuer= true;
-  grid g= new_grid();
-  int ch=0;
-  srand(time(NULL));
-  while(!game_over(g)){
-    while( can_move(g,UP) ||  can_move(g, LEFT)){
-      play(g, LEFT);
-      play(g,UP);
-     
-    }
-    if(can_move(g,UP)&& !can_move(g,LEFT))
-      play(g,UP);
-     
-    if(!can_move(g, UP) && !can_move(g,LEFT)){
-      play(g,DOWN);
-      play(g,UP);
-     
-   
-    }
-    if(!can_move(g, UP) && !can_move(g,LEFT) && !can_move(g, DOWN)){
-      play(g,RIGHT);
-      play(g, LEFT);
-    }
-    
 
+  int n = 10;
+
+  while(n >0){
+    grid g= new_grid();
+  //int ch=0;
+    srand(time(NULL));
+  
+    while(!game_over(g)){
+      while( can_move(g,UP) ){
+	play(g,UP);
+      }
+      if(can_move(g,LEFT)){
+	play(g,LEFT);
+      }
+      
+      if(!can_move(g, UP) && !can_move(g,LEFT)){
+	play(g,RIGHT);
+	play(g, LEFT);
+    }
+      if(!can_move(g, UP) && !can_move(g,LEFT) && !can_move(g,RIGHT)){
+	play(g,DOWN);
+      }
+    }
+    // display_grid(g,&ch);
+    printf("Objectif atteint? %s \n", objectif_atteint(g)?"oui":"non");
+    printf("Tile max = %d \n", maximum_tile(g));
+    n -=1;
   }
-  display_grid(g,&ch);
-  printf("Objectif atteint? %s \n", objectif_atteint(g)?"oui":"non");
-  printf("Tile max = %d \n", maximum_tile(g));
 }
 
 
@@ -68,11 +68,11 @@ static long maximum_tile(grid g){
   return max_tile;
  }
     
-static void display_grid(grid g,int *ch){
+static void display_grid(grid g){
   initscr();
   clear();
   newwin(0,0,40,40);
-  keypad(stdscr, TRUE);
+  //keypad(stdscr, TRUE);
   // mise en forme de la grille
   int x=2;
   int y=1;
@@ -148,7 +148,7 @@ static void display_grid(grid g,int *ch){
   mvprintw(19,5,"Score: ");
   mvprintw(19,12,score);
   refresh();
-  cbreak();   
-  *ch=getch();
+  //cbreak();   
+  //*ch=getch();
   endwin();    
 }
