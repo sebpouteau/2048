@@ -31,7 +31,6 @@ new_grid (){
     assert (g->case_empty[i] = malloc(sizeof(int)*2));   // creation deuxieme colonne du tableau de case vide
   }
   g->nbr_case_empty=16;
-  //grid_case_empty(g);
   add_tile(g);
   add_tile(g);
 
@@ -149,14 +148,13 @@ void add_tile (grid g){
     set_tile(g,x,y,pow(2,2));
   else
     set_tile(g,x,y,pow(2,1));
-  // grid_case_empty(g);
+
 }
 
 
 void play (grid g, dir d){
   if(can_move(g, d)){
     do_move(g, d);
-    //   grid_case_empty(g);
     add_tile(g);
   }
 }
