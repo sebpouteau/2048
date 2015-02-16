@@ -12,8 +12,8 @@ static void display_gameOver(bool *continuer,int *reponse_valide);
 
 int main(int argc,char **argv){
   bool continuer=true;
+  srand(time(NULL));
   while (continuer){
-    srand(time(NULL));
     grid g = new_grid();
     int ch=0;
     display_grid(g,&ch);

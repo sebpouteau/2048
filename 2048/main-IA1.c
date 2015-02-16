@@ -16,15 +16,17 @@ int main(int argc,char **argv){
 
 
   int n = 10;
-
+  srand(time(NULL));
+ 
   while(n >0){
     grid g= new_grid();
   //int ch=0;
-    srand(time(NULL));
+    
   
     while(!game_over(g)){
       while( can_move(g,UP) ){
 	play(g,UP);
+	play(g,LEFT);
       }
       if(can_move(g,LEFT)){
 	play(g,LEFT);
@@ -32,6 +34,7 @@ int main(int argc,char **argv){
       
       if(!can_move(g, UP) && !can_move(g,LEFT)){
 	play(g,RIGHT);
+	play(g, UP);
 	play(g, LEFT);
     }
       if(!can_move(g, UP) && !can_move(g,LEFT) && !can_move(g,RIGHT)){
@@ -41,6 +44,7 @@ int main(int argc,char **argv){
     // display_grid(g,&ch);
     printf("Objectif atteint? %s \n", objectif_atteint(g)?"oui":"non");
     printf("Tile max = %d \n", maximum_tile(g));
+    delete_grid(g);
     n -=1;
   }
 }
