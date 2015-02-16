@@ -9,11 +9,12 @@
 
 static void display_grid(grid g,int *ch);
 static void display_gameOver(bool *continuer,int *reponse_valide);
+
 int main(int argc,char **argv){
   bool continuer=true;
   while (continuer){
-    grid g = new_grid();
     srand(time(NULL));
+    grid g = new_grid();
     int ch=0;
     display_grid(g,&ch);
     while(!game_over(g)){

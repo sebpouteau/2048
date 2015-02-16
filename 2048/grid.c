@@ -31,6 +31,7 @@ new_grid (){
     assert (g->case_empty[i] = malloc(sizeof(int)*2));   // creation deuxieme colonne du tableau de case vide
   }
   g->nbr_case_empty=16;
+  grid_case_empty(g);
   add_tile(g);
   add_tile(g);
 
