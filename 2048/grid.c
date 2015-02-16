@@ -31,7 +31,7 @@ new_grid (){
     assert (g->case_empty[i] = malloc(sizeof(int)*2));   // creation deuxieme colonne du tableau de case vide
   }
   g->nbr_case_empty=16;
-  grid_case_empty(g);
+  //grid_case_empty(g);
   add_tile(g);
   add_tile(g);
 
@@ -140,6 +140,7 @@ static void grid_case_empty(grid g){
 
 
 void add_tile (grid g){
+  grid_case_empty(g);
   int position_aleatoire = rand()%g->nbr_case_empty;
   int nombre_tile = rand()%10;
   int x = g->case_empty[position_aleatoire][0];
@@ -148,14 +149,14 @@ void add_tile (grid g){
     set_tile(g,x,y,pow(2,2));
   else
     set_tile(g,x,y,pow(2,1));
-  grid_case_empty(g);
+  // grid_case_empty(g);
 }
 
 
 void play (grid g, dir d){
   if(can_move(g, d)){
     do_move(g, d);
-    grid_case_empty(g);
+    //   grid_case_empty(g);
     add_tile(g);
   }
 }
