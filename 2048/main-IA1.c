@@ -9,59 +9,65 @@
 
 static void display_grid(grid g,int *ch);
 static void display_gameOver(bool *continuer,int *reponse_valide);
+static bool objectif_atteint(grid g);
+static long maximum_tile(grid g);
 
 int main(int argc,char **argv){
-  bool continuer=true;
-  while (continuer){
-    srand(time(NULL));
-    grid g = new_grid();
-    int ch=0;
-    display_grid(g,&ch);
-    while(!game_over(g)){
-      switch(ch){
-      case KEY_UP:
-	play(g,UP);
-	break;
-      case KEY_DOWN:
-	play(g,DOWN);
-	break;
-      case KEY_RIGHT:
-	play(g,RIGHT);
-	break;
-      case KEY_LEFT:
-	play(g,LEFT);
-	break;
-      }
-      display_grid(g,&ch);
+
+  bool continuer= true;
+  grid g= new_grid();
+  int ch=0;
+  srand(time(NULL));
+  while(!game_over(g)){
+    while( can_move(g,UP) ||  can_move(g, LEFT)){
+      play(g, LEFT);
+      play(g,UP);
+     
     }
-    int reponse_valide = 0;
-    while (reponse_valide == 0)
-      display_gameOver(&continuer,&reponse_valide);
+    if(can_move(g,UP)&& !can_move(g,LEFT))
+      play(g,UP);
+     
+    if(!can_move(g, UP) && !can_move(g,LEFT)){
+      play(g,DOWN);
+      play(g,UP);
+     
+   
+    }
+    if(!can_move(g, UP) && !can_move(g,LEFT) && !can_move(g, DOWN)){
+      play(g,RIGHT);
+      play(g, LEFT);
+    }
+    
+
   }
-  return EXIT_SUCCESS;
+  display_grid(g,&ch);
+  printf("Objectif atteint? %s \n", objectif_atteint(g)?"oui":"non");
+  printf("Tile max = %d \n", maximum_tile(g));
 }
 
 
 
-static void display_gameOver(bool *continuer,int *reponse_valide){
-  keypad(stdscr, TRUE);
-  int ch=0;  
-  mvprintw(21,5,"GAME OVER");
-  mvprintw(23,2,"Voulez-vous rejouer? y or n ? ");
-  refresh(); 
-  cbreak();   
-  ch=getch();
-  if(ch==110){
-    *continuer=false;//arrete le programme, sort de la boucle
-    *reponse_valide = 1;
+static bool objectif_atteint(grid g){
+  for(int i = 0; i<GRID_SIDE; i++){
+    for(int j = 0; j< GRID_SIDE; j++){
+      if(get_tile(g, i, j)>=2048)
+	return true;
+    }
   }
-  if(ch==121)
-    *reponse_valide = 1;//relance le programme du debut 
-  endwin();    
-}  
+  return false;
+}
 
-   
- 
+static long maximum_tile(grid g){
+  long max_tile = 2;
+  for(int i = 0; i<GRID_SIDE; i++){
+    for(int j = 0; j< GRID_SIDE; j++){
+      if(get_tile(g, i, j)>max_tile)
+	max_tile = get_tile(g, i, j);
+    }
+  }
+  return max_tile;
+ }
+    
 static void display_grid(grid g,int *ch){
   initscr();
   clear();
