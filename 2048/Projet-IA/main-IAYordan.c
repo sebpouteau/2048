@@ -2,19 +2,18 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
-#include "grid.h"
+#include "../Projet-Jeu/grid.h"
 #include <ncurses.h>
 #include <curses.h>
 #include <time.h>
 
 static void display_grid(grid g,int *ch);
-static void display_gameOver(bool *continuer,int *reponse_valide);
+/* static void display_gameOver(bool *continuer,int *reponse_valide); */
 static bool objectif_atteint(grid g);
 static long maximum_tile(grid g);
 
 int main(int argc,char **argv){
 
-  bool continuer= true;
   grid g= new_grid();
   int ch=0;
   srand(time(NULL));
@@ -42,7 +41,7 @@ int main(int argc,char **argv){
   }
   display_grid(g,&ch);
   printf("Objectif atteint? %s \n", objectif_atteint(g)?"oui":"non");
-  printf("Tile max = %d \n", maximum_tile(g));
+  printf("Tile max = %ld \n", maximum_tile(g));
 }
 
 

@@ -3,12 +3,13 @@ CFLAGS =-std=c99 -g -Wall
 LDLIBS = -lncurses -lm 
 CPPFLAGS= 
 
-all:test-IA1
+all:test-IA1 test-IAYordan
  
 test-IA1: main-IA1.o ../Projet-Jeu/grid.o
 	$(CC) -o test-IA1 main-IA1.o ../Projet-Jeu/grid.o  $(LDLIBS)
 
- 
+test-IAYordan: main-IAYordan.o ../Projet-Jeu/grid.o
+	$(CC) -o test-IAYordan main-IAYordan.o ../Projet-Jeu/grid.o $(LDLIBS)
 
 include dep
 
