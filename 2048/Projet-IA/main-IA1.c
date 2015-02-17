@@ -7,8 +7,8 @@
 #include <curses.h>
 #include <time.h>
 
-/* static void display_grid(grid g); */
-/* static void display_gameOver(bool *continuer,int *reponse_valide); */
+//static void display_grid(grid g);
+//static void display_gameOver(bool *continuer,int *reponse_valide);
 static bool objectif_atteint(grid g);
 static long maximum_tile(grid g);
 

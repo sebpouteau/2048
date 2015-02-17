@@ -7,41 +7,73 @@
 #include <curses.h>
 #include <time.h>
 
-static void display_grid(grid g,int *ch);
-/* static void display_gameOver(bool *continuer,int *reponse_valide); */
+//static void display_grid(grid g);
+//static void display_gameOver(bool *continuer,int *reponse_valide);
 static bool objectif_atteint(grid g);
 static long maximum_tile(grid g);
 
 int main(int argc,char **argv){
 
-  grid g= new_grid();
-  int ch=0;
-  srand(time(NULL));
-  while(!game_over(g)){
-    while( can_move(g,UP) ||  can_move(g, LEFT)){
-      play(g, LEFT);
-      play(g,UP);
-     
-    }
-    if(can_move(g,UP)&& !can_move(g,LEFT))
-      play(g,UP);
-     
-    if(!can_move(g, UP) && !can_move(g,LEFT)){
-      play(g,RIGHT);
-      play(g,LEFT);
-     
-   
-    }
-    if(!can_move(g, UP) && !can_move(g,LEFT) && !can_move(g, RIGHT)){
-      play(g,DOWN);
-      play(g, UP);
-    }
-    
 
+  int n = 10;
+  srand(time(NULL));
+ 
+  while(n >0){
+    grid g= new_grid();
+  //int ch=0;
+    
+  
+    while(!game_over(g)){
+      int somme_ligne = 0;
+      int somme_colonne = 0;
+      int case_libre_ligne = 0;
+      int case_libre_colonne = 0;
+      
+      for(int i = 0; i<4; i++){
+	int tile = get_tile(g,0,i);
+	if(tile == 0)
+	  case_libre_ligne += 1;
+      }
+
+      for(int i = 0; i<4; i++){
+	int tile = get_tile(g,i,0);
+	if(tile == 0)
+	  case_libre_colonne += 1;
+      }
+
+      for(int i = 0; i<4; i++){
+	int tile = get_tile(g,0,i);
+	somme_ligne += tile;
+      }
+      for(int i = 0; i<4; i++){
+	int tile = get_tile(g,i,0);
+	somme_colonne += tile;
+      }
+      
+      if(can_move(g,UP) || can_move(g,LEFT) ){
+	play(g,LEFT);
+	play(g,UP);
+      }
+      
+      if(!can_move(g, UP) && !can_move(g,LEFT)){
+	if(somme_ligne >= somme_colonne || case_libre_ligne >= case_libre_colonne)
+	   play(g,RIGHT);
+	   play(g, UP);
+	}
+	else{
+	  play(g,DOWN);
+      }
+      if(!can_move(g, UP) && !can_move(g,LEFT) && !can_move(g,RIGHT)){
+	play(g,DOWN);
+	play(g,UP);
+      }
+    }
+    // display_grid(g,&ch);
+    printf("Objectif atteint? %s \n", objectif_atteint(g)?"oui":"non");
+    printf("Tile max = %ld \n", maximum_tile(g));
+    delete_grid(g);
+    n-=1;
   }
-  display_grid(g,&ch);
-  printf("Objectif atteint? %s \n", objectif_atteint(g)?"oui":"non");
-  printf("Tile max = %ld \n", maximum_tile(g));
 }
 
 
@@ -67,11 +99,11 @@ static long maximum_tile(grid g){
   return max_tile;
  }
     
-static void display_grid(grid g,int *ch){
+static void display_grid(grid g){
   initscr();
   clear();
   newwin(0,0,40,40);
-  keypad(stdscr, TRUE);
+  //keypad(stdscr, TRUE);
   // mise en forme de la grille
   int x=2;
   int y=1;
@@ -147,7 +179,7 @@ static void display_grid(grid g,int *ch){
   mvprintw(19,5,"Score: ");
   mvprintw(19,12,score);
   refresh();
-  cbreak();   
-  *ch=getch();
+  //cbreak();   
+  //*ch=getch();
   endwin();    
 }
