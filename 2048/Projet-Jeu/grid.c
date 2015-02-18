@@ -143,12 +143,12 @@ int get_nbr_case_empty(grid g){
   return g->nbr_case_empty;
 }
    
-static void grid_case_empty(grid g){
+static void grid_case_empty(grid g){ //parcours la grille et recupere les coordonnes des tiles nulles
   assert(g!=NULL && g->grid != NULL && g->case_empty !=NULL);
   int a=0; //conteur tableau case vide
   for(int i=0; i<GRID_SIDE; i++){
     for(int j = 0; j< GRID_SIDE; j++){
-      if(g->grid[i][j] == 0){
+      if(get_tile(g, i, j) == 0){
 	g->case_empty[a][0]=i;
 	g->case_empty[a][1]=j;
 	a++;
