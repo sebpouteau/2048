@@ -57,7 +57,7 @@ void copy_grid (grid src,grid dst){
       set_tile(dst,i,j,get_tile(src,i,j)); //utilisation des accesseurs pour lire et modifier.
 }
 
-unsigned long int get_grid_score (grid g){
+unsigned long int grid_score (grid g){
   assert(g!=NULL);
   return g->score;
 }

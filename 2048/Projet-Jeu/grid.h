@@ -67,7 +67,7 @@ void copy_grid (grid src, grid dst);
  * \param g the grid
  * \return the computed score during the game
  */
-unsigned long int get_grid_score (grid g);
+unsigned long int grid_score (grid g);
 
 
 /**

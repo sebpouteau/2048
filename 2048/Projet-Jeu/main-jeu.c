@@ -11,6 +11,7 @@ static void display_grid(grid g,int *ch);
 static void display_gameOver(bool *continuer,int *reponse_valide);
 
 int main(int argc,char **argv){
+
   bool continuer=true;
   srand(time(NULL));
   while (continuer){
@@ -65,7 +66,7 @@ static void display_gameOver(bool *continuer,int *reponse_valide){
 static void display_grid(grid g,int *ch){
   initscr();
   clear();
-  newwin(0,0,40,40);
+  //newwin(0,0,40,40);
   keypad(stdscr, TRUE);
   // mise en forme de la grille
   int x=2;
@@ -138,7 +139,7 @@ static void display_grid(grid g,int *ch){
   }
   mvprintw(1,15,"2048");
   char score[10];
-  sprintf(score, "%lu", get_grid_score(g));
+  sprintf(score, "%lu", grid_score(g));
   mvprintw(19,5,"Score: ");
   mvprintw(19,12,score);
   refresh();
