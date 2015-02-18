@@ -18,7 +18,8 @@ int main(int argc,char **argv){
     grid g = new_grid();
     int ch=0;
     display_grid(g,&ch);
-    while(!game_over(g)){
+    int reponse_valide = 0;
+    while(!game_over(g) && reponse_valide==0){
       switch(ch){
       case KEY_UP:
 	play(g,UP);
@@ -32,12 +33,20 @@ int main(int argc,char **argv){
       case KEY_LEFT:
 	play(g,LEFT);
 	break;
-      
+
+      case 113: // quit avec q
+	continuer=false;
+	reponse_valide=1;
+	endwin();     
+     case 114:
+	reponse_valide=1;
+	endwin();    
+
       }
       display_grid(g,&ch);
     }
-    int reponse_valide = 0;
-    while (reponse_valide == 0)
+    
+    while (reponse_valide == 0 && continuer==true)
       display_gameOver(&continuer,&reponse_valide);
   }
   return EXIT_SUCCESS;

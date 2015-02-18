@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <math.h>
 #include "grid.h"
-#include "gridIA.h"
+
 
 struct grid_s{
   tile **grid;
@@ -64,8 +64,8 @@ void copy_grid (grid src,grid dst){
   for(int i = 0; i< GRID_SIDE * GRID_SIDE; i++)
     for(int j=0; j <2; j++)
       dst-> case_empty[i][j] = src -> case_empty[i][j];
-  }
 }
+
  
 
 unsigned long int grid_score (grid g){//recuperation du score
