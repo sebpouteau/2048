@@ -57,11 +57,11 @@ void copy_grid (grid src,grid dst){
       set_tile(dst,i,j,get_tile(src,i,j)); //utilisation des accesseurs pour lire et modifier.
 }
 
-unsigned long int grid_score (grid g){
+unsigned long int get_grid_score (grid g){
   assert(g!=NULL);
   return g->score;
 }
-static void modif_grid_score(grid g,unsigned long int ajout_score){
+static void set_grid_score(grid g,unsigned long int ajout_score){
   g->score+=ajout_score;
 }
 
@@ -168,7 +168,7 @@ static void incrementation(int *i1, int *i2, int incrementationI1, int increment
   *i2+=incrementationI2;
 }
 
-static void deplacement(grid g,int i, int j,int indenti, int indentj ){  
+static void deplacement(grid g,int i, int j,int indenti, int indentj ){
   for (int cpt=0;cpt<GRID_SIDE;cpt++){
     int tmpi=i;
     int tmpj=j;
@@ -176,14 +176,14 @@ static void deplacement(grid g,int i, int j,int indenti, int indentj ){
     int cptj=j+indentj;
     while (cpti<GRID_SIDE && cptj<GRID_SIDE && 0<=cpti && 0<=cptj){
       if ( (tmpi==cpti && tmpj==cptj) || get_tile(g,cpti,cptj)==0 ){
-	incrementation(&cpti,&cptj,indenti,indentj); 
+	incrementation(&cpti,&cptj,indenti,indentj);
       }
       else if (get_tile(g,tmpi,tmpj)==0){
 	fusion(g,tmpi,tmpj,cpti,cptj);
       }
       else if (get_tile(g,cpti,cptj)==get_tile(g,tmpi,tmpj)){
 	fusion(g,tmpi,tmpj,cpti,cptj);
-	modif_grid_score(g,get_tile(g,tmpi,tmpj));
+	set_grid_score(g,get_tile(g,tmpi,tmpj));
 	incrementation(&tmpi,&tmpj,indenti,indentj);
 	incrementation(&cpti,&cptj,indenti,indentj);
       }

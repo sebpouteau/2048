@@ -138,7 +138,7 @@ static void display_grid(grid g,int *ch){
   }
   mvprintw(1,15,"2048");
   char score[10];
-  sprintf(score, "%lu", grid_score(g));
+  sprintf(score, "%lu", get_grid_score(g));
   mvprintw(19,5,"Score: ");
   mvprintw(19,12,score);
   refresh();
