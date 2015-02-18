@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <math.h>
 #include "grid.h"
+#include "gridIA.h"
 
 struct grid_s{
   tile **grid;
@@ -129,8 +130,14 @@ void do_move(grid g, dir d){
   }
 }
 
+tile* get_grid_case_empty(grid g){
+  return g->case_empty;
+}
 
-
+int get_nbr_case_empty(grid g){
+  return g->nbr_case_empty;
+}
+   
 static void grid_case_empty(grid g){
   assert(g!=NULL && g->grid != NULL && g->case_empty !=NULL);
   int a=0; //conteur tableau case vide
