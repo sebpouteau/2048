@@ -11,7 +11,7 @@ static void display_grid(grid g,int *ch);
 static void display_gameOver(bool *continuer,int *reponse_valide);
 
 int main(int argc,char **argv){
-
+  keypad(stdscr, TRUE);
   bool continuer=true;
   srand(time(NULL));
   while (continuer){
@@ -32,6 +32,7 @@ int main(int argc,char **argv){
       case KEY_LEFT:
 	play(g,LEFT);
 	break;
+      
       }
       display_grid(g,&ch);
     }
@@ -66,7 +67,6 @@ static void display_gameOver(bool *continuer,int *reponse_valide){
 static void display_grid(grid g,int *ch){
   initscr();
   clear();
-  //newwin(0,0,40,40);
   keypad(stdscr, TRUE);
   // mise en forme de la grille
   int x=2;
