@@ -7,7 +7,7 @@ unsigned long int poids_fusion(grid g, dir d){
   grid grid_copy = new_grid();
   copy_grid(g,grid_copy);
   do_move(grid_copy,d);
-  return score_grid(grid_copy)-score_grid(g);
+  return grid_score(grid_copy)-grid_score(g);
 }
 
 int nombre_fusion(grid g,dir d){
