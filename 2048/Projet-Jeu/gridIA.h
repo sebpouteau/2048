@@ -13,6 +13,9 @@ int get_nbr_case_empty(grid g);
    et aprés le déplacement */
 unsigned long int poids_fusion(grid g, dir d);
 
+/* retourne le nombre de fusion possible dans la direction indiqué */
+int nombre_fusion(grid g,dir d);
+
 /* retourne si l'on peut déplacer une ligne ou une colonne */
 bool possible_lc(grid g, int i, int j, int a,int b);
 
