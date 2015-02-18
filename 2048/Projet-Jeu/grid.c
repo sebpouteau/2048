@@ -6,8 +6,8 @@
 
 struct grid_s{
   tile **grid;
-  int **case_empty;  //stock les coordonnées des cases vides dans un tableau 2D
-  int nbr_case_empty;
+  int **case_empty;  //stock les coordonnées des cases vides (ayant un 0) dans un tableau 2D
+  int nbr_case_empty;//stock le nombre de 0 = nombre de case vide
   long score;
 };
 
@@ -30,7 +30,7 @@ new_grid (){
   for (int i=0; i<GRID_SIDE*GRID_SIDE;i++){
     assert (g->case_empty[i] = malloc(sizeof(int)*2));   // creation deuxieme colonne du tableau de case vide
   }
-  g->nbr_case_empty=16;
+  g->nbr_case_empty=GRID_SIDE*GRID_SIDE;
   add_tile(g);
   add_tile(g);
 
@@ -55,6 +55,11 @@ void copy_grid (grid src,grid dst){
   for (int i=0;i<GRID_SIDE;i++)
     for(int j=0;j<GRID_SIDE;j++)
       set_tile(dst,i,j,get_tile(src,i,j)); //utilisation des accesseurs pour lire et modifier.
+  dst->score = src->score;
+  dst->nbr_case_empty = src->nbr_case_empty;
+  for(int i = 0; i< GRID_SIDE * GRID_SIDE; i++){
+    for(int j=0; j <2; j++)
+      dst-> case_empty[i][j] = src -> case_empty[i][j];
 }
 
 unsigned long int grid_score (grid g){
@@ -62,15 +67,18 @@ unsigned long int grid_score (grid g){
   return g->score;
 }
 static void set_grid_score(grid g,unsigned long int ajout_score){
+  assert(g!=NULL);
   g->score+=ajout_score;
 }
 
 tile get_tile(grid g,int x, int y){
+  assert(g!=NULL);
   assert( 0<=x && x<GRID_SIDE && 0<=y && y<GRID_SIDE); // verification si coordonnées sont dans la grille
   return g->grid[x][y];
 }
 
 void set_tile(grid g,int x, int y, tile t){
+  assert(g!=NULL);
   assert( 0<=x && x<GRID_SIDE && 0<=y && y<GRID_SIDE);// verification si coordonnées sont dans la grille
   g->grid[x][y]=t;
 }
@@ -124,6 +132,7 @@ void do_move(grid g, dir d){
 
 
 static void grid_case_empty(grid g){
+  assert(g!=NULL && g->grid != NULL && g->case_empty !=NULL);
   int a=0; //conteur tableau case vide
   for(int i=0; i<GRID_SIDE; i++){
     for(int j = 0; j< GRID_SIDE; j++){
@@ -139,6 +148,7 @@ static void grid_case_empty(grid g){
 
 
 void add_tile (grid g){
+  assert(g!=NULL);
   grid_case_empty(g);
   int position_aleatoire = rand()%g->nbr_case_empty;
   int nombre_tile = rand()%10;
@@ -153,6 +163,7 @@ void add_tile (grid g){
 
 
 void play (grid g, dir d){
+  assert(g!=NULL);
   if(can_move(g, d)){
     do_move(g, d);
     add_tile(g);
