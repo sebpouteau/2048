@@ -3,15 +3,15 @@
 #include "grid.h"
 #include "gridIA.h"
 
-int poids_fusion(grid g, dir d){
-  grid grid_copie= new_grid();
+unsigned long int poids_fusion(grid g, dir d){
+  grid grid_copy = new_grid();
   copy_grid(g,grid_copy);
   do_move(grid_copy,d);
   return score_grid(grid_copy)-score_grid(g);
 }
 
 int nombre_fusion(grid g,dir d){
-  grid grid_copie= new_grid();
+  grid grid_copy= new_grid();
   copy_grid(g,grid_copy);
   do_move(grid_copy,d);
   return get_nbr_case_empty(g)-get_nbr_case_empty(grid_copy);

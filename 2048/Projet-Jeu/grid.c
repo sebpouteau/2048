@@ -135,11 +135,13 @@ void do_move(grid g, dir d){
   }
 }
 
-tile* get_grid_case_empty(grid g){
+int** get_grid_case_empty(grid g){
+  assert(g!=NULL);
   return g->case_empty;
 }
 
 int get_nbr_case_empty(grid g){
+  assert(g!=NULL);
   return g->nbr_case_empty;
 }
    
@@ -186,6 +188,7 @@ static void fusion (grid g,int i1,int j1,int i2,int j2){
   set_tile(g,i1,j1,get_tile(g,i1,j1)+get_tile(g,i2,j2));
   set_tile(g,i2,j2,0);
 }
+
 static void incrementation(int *i1, int *i2, int incrementationI1, int incrementationI2){
   *i1+=incrementationI1;
   *i2+=incrementationI2;

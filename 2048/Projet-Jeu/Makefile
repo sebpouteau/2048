@@ -22,7 +22,9 @@ include dep
 
 .PHONY: clean
 clean:
-	rm -f dep *.o *~ test-grid test-temps-deplacement jeu main-test-fonct 
+
+	rm -f dep *.o *~ all 
+
 dep:
 	$(CC) $(CPPFLAGS) -MM *.c >dep
 
