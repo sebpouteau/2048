@@ -72,9 +72,11 @@ static void display_grid(grid g,int *ch){
   int x=2;
   int y=1;
   for (int i=0;i<5;i++){
-    mvhline(x,2,0,31);
+    mvhline(x,2,ACS_HLINE,31);
     x+=4;
-    mvvline(3,y,0,15);
+  }
+  for(int i=0; i<5; i++){
+    mvvline(3,y,ACS_VLINE,15);
     y+=8;
   }
   start_color();
