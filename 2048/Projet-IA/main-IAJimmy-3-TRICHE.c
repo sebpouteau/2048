@@ -33,7 +33,7 @@ int main(int argc,char **argv){
     grid g = new_grid();
     
     while(!game_over(g)){
-      g = strategie(g,5);
+      g = strategie(g,10);
     }
     //printf("Objectif atteint? %s \n", objectif_atteint(g)?"oui":"non");
     //printf("Tile max = %ld \n", maximum_tile(g));
