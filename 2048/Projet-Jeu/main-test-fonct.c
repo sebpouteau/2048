@@ -18,14 +18,14 @@ int main(){
       break;
     }
   }
-  printf(valide?"set_tile :  Ok":"set_tile : False");
+  printf(valide?"Test 1/6 - set_tile :  Ok":"Test 1/6 - set_tile : False");
   printf("\n");
   
   
   //test copy_grid;
   grid g1 = new_grid();
   copy_grid(g,g1);
-  printf( egalite_grid(g,g1) ? "Copy : Ok" : "Copy : False");
+  printf( egalite_grid(g,g1) ? "Test 2/6 - copy_grid : Ok" : "Test 2/6 - copy_grid : False");
   printf("\n");
   
   valide = true;
@@ -33,7 +33,7 @@ int main(){
   do_move(g,UP);
   if(grid_score(g) != 8)
     valide=false;
-  printf(valide?"grid_score : Ok":"grid_score : False");
+  printf(valide?"Test 3/6 - grid_score : Ok":"Test 3/6 - grid_score : False");
   printf("\n");
   
   valide = true;
@@ -50,7 +50,7 @@ int main(){
   set_tile (g,0,1,1);
   if (game_over(g))  //si il indique que c'est game_over c'est qu'il ne fonctionne pas
     valide=false;
-  printf(valide ? "game_over : Ok" : "Game_Over : False");
+  printf(valide ? "Test 4/6 - game_over : Ok" : "Test 4/6 - Game_Over : False");
   printf("\n");
   
   valide = true;
@@ -71,7 +71,7 @@ int main(){
   do_move(g,LEFT);
   if (get_tile(g,3,0)!=128)
     valide=false;
-  printf(valide ?"do_move : Ok":"do_move : False");
+  printf(valide ?"Test 5/6 - do_move : Ok":"Test 5/6 - do_move : False");
   printf("\n");
   
   //test delete_grid;
@@ -79,7 +79,7 @@ int main(){
   delete_grid(g1);
   if(g == NULL || g1 == NULL)
     valide =false;
-  printf(valide ?"Delete_Grid : Ok":"Delete_Grid : False");
+  printf(valide ?"Test 6/6 - delete_Grid : Ok":"Test 6/6 - delete_Grid : False");
   printf("\n");
 
   valide = true;
