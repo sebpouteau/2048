@@ -55,7 +55,7 @@ void delete_grid (grid g){
 
 
 void copy_grid (grid src,grid dst){
-  assert (src!=NULL && dst!=NULL);
+  assert(src!=NULL && dst!=NULL);
   for (int i=0;i<GRID_SIDE;i++)
     for(int j=0;j<GRID_SIDE;j++)
       set_tile(dst,i,j,get_tile(src,i,j)); //utilisation des accesseurs pour lire et modifier.
@@ -96,6 +96,7 @@ bool game_over(grid g){
 }
 
 bool can_move(grid g,dir d){
+  assert(g!=NULL);
   switch (d){
   case UP:
     return possible(g,0,0,1,0);
@@ -117,6 +118,7 @@ bool can_move(grid g,dir d){
 
 
 void do_move(grid g, dir d){
+  assert(g!=NULL);
   switch (d){
   case UP:
     move(g,0,0,1,0);
@@ -185,6 +187,7 @@ void play (grid g, dir d){
 }
 
 static void fusion (grid g,int i1,int j1,int i2,int j2){
+  assert(g!=NULL);
   set_tile(g,i1,j1,get_tile(g,i1,j1)+get_tile(g,i2,j2));
   set_tile(g,i2,j2,0);
 }
@@ -194,7 +197,8 @@ static void incrementation(int *i1, int *i2, int incrementationI1, int increment
   *i2+=incrementationI2;
 }
 
-static void move(grid g,int i, int j,int indenti, int indentj ){
+static void move(grid g,int i, int j,int indenti, int indentj){
+  assert(g!=NULL);
   for (int cpt=0;cpt<GRID_SIDE;cpt++){
     int tmpi=i;
     int tmpj=j;
@@ -225,6 +229,7 @@ static void move(grid g,int i, int j,int indenti, int indentj ){
 }
 
 static bool possible(grid g, int i,int j,int a,int b){
+  assert(g!=NULL);
   int tmpi=i;
   int tmpj=j;
   for (int cpt=0;cpt<4;cpt++){
