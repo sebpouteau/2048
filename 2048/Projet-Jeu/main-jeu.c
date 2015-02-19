@@ -7,8 +7,10 @@
 #include <curses.h>
 #include <time.h>
 
-static void display_grid(grid g,int *ch);
+static void display_grid(grid g);
 static void display_gameOver(bool *continuer,int *reponse_valide);
+static unsigned long int read_highscore();
+static void write_highscore(unsigned long int score);
 
 int main(int argc,char **argv){
   keypad(stdscr, TRUE);
@@ -17,9 +19,10 @@ int main(int argc,char **argv){
   while (continuer){
     grid g = new_grid();
     int ch=0;
-    display_grid(g,&ch);
+    display_grid(g);
     int reponse_valide = 0;
     while(!game_over(g) && reponse_valide==0){
+      ch=getch();
       switch(ch){
       case KEY_UP:
 	play(g,UP);
@@ -37,17 +40,17 @@ int main(int argc,char **argv){
       case 113: // quit avec q
 	continuer=false;
 	reponse_valide=1;
-	endwin();     
+	break;
      case 114:
 	reponse_valide=1;
-	endwin();    
-
+	break;
       }
-      display_grid(g,&ch);
+      display_grid(g);
     }
     
     while (reponse_valide == 0 && continuer==true)
       display_gameOver(&continuer,&reponse_valide);
+    endwin();    
   }
   return EXIT_SUCCESS;
 }
@@ -57,8 +60,8 @@ int main(int argc,char **argv){
 static void display_gameOver(bool *continuer,int *reponse_valide){
   keypad(stdscr, TRUE);
   int ch=0;  
-  mvprintw(21,5,"GAME OVER");
-  mvprintw(23,2,"Voulez-vous rejouer? y or n ? ");
+  mvprintw(9,45,"GAME OVER");
+  mvprintw(11,36,"Voulez-vous rejouer? y or n ? ");
   refresh(); 
   cbreak();   
   ch=getch();
@@ -73,19 +76,19 @@ static void display_gameOver(bool *continuer,int *reponse_valide){
 
    
  
-static void display_grid(grid g,int *ch){
+static void display_grid(grid g){
   initscr();
   clear();
   keypad(stdscr, TRUE);
   // mise en forme de la grille
-  int x=2;
-  int y=1;
+  int x=3;
+  int y=2;
   for (int i=0;i<5;i++){
-    mvhline(x,2,ACS_HLINE,31);
+    mvhline(x,3,ACS_HLINE,31);
     x+=4;
   }
   for(int i=0; i<5; i++){
-    mvvline(3,y,ACS_VLINE,15);
+    mvvline(4,y,ACS_VLINE,15);
     y+=8;
   }
   start_color();
@@ -98,9 +101,9 @@ static void display_grid(grid g,int *ch){
   init_pair(7,7,0); //blanc
 
   // mise des valeur dans la grille
-  x=4; 
+  x=5; 
   for (int i=0;i<GRID_SIDE;i++){
-    y=4;
+    y=5;
     for (int j=0;j<GRID_SIDE;j++){
       if (get_tile(g,i,j)!=0){
 	  switch(get_tile(g,i,j)){
@@ -149,12 +152,41 @@ static void display_grid(grid g,int *ch){
     x+=4;
   }
   mvprintw(1,15,"2048");
-  char score[10];
-  sprintf(score, "%lu", grid_score(g));
-  mvprintw(19,5,"Score: ");
-  mvprintw(19,12,score);
+  mvprintw(5,36,"Score: %lu ",grid_score(g));
+  unsigned long int read_highscore();
+  if (grid_score(g)>read_highscore()){
+    write_highscore(grid_score(g));
+  }
+  mvprintw(6,36,"High Score: %lu ",read_highscore());
+  mvprintw(21,3,"Recommencer Partie / Quitter Partie (r / q)");
+
   refresh();
-  cbreak();   
-  *ch=getch();
-  endwin();    
+}
+static unsigned long int read_highscore(){
+
+  unsigned long int score[1];
+  FILE *highscore = NULL; //On initialise un pointeur de fichier
+
+  highscore = fopen("Highscore.txt","r"); //On ouvre HIGHSCORE.txt
+  // "r" = read only
+
+  if (highscore == NULL) //On a pas réussi a ouvrir le fichier
+    return 0;
+
+  else
+    {
+      fscanf(highscore,"%lu",&score[0]);
+      fclose(highscore);
+    }
+
+  return score[0];
+}
+
+
+static void write_highscore(unsigned long int score){
+  FILE *highscore = NULL;
+  highscore=fopen("Highscore.txt","w"); //On ouvre HIGHSCORE.txt
+  // "w" = write only => On va écraser le contenu du fichier
+  fprintf(highscore,"%lu",score);
+  fclose(highscore);
 }

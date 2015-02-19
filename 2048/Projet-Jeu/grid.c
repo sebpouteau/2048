@@ -4,18 +4,25 @@
 #include <math.h>
 #include "grid.h"
 
+/*
+Choix d'implementtaion de la structure
+tableau 2D de tile 
+tableau 2D de coordonnée ( tableau de 2 colones contenant abscise puis ordonnee) Il sert a stocker les coordonnées des cases vide
 
+*/
 struct grid_s{
   tile **grid;
   int **case_empty;  //stock les coordonnées des cases vides (ayant un 0) dans un tableau 2D
   int nbr_case_empty;//stock le nombre de 0 = nombre de case vide
-  long score;
+  unsigned long score;
 };
 
 static void move( grid g,int i, int j,int a, int b );
 static void fusion (grid g,int i,int j,int a,int b);
 static void grid_case_empty(grid g);
 static bool possible(grid g, int i,int j,int a,int b);
+
+
 
 grid
 new_grid (){
@@ -186,17 +193,29 @@ void play (grid g, dir d){
   }
 }
 
+/* 
+fusion permet de fusionner deux cases d'une grid
+fusionne [i1][j1] et [i2][j2] dans [i1][i2] et met un 0 dans l'autre case
+*/
 static void fusion (grid g,int i1,int j1,int i2,int j2){
   assert(g!=NULL);
   set_tile(g,i1,j1,get_tile(g,i1,j1)+get_tile(g,i2,j2));
   set_tile(g,i2,j2,0);
 }
 
+/*
+incrementation permet d'incrementer deux variables avec des incrementation different 
+*/
 static void incrementation(int *i1, int *i2, int incrementationI1, int incrementationI2){
   *i1+=incrementationI1;
   *i2+=incrementationI2;
 }
 
+/*
+move permet de deplacer la grille selon les parametres passés
+c'est a dire indenti va indenter i selon se que l'on veux si on part de la fin ou du debut pareil pour indentj
+Ce qui permet de deplacer la grille dans toute les direction 
+*/
 static void move(grid g,int i, int j,int indenti, int indentj){
   assert(g!=NULL);
   for (int cpt=0;cpt<GRID_SIDE;cpt++){
@@ -228,6 +247,9 @@ static void move(grid g,int i, int j,int indenti, int indentj){
   }
 }
 
+/*
+possible renvoie true si il est possible de faire un deplacement dans une direction et false sinon
+*/
 static bool possible(grid g, int i,int j,int a,int b){
   assert(g!=NULL);
   int tmpi=i;
