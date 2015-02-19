@@ -65,50 +65,50 @@ static void display_grid_sdl(grid g, SDL_Surface *ecran){
       position.y = i*100;
       switch(get_tile(g,i,j)){
       case 2:
-	image = SDL_LoadBMP("tile2.bmp");
+	image = SDL_LoadBMP("../tiles/tile2.bmp");
 	break;
       case 4:
-	image = SDL_LoadBMP("tile4.bmp");
+	image = SDL_LoadBMP("../tiles/tile4.bmp");
 	break;
       case 8:
-	image = SDL_LoadBMP("tile8.bmp");
+	image = SDL_LoadBMP("../tiles/tile8.bmp");
 	break;
       case 16:
-	image = SDL_LoadBMP("tile16.bmp");
+	image = SDL_LoadBMP("../tiles/tile16.bmp");
 	break;
       case 32:
-	image = SDL_LoadBMP("tile32.bmp");
+	image = SDL_LoadBMP("../tiles/tile32.bmp");
 	break;
       case 0:
-	image = SDL_LoadBMP("tile64.bmp");
+	image = SDL_LoadBMP("../tiles/tile64.bmp");
 	break;
 	/*
       case 128:
-	image = SDL_LoadBMP("tile128.bmp");
+	image = SDL_LoadBMP("../tiles/tile128.bmp");
 	break;
       case 256:
-	image = SDL_LoadBMP("tile256.bmp");
+	image = SDL_LoadBMP("../tiles/tile256.bmp");
 	break;
       case 512:
-	image = SDL_LoadBMP("tile512.bmp");
+	image = SDL_LoadBMP("../tiles/tile512.bmp");
 	break;
       case 1024:
-	image = SDL_LoadBMP("tile1024.bmp");
+	image = SDL_LoadBMP("../tiles/tile1024.bmp");
 	break;
       case 2048:
-	image = SDL_LoadBMP("tile2048.bmp");
+	image = SDL_LoadBMP("../tiles/tile2048.bmp");
 	break;
       case 4096:
-	image = SDL_LoadBMP("tile4096.bmp");
+	image = SDL_LoadBMP("../tiles/tile4096.bmp");
 	break;
       case 8192:
-	image = SDL_LoadBMP("tile8192.bmp");
+	image = SDL_LoadBMP("../tiles/tile8192.bmp");
 	break;
       case 16384:
-	image = SDL_LoadBMP("tile16384.bmp");
+	image = SDL_LoadBMP("../tiles/tile16384.bmp");
 	break;
       case 32768:
-	image = SDL_LoadBMP("tile32768.bmp");
+	image = SDL_LoadBMP("../tiles/tile32768.bmp");
 	break;
 
 */
