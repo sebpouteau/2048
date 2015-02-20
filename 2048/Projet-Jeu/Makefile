@@ -1,32 +1,24 @@
-CC = gcc
-CFLAGS = -std=c99 -g -Wall 
-LDLIBS = -lncurses -lm -lSDL -lSDL_image
-CPPFLAGS= 
+LIBS= src test-fonction ncurses sdl
+all:
+	for i in $(LIBS);do\
+		$(MAKE) -C $$i;\
+	done
+	
+check: 
 
-all:test-grid test-temps-deplacement jeu main-test-fonct main-sdl
- 
-jeu: main-jeu.o grid.o
-	$(CC) -o jeu main-jeu.o grid.o  $(LDLIBS)
+	$(MAKE) -C test-fonction test;\
 
-test-grid: main-test.o grid.o
-	$(CC) $(LDFLAGS) -o test-grid main-test.o grid.o
+	
 
-test-temps-deplacement: main-test-temps.o grid.o
-	$(CC) $(LDFLAGS) -o test-temps-deplacement main-test-temps.o grid.o
-
-main-test-fonct: main-test-fonct.o grid.o
-	$(CC) $(LDFLAGS) -o main-test-fonct main-test-fonct.o grid.o
-
-main-sdl: main-sdl.o grid.o 
-	$(CC) $(LDFLAGS) -o main-sdl main-sdl.o grid.o $(LDLIBS)
-
-include dep
-
-.PHONY: clean
 clean:
-	rm -f dep *.o *~ test-grid test-temps-deplacement jeu main-test-fonct main-sdl
+	for i in $(LIBS);do\
+		$(MAKE) -C $$i clean;\
+	done
 
-dep:
-	$(CC) $(CPPFLAGS) -MM *.c >dep
+
+run:
+	$(MAKE) -C  ncurses run
 
 
+run_sdl:
+	$(MAKE) -C sdl run_sdl;\

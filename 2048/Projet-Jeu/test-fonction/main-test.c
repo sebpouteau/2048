@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
-#include "grid.h"
+#include "../src/grid.h"
 static void display_grid(grid g);
 
 int main(int argc,char **argv){

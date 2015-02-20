@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
-#include "grid.h"
+#include "../src/grid.h"
 
 static bool egalite_grid(grid g, grid g1);
 
@@ -11,7 +11,7 @@ int main(){
   bool valide=true;
   //test-set_tile/get_tile;
   for(int i = 0;i<4;i++)
-    set_tile(g,i,0,2);
+    set_tile(g,i,i,2);
   for(int i = 0;i<4;i++){
     if(get_tile(g,i,i)!=2){
       valide=false;
