@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include <SDL/SDL_ttf.h>
 #include "../src/grid.h"
  
 static void jeu();
@@ -11,12 +12,19 @@ static void display_gameover(grid g, SDL_Surface *ecran);
 int main(int argc, char *argv[]){
   SDL_Surface *ecran = NULL;
   SDL_Init(SDL_INIT_VIDEO);
+  TTF_Init();
+
+ 
   ecran = SDL_SetVideoMode(400, 500, 32, SDL_HWSURFACE);
-  grid g = new_grid();
+  SDL_WM_SetCaption("Jeu 2048", NULL);
+  SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 255, 255, 255));
   SDL_Flip(ecran);
   
+  grid g = new_grid();
+
   jeu(g, ecran);
-  
+
+  TTF_Quit();
   SDL_Quit();
   
   return EXIT_SUCCESS;
@@ -26,6 +34,20 @@ void jeu(grid g, SDL_Surface *ecran)
 {
   bool continuer = true;
   SDL_Event event;
+  SDL_Surface *highscore = NULL, *score = NULL;
+  SDL_Rect position_highscore, position_score;
+  TTF_Font *police = NULL;
+  SDL_Color couleurNoire = {255, 0, 0};
+  police = TTF_OpenFont("angelina.TTF", 40);
+  highscore = TTF_RenderText_Blended(police, "Highscore :", couleurNoire);
+  position_highscore.x = 50;
+  position_highscore.y = 400;
+  SDL_BlitSurface(highscore, NULL, ecran, &position_highscore);
+  score = TTF_RenderText_Blended(police, "Score :", couleurNoire);
+  position_score.x = 50;
+  position_score.y = 450;
+  SDL_BlitSurface(score, NULL, ecran, &position_score); 
+  SDL_Flip(ecran);
   
   while (continuer){
     SDL_WaitEvent(&event);
