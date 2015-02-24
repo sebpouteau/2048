@@ -15,7 +15,6 @@ unsigned long int poids_fusion_jimmy(grid g, dir d){
   copy_grid(g,grid_copy);
   do_move(grid_copy,d);
   int tile_up_left = (int)(get_tile(g,0,0)/4);
-  for(int
   return grid_score(grid_copy)-grid_score(g)+tile_up_left;
 }
 
