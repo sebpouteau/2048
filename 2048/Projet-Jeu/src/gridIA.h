@@ -13,6 +13,10 @@ int get_nbr_case_empty(grid g);
    et aprés le déplacement */
 unsigned long int poids_fusion(grid g, dir d);
 
+/* retourne la différence entre le score de la grille avant le déplacement,
+   et aprés le déplacement et ajoute la valeur de la tile en haut à gauche */
+unsigned long int poids_fusion_jimmy(grid g, dir d);
+
 /* retourne le nombre de fusion possible dans la direction indiqué */
 int nombre_fusion(grid g,dir d);
 
