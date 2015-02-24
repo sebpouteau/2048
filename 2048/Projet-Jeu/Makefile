@@ -3,12 +3,10 @@ all:
 	for i in $(LIBS);do\
 		$(MAKE) -C $$i;\
 	done
-	
+
 check: 
 
-	$(MAKE) -C test-fonction test;\
-
-	
+	$(MAKE) -C test-fonction
 
 clean:
 	for i in $(LIBS);do\
@@ -21,4 +19,4 @@ run:
 
 
 run_sdl:
-	$(MAKE) -C sdl run_sdl;\
+	$(MAKE) -C sdl run_sdl

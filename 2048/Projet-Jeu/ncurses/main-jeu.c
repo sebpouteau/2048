@@ -18,6 +18,8 @@ int main(int argc,char **argv){
   srand(time(NULL));
   while (continuer){
     grid g = new_grid();
+    add_tile(g);
+    add_tile(g);
     int ch=0;
     display_grid(g);
     int reponse_valide = 0;

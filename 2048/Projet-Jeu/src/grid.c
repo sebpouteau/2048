@@ -7,13 +7,12 @@
 /*
 Choix d'implementtaion de la structure
 tableau 2D de tile 
-tableau 2D de coordonnée ( tableau de 2 colones contenant abscise puis ordonnee) Il sert a stocker les coordonnées des cases vide
-
+tableau 2D de coordonnée ( tableau de 2 colones contenant abscise puis ordonnee). Il sert a stocker les coordonnées des cases vides
 */
 struct grid_s{
   tile **grid;
-  int **case_empty;  //stock les coordonnées des cases vides (ayant un 0) dans un tableau 2D
-  int nbr_case_empty;//stock le nombre de 0 = nombre de case vide
+  int **case_empty;    //stock les coordonnées des cases vides (ayant un 0) dans un tableau 2D
+  int nbr_case_empty;  //stock le nombre de 0 = nombre de case vide
   unsigned long score;
 };
 
@@ -22,12 +21,15 @@ static void fusion (grid g,int i,int j,int a,int b);
 static void grid_case_empty(grid g);
 static bool possible(grid g, int i,int j,int a,int b);
 
+//////////////////////////////////////////////////////////////////
+/* IMPLEMENTATION DE L'INTERFACE GRID.H   */
+/////////////////////////////////////////////////////////////////
 
 
 grid
 new_grid (){
   grid g = malloc(sizeof(struct grid_s));
-  assert(g); //verification existence
+  assert(g);  //verification existence
   assert (g->grid = malloc(sizeof(tile*)*GRID_SIDE));
   assert (g->case_empty = malloc(sizeof(int*)*GRID_SIDE*GRID_SIDE)); // initialisation tableau case vide.
   for(int i=0; i< GRID_SIDE; i++){
@@ -38,68 +40,64 @@ new_grid (){
   for (int i=0; i<GRID_SIDE*GRID_SIDE;i++){
     assert (g->case_empty[i] = malloc(sizeof(int)*2));   // creation deuxieme colonne du tableau de case vide
   }
+  grid_case_empty(g); // mise a 0 des cases du tableau de case vide  
   g->nbr_case_empty=GRID_SIDE*GRID_SIDE;
-  add_tile(g);
-  add_tile(g);
-
   g->score = 0;
   return g;
 }
 
-
 void delete_grid (grid g){
   assert ( g!=NULL && g->grid!=NULL && g->case_empty!=NULL);
-  for(int i = 0; i< GRID_SIDE; i++){
-    assert( g->grid[i] != NULL);
+  // destruction du tableau grid
+  for(int i = 0; i< GRID_SIDE; i++){       
+    assert( g->grid[i] != NULL);     
     free(g->grid[i]);
   }
+  free(g->grid);
+  // destruction tableau de case vide
   for(int i=0; i< GRID_SIDE* GRID_SIDE; i++)
     free(g->case_empty[i]);
   free(g->case_empty);
-  free(g->grid);
+  //destruction de la structure grid
   free(g);
 }
 
-
 void copy_grid (grid src,grid dst){
   assert(src!=NULL && dst!=NULL);
+  // copie du tableau grid
   for (int i=0;i<GRID_SIDE;i++)
     for(int j=0;j<GRID_SIDE;j++)
       set_tile(dst,i,j,get_tile(src,i,j)); //utilisation des accesseurs pour lire et modifier.
   dst->score = src->score;
   dst->nbr_case_empty = src->nbr_case_empty;
+  // copie du tableau de case vide
   for(int i = 0; i< GRID_SIDE * GRID_SIDE; i++)
     for(int j=0; j <2; j++)
       dst-> case_empty[i][j] = src -> case_empty[i][j];
 }
 
- 
-
-unsigned long int grid_score (grid g){//recuperation du score
+// récuperation du score
+unsigned long int grid_score (grid g){
   assert(g!=NULL);
   return g->score;
 }
-static void set_grid_score(grid g,unsigned long int add_score){//modification du score 
-  assert(g!=NULL);
-  g->score+=add_score;
-}
 
 tile get_tile(grid g,int x, int y){
-  assert(g!=NULL);
+  assert(g!=NULL && g->grid!=NULL);
   assert( 0<=x && x<GRID_SIDE && 0<=y && y<GRID_SIDE); // verification si coordonnées sont dans la grille
   return g->grid[x][y];
 }
 
 void set_tile(grid g,int x, int y, tile t){
-  assert(g!=NULL);
+  assert(g!=NULL && g->grid!=NULL);
   assert( 0<=x && x<GRID_SIDE && 0<=y && y<GRID_SIDE);// verification si coordonnées sont dans la grille
   g->grid[x][y]=t;
 }
 
-
 bool game_over(grid g){
   assert (g!=NULL);
-  return (can_move(g,UP)==false && can_move(g,LEFT)==false && can_move(g,RIGHT)==false && can_move(g,DOWN)==false); //si aucun deplacement alors retourne true sinon retourne false
+  //si aucun deplacement alors retourne true sinon retourne false
+  return (can_move(g,UP)==false && can_move(g,LEFT)==false && can_move(g,RIGHT)==false && can_move(g,DOWN)==false);
 }
 
 bool can_move(grid g,dir d){
@@ -123,7 +121,6 @@ bool can_move(grid g,dir d){
   }
 }
 
-
 void do_move(grid g, dir d){
   assert(g!=NULL);
   switch (d){
@@ -144,17 +141,57 @@ void do_move(grid g, dir d){
   }
 }
 
-int** get_grid_case_empty(grid g){
+void add_tile (grid g){
   assert(g!=NULL);
+  grid_case_empty(g);
+  int position_random = rand()%g->nbr_case_empty;
+  int nbr_tile = rand()%10;
+  int x = g->case_empty[position_random][0];
+  int y = g->case_empty[position_random][1];
+  if (nbr_tile==9)
+    set_tile(g,x,y,pow(2,2));
+  else
+    set_tile(g,x,y,pow(2,1));
+}
+
+void play (grid g, dir d){
+  assert(g!=NULL);
+  if(can_move(g, d)){
+    do_move(g, d);
+    add_tile(g);
+  }
+}
+
+
+//////////////////////////////////////////////////////////////////
+/* IMPLEMENTATION DE L'INTERFACE GRIDIA.H   */
+/////////////////////////////////////////////////////////////////
+
+// permet de recuperer le tableau de case vide (interface gridIA.h)
+int** get_grid_case_empty(grid g){
+  assert(g!=NULL && g->case_empty!=NULL);
   return g->case_empty;
 }
 
+// permet de recuperer le nombre de case vide (interface gridIA.h)
 int get_nbr_case_empty(grid g){
   assert(g!=NULL);
   return g->nbr_case_empty;
 }
-   
-static void grid_case_empty(grid g){ //parcours la grille et recupere les coordonnes des tiles nulles
+
+
+//////////////////////////////////////////////////////////////////
+/* IMPLEMENTATION DES FONCTION STATIC    */
+/////////////////////////////////////////////////////////////////
+
+// permet de modifier le score 
+static void set_grid_score(grid g,unsigned long int add_score){
+  assert(g!=NULL);
+  g->score+=add_score;
+}
+
+//parcours la grille et recupere les coordonnes des tiles vide et copie dans le tableau de case vide
+static void grid_case_empty(grid g){ 
   assert(g!=NULL && g->grid != NULL && g->case_empty !=NULL);
   int a=0; //conteur tableau case vide
   for(int i=0; i<GRID_SIDE; i++){
@@ -167,30 +204,6 @@ static void grid_case_empty(grid g){ //parcours la grille et recupere les coordo
     }
   }
   g->nbr_case_empty=a;
-}
-
-
-void add_tile (grid g){
-  assert(g!=NULL);
-  grid_case_empty(g);
-  int position_random = rand()%g->nbr_case_empty;
-  int nbr_tile = rand()%10;
-  int x = g->case_empty[position_random][0];
-  int y = g->case_empty[position_random][1];
-  if (nbr_tile==9)
-    set_tile(g,x,y,pow(2,2));
-  else
-    set_tile(g,x,y,pow(2,1));
-
-}
-
-
-void play (grid g, dir d){
-  assert(g!=NULL);
-  if(can_move(g, d)){
-    do_move(g, d);
-    add_tile(g);
-  }
 }
 
 /* 
@@ -214,7 +227,7 @@ static void incrementation(int *i1, int *i2, int incrementationI1, int increment
 /*
 move permet de deplacer la grille selon les parametres passés
 c'est a dire indenti va indenter i selon se que l'on veux si on part de la fin ou du debut pareil pour indentj
-Ce qui permet de deplacer la grille dans toute les direction 
+Ce qui permet de deplacer la grille dans toutes les directions 
 */
 static void move(grid g,int i, int j,int indenti, int indentj){
   assert(g!=NULL);
@@ -224,18 +237,24 @@ static void move(grid g,int i, int j,int indenti, int indentj){
     int cpti=i+indenti;
     int cptj=j+indentj;
     while (cpti<GRID_SIDE && cptj<GRID_SIDE && 0<=cpti && 0<=cptj){
+      // si compteur == tmpi alors indente les compteurs 
+      // si le compteur est sur 0 alors on indent le curseur
       if ( (tmpi==cpti && tmpj==cptj) || get_tile(g,cpti,cptj)==0 ){
 	incrementation(&cpti,&cptj,indenti,indentj);
       }
+      // si les tmp sont sur une case 0 alors on fusionne le cpt avec tmp 
       else if (get_tile(g,tmpi,tmpj)==0){
 	fusion(g,tmpi,tmpj,cpti,cptj);
       }
+      // si la case tmp == case cpt et par precend les cases sont differentes de 0, alors on fusionne les deux cases puis on change le score
+      // on avance d'une case cpt et tmp avec incrementation
       else if (get_tile(g,cpti,cptj)==get_tile(g,tmpi,tmpj)){
 	fusion(g,tmpi,tmpj,cpti,cptj);
 	set_grid_score(g,get_tile(g,tmpi,tmpj));
 	incrementation(&tmpi,&tmpj,indenti,indentj);
 	incrementation(&cpti,&cptj,indenti,indentj);
       }
+      // les cases ne sont pas identique et cpt est different de 0 donc on avance tmp 
       else{
 	incrementation(&tmpi,&tmpj,indenti,indentj);
       }
@@ -250,26 +269,28 @@ static void move(grid g,int i, int j,int indenti, int indentj){
 /*
 possible renvoie true si il est possible de faire un deplacement dans une direction et false sinon
 */
-static bool possible(grid g, int i,int j,int a,int b){
+static bool possible(grid g, int i,int j,int indenti,int indentj){
   assert(g!=NULL);
   int tmpi=i;
   int tmpj=j;
-  for (int cpt=0;cpt<4;cpt++){
-    while(i<4-a && i>=0-a && j<4-b && j>=0-b){
-      if ((get_tile(g,i,j)==get_tile(g,i+a,j+b)&&get_tile(g,i,j)!=0)||(get_tile(g,i,j)==0 && get_tile(g,i+a,j+b))){
+  for (int cpt=0;cpt<GRID_SIDE;cpt++){
+    while(i<GRID_SIDE-indenti && i>=0-indenti && j<GRID_SIDE-indentj && j>=0-indentj){
+      // si deux cases se suivant indentique alors possible = true
+      // si une case vide suivi d'une case non vide alors possible = true
+      if ((get_tile(g,i,j)==get_tile(g,i+indenti,j+indentj)&&get_tile(g,i,j)!=0)||(get_tile(g,i,j)==0 && get_tile(g,i+indenti,j+indentj))){
 	return true;
       }
-      i+=a;
-      j+=b;
+      // sinon on increment i et j en fonction de la direction avec indenti indentj
+      incrementation(&i,&j,indenti,indentj);
     }
-    if (a==-1 || a==1){
-      j++;
-      i=tmpi;
+    // selon direction renisialiser i ou j
+    // incrementer l'autre 1 pour changer de ligne ou colonne selon la direction
+    if (indenti==-1 || indenti==1){
+      incrementation (&j,&i,1,tmpi-i); 
     }
     else {
-      i++;
-      j=tmpj;
-    }
+      incrementation (&i,&j,1,tmpj-j); 
+     }
   }
   return false;
 }

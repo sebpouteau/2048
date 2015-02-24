@@ -11,9 +11,9 @@ int main(){
   bool valide=true;
   //test-set_tile/get_tile;
   for(int i = 0;i<4;i++)
-    set_tile(g,i,i,2);
+    set_tile(g,i,0,2);
   for(int i = 0;i<4;i++){
-    if(get_tile(g,i,i)!=2){
+    if(get_tile(g,i,0)!=2){
       valide=false;
       break;
     }
