@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
-#include "../Projet-Jeu/grid.h"
+#include "../Projet-Jeu/src/grid.h"
 #include <ncurses.h>
 #include <curses.h>
 #include <time.h>
@@ -98,7 +98,8 @@ static long maximum_tile(grid g){
   }
   return max_tile;
  }
-    
+
+/*
 static void display_grid(grid g){
   initscr();
   clear();
@@ -180,6 +181,7 @@ static void display_grid(grid g){
   mvprintw(19,12,score);
   refresh();
   //cbreak();   
-  //*ch=getch();
+  //ch=getch();
   endwin();    
 }
+*/
