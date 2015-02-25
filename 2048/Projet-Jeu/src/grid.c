@@ -87,17 +87,16 @@ unsigned long int grid_score (grid g){
 
 tile get_tile(grid g,int x, int y){
   assert(g!=NULL && g->grid!=NULL);
-  assert( 0<=x && x<GRID_SIDE && 0<=y && y<GRID_SIDE); // vérifie si les coordonnées sont dans la grille
+  assert(0<=x && x<GRID_SIDE && 0<=y && y<GRID_SIDE);
   return g->grid[x][y];
 }
 
 void set_tile(grid g,int x, int y, tile t){
   assert(g!=NULL && g->grid!=NULL);
-  assert( 0<=x && x<GRID_SIDE && 0<=y && y<GRID_SIDE); // vérifie si les coordonnées sont dans la grille
+  assert(0<=x && x<GRID_SIDE && 0<=y && y<GRID_SIDE);
   g->grid[x][y]=t;
 }
 
-//si aucun déplacement possible alors return true; sinon return false
 bool game_over(grid g){
   assert (g!=NULL);
   return (can_move(g,UP)==false && can_move(g,LEFT)==false && can_move(g,RIGHT)==false && can_move(g,DOWN)==false);
@@ -180,9 +179,9 @@ int get_nbr_case_empty(grid g){
 
 
 
-/* ====================================
+/* =====================================
     IMPLEMENTATION DES FONCTIONS STATIC
-   ==================================== */
+   ===================================== */
 
 // permet de modifier le score 
 static void set_grid_score(grid g,unsigned long int add_score){
@@ -190,10 +189,10 @@ static void set_grid_score(grid g,unsigned long int add_score){
   g->score+=add_score;
 }
 
-//parcours la grille et récupère les coordonnées des tiles vides et copie dans le tableau de case vide
+// parcours la grille et récupère les coordonnées des cases vides et les copie dans le tableau de case vide
 static void grid_case_empty(grid g){ 
   assert(g!=NULL && g->grid != NULL && g->case_empty !=NULL);
-  int a=0; //compteur tableau case vide
+  int a=0;
   for(int i=0; i<GRID_SIDE; i++){
     for(int j = 0; j< GRID_SIDE; j++){
       if(get_tile(g, i, j) == 0){
@@ -206,29 +205,20 @@ static void grid_case_empty(grid g){
   g->nbr_case_empty=a;
 }
 
-/* 
-  fusion permet de fusionner deux cases de case
-  fusionne [i1][j1] et [i2][j2] dans [i1][i2] et met un 0 dans l'autre case
-*/
+// fusion permet de fusionner deux cases et met 0 dans l'autre case
 static void fusion (grid g,int i1,int j1,int i2,int j2){
   assert(g!=NULL);
   set_tile(g,i1,j1,get_tile(g,i1,j1)+get_tile(g,i2,j2));
   set_tile(g,i2,j2,0);
 }
 
-/*
-  incrementation permet d'incrémenter deux variables ayant des incrémentations différentes.
-*/
+// incrementation permet d'incrémenter deux variables ayant des incrémentations différentes.
 static void incrementation(int *i1, int *i2, int incrementationI1, int incrementationI2){
   *i1+=incrementationI1;
   *i2+=incrementationI2;
 }
 
-/*
-  move permet de déplacer l'ensemble de la grille, selon les paramètres passés.
-  "indenti" va indenter i selon si on veut partir de la fin ou du début. Même chose pour "indentj"
-  Cela permet de deplacer la grille dans toutes les directions.
-*/
+// déplace l'ensemble de la grille dans la direction voulue (en fonction des paramètres)
 static void move(grid g,int i, int j,int indenti, int indentj){
   assert(g!=NULL);
   for (int cpt=0;cpt<GRID_SIDE;cpt++){
@@ -236,61 +226,47 @@ static void move(grid g,int i, int j,int indenti, int indentj){
     int tmpj=j;
     int cpti=i+indenti;
     int cptj=j+indentj;
-    while (cpti<GRID_SIDE && cptj<GRID_SIDE && 0<=cpti && 0<=cptj){
-      // si compteur == tmpi alors indenter les compteurs 
-      // si le compteur est sur 0 alors on indente le curseur
-      if ( (tmpi==cpti && tmpj==cptj) || get_tile(g,cpti,cptj)==0 ){
+    while(cpti<GRID_SIDE && cptj<GRID_SIDE && 0<=cpti && 0<=cptj){
+      if( (tmpi==cpti && tmpj==cptj) || get_tile(g,cpti,cptj)==0 )
 	incrementation(&cpti,&cptj,indenti,indentj);
-      }
-      // si les tmp sont sur une case 0 alors on fusionne le cpt avec tmp 
-      else if (get_tile(g,tmpi,tmpj)==0){
+      else if(get_tile(g,tmpi,tmpj)==0)
 	fusion(g,tmpi,tmpj,cpti,cptj);
-      }
-      // si la case tmp == case cpt et si les cases sont différentes de 0, alors on fusionne les deux cases puis on change le score
-      // on avance d'une case cpt et tmp avec incrémentation
       else if (get_tile(g,cpti,cptj)==get_tile(g,tmpi,tmpj)){
 	fusion(g,tmpi,tmpj,cpti,cptj);
 	set_grid_score(g,get_tile(g,tmpi,tmpj));
 	incrementation(&tmpi,&tmpj,indenti,indentj);
 	incrementation(&cpti,&cptj,indenti,indentj);
       }
-      // les cases ne sont pas identiques et cpt est différent de 0 donc on avance tmp 
-      else{
+      else
 	incrementation(&tmpi,&tmpj,indenti,indentj);
-      }
     }
-    if (indenti==-1 || indenti==1)
+    if(indenti==-1 || indenti==1)
       j++;
     else
       i++;
   }
 }
 
-/*
-possible renvoie true si il est possible de faire un déplacement dans une direction et false sinon
-*/
+// teste s'il est possible de faire un déplacement dans une direction
 static bool possible(grid g, int i,int j,int indenti,int indentj){
   assert(g!=NULL);
   int tmpi=i;
   int tmpj=j;
   for (int cpt=0;cpt<GRID_SIDE;cpt++){
     while(i<GRID_SIDE-indenti && i>=0-indenti && j<GRID_SIDE-indentj && j>=0-indentj){
-      // si deux cases se suivent et sont indentique alors possible = true
-      // si une case vide suivi d'une case non vide alors possible = true
-      if ((get_tile(g,i,j)==get_tile(g,i+indenti,j+indentj)&&get_tile(g,i,j)!=0)||(get_tile(g,i,j)==0 && get_tile(g,i+indenti,j+indentj))){
+      // si deux cases collés sont indentique alors return true
+      if( (get_tile(g,i,j)==get_tile(g,i+indenti,j+indentj) && get_tile(g,i,j)!=0) )
 	return true;
-      }
-      // sinon on incrémente i et j en fonction de la direction avec indenti indentj
+      // si une case vide est suivi d'une case non vide alors return true
+      else if( get_tile(g,i,j)==0 && get_tile(g,i+indenti,j+indentj)!=0 )
+	return true;
       incrementation(&i,&j,indenti,indentj);
     }
-    // selon direction réinitialiser i ou j
-    // incrémenter l'autre 1 pour changer de ligne ou de colonne selon la direction
-    if (indenti==-1 || indenti==1){
+    // réinitialiser i ou j et incrémenter l'autre pour changer de ligne ou de colonne selon la direction
+    if(indenti==-1 || indenti==1)
       incrementation (&j,&i,1,tmpi-i); 
-    }
-    else {
+    else
       incrementation (&i,&j,1,tmpj-j); 
-     }
   }
   return false;
 }
