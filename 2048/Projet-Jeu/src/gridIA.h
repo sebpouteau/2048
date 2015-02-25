@@ -23,4 +23,7 @@ int nombre_fusion(grid g,dir d);
 /* retourne si l'on peut déplacer une ligne ou une colonne */
 bool possible_lc(grid g, int i, int j, int a,int b);
 
+/* retourne true si deux grilles sont identiques*/
+bool egalite_grid(grid g,grid g1);
+
 #endif

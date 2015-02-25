@@ -36,3 +36,12 @@ bool possible_lc(grid g, int i, int j, int a,int b){
   }
   return false;
 }
+
+bool egalite_grid(grid g,grid g1){
+  bool b = true;
+  for(int i = 0; i<4; i++)
+    for(int j = 0; j<4;j++)
+      if(get_tile(g,i,j)!= get_tile(g1,i,j))
+	 b = false;
+  return b;
+}

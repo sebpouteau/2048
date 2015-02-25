@@ -3,12 +3,13 @@
 #include <assert.h>
 #include <math.h>
 #include "../src/grid.h"
+#include "../src/gridIA.h"
 
-static bool egalite_grid(grid g, grid g1);
 
 int main(){
   grid g = new_grid();
   bool valide=true;
+ 
   //test-set_tile/get_tile;
   for(int i = 0;i<4;i++)
     set_tile(g,i,0,2);
@@ -81,19 +82,11 @@ int main(){
     valide =false;
   printf(valide ?"Test 6/6 - delete_Grid : Ok":"Test 6/6 - delete_Grid : False");
   printf("\n");
-
+  
   valide = true;
-
+  
   return EXIT_SUCCESS;  
-
 }
 
 
-static bool egalite_grid(grid g,grid g1){
-  bool b = true;
-  for(int i = 0; i<4; i++)
-    for(int j = 0; j<4;j++)
-      if(get_tile(g,i,j)!= get_tile(g1,i,j))
-	 b = false;
-  return b;
-}
+
