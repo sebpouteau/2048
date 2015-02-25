@@ -2,66 +2,89 @@
 #include <stdio.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include <SDL/SDL_ttf.h>
 #include "../src/grid.h"
  
 static void jeu();
 static void display_grid_sdl(grid g, SDL_Surface *ecran);
 static void display_gameover(grid g, SDL_Surface *ecran);
+static void display_score(grid g, SDL_Surface *ecran, SDL_Surface *texte_score, SDL_Rect position_score, SDL_Color couleur_score, SDL_Color couleur_fond, TTF_Font *police_score, char *char_score);
+
 
 int main(int argc, char *argv[]){
-  SDL_Surface *ecran = NULL;
   SDL_Init(SDL_INIT_VIDEO);
-  ecran = SDL_SetVideoMode(400, 500, 32, SDL_HWSURFACE);
-  grid g = new_grid();
-  add_tile(g);
-  add_tile(g);
-  SDL_Flip(ecran);
+  TTF_Init();
   
-  jeu(g, ecran);
-  
+  jeu();
+
+  TTF_Quit();
   SDL_Quit();
   
   return EXIT_SUCCESS;
 }
 
-void jeu(grid g, SDL_Surface *ecran)
-{
+void jeu(){
+  // Initialisation de la fenetre du jeu
+  SDL_Surface *ecran = NULL;
+  ecran = SDL_SetVideoMode(400, 500, 32, SDL_HWSURFACE);
+  SDL_WM_SetCaption("Jeu 2048", NULL);
+  SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 255, 255, 255));
+  SDL_Flip(ecran);
+
+  // Initialisation de la grille
+  grid g = new_grid();
+  add_tile(g);
+  add_tile(g);
+  
+  //paramètres boucle du jeu
   bool continuer = true;
   SDL_Event event;
-  
+
+  //paramètres score
+  SDL_Surface *texte_score = NULL;
+  SDL_Rect position_score;
+  TTF_Font *police_score = TTF_OpenFont("angelina.TTF", 40);
+  SDL_Color couleur_score = {255, 0, 0}, couleur_fond ={255,255,255};
+  char char_score[20] = "";
+
+
   while (continuer){
     SDL_WaitEvent(&event);
-      switch(event.type){
-      case SDL_QUIT:
-	continuer = false;
+    switch(event.type){
+    case SDL_QUIT:
+      continuer = false;
+      break;
+    case SDL_KEYDOWN:
+      switch(event.key.keysym.sym){
+      case SDLK_UP:
+	play(g,UP);
 	break;
-      case SDL_KEYDOWN:
-	switch(event.key.keysym.sym){
-	case SDLK_UP:
-	  play(g,UP);
-	  break;
-	case SDLK_DOWN:
-	  play(g,DOWN);
-	  break;
-	case SDLK_LEFT:
-	  play(g,LEFT);
-	  break;
-	case SDLK_RIGHT:
-	  play(g,RIGHT);
-	  break;
-	default:
-	  break;
-	}
+      case SDLK_DOWN:
+	play(g,DOWN);
+	break;
+      case SDLK_LEFT:
+	play(g,LEFT);
+	break;
+      case SDLK_RIGHT:
+	play(g,RIGHT);
 	break;
       default:
 	break;
-      }/*
+      }
+      break;
+    default:
+      break;
+    }
+    display_grid_sdl(g, ecran);
+    display_score(g, ecran, texte_score, position_score, couleur_score, couleur_fond, police_score, char_score);
     if(game_over(g)){
       display_gameover(g, ecran);
       continuer = 0;
-      }*/
-    display_grid_sdl(g, ecran);
+    }
   }
+  SDL_FreeSurface(texte_score);
+  SDL_FreeSurface(ecran);
+  TTF_CloseFont(police_score);
 }
 
   
@@ -154,3 +177,12 @@ static void display_grid_sdl(grid g, SDL_Surface *ecran){
 }
 
 
+static void display_score(grid g, SDL_Surface *ecran, SDL_Surface *texte_score, SDL_Rect position_score, SDL_Color couleur_score, SDL_Color couleur_fond, TTF_Font *police_score, char *char_score){
+    sprintf(char_score, "Score : %lu", grid_score(g));
+    SDL_FreeSurface(texte_score);
+    texte_score = TTF_RenderText_Shaded(police_score, char_score, couleur_score, couleur_fond);
+    position_score.x = 50;
+    position_score.y = 400;
+    SDL_BlitSurface(texte_score, NULL, ecran, &position_score);
+    SDL_Flip(ecran);
+}

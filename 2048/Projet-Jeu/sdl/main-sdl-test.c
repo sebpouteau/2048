@@ -12,20 +12,10 @@ static void display_score(grid g, SDL_Surface *ecran, SDL_Surface *texte_score, 
 
 
 int main(int argc, char *argv[]){
-  SDL_Surface *ecran = NULL;
   SDL_Init(SDL_INIT_VIDEO);
   TTF_Init();
   
-  ecran = SDL_SetVideoMode(400, 500, 32, SDL_HWSURFACE);
-  SDL_WM_SetCaption("Jeu 2048", NULL);
-  SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 255, 255, 255));
-  SDL_Flip(ecran);
-  
-  grid g = new_grid();
-  add_tile(g);
-  add_tile(g);
-  
-  jeu(g, ecran);
+  jeu();
 
   TTF_Quit();
   SDL_Quit();
@@ -33,7 +23,19 @@ int main(int argc, char *argv[]){
   return EXIT_SUCCESS;
 }
 
-void jeu(grid g, SDL_Surface *ecran){
+void jeu(){
+  // Initialisation de la fenetre du jeu
+  SDL_Surface *ecran = NULL;
+  ecran = SDL_SetVideoMode(400, 500, 32, SDL_HWSURFACE);
+  SDL_WM_SetCaption("Jeu 2048", NULL);
+  SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 255, 255, 255));
+  SDL_Flip(ecran);
+
+  // Initialisation de la grille
+  grid g = new_grid();
+  add_tile(g);
+  add_tile(g);
+  
   //paramètres boucle du jeu
   bool continuer = true;
   SDL_Event event;
@@ -45,9 +47,7 @@ void jeu(grid g, SDL_Surface *ecran){
   SDL_Color couleur_score = {255, 0, 0}, couleur_fond ={255,255,255};
   char char_score[20] = "";
 
-  display_score(g, ecran, texte_score, position_score, couleur_score, couleur_fond, police_score, char_score);
-  display_grid_sdl(g, ecran);
-  
+
   while (continuer){
     SDL_WaitEvent(&event);
     switch(event.type){
