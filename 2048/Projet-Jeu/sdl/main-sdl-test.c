@@ -40,7 +40,7 @@ void jeu(){
   bool continuer = true;
   SDL_Event event;
 
-  //paramètres score
+  //paramètres affichage score
   SDL_Surface *texte_score = NULL;
   SDL_Rect position_score;
   TTF_Font *police_score = TTF_OpenFont("angelina.TTF", 40);
@@ -185,4 +185,25 @@ static void display_score(grid g, SDL_Surface *ecran, SDL_Surface *texte_score, 
     position_score.y = 400;
     SDL_BlitSurface(texte_score, NULL, ecran, &position_score);
     SDL_Flip(ecran);
+
+    unsigned long int highscore = 0;
+    FILE* fichier = NULL;
+    
+    fichier = fopen("highscore.txt", "r+"); //lecture et ecriture
+    fscanf(fichier, "%lu", &highscore);
+
+    sprintf(char_score, "Highscore : %lu", highscore);
+    SDL_FreeSurface(texte_score);
+    texte_score = TTF_RenderText_Shaded(police_score, char_score, couleur_score, couleur_fond);
+    position_score.x = 50;
+    position_score.y = 430;
+
+    if(grid_score(g) > highscore){
+      rewind(fichier);
+      fprintf(fichier, "%lu", grid_score(g));
+    }
+    
+    SDL_BlitSurface(texte_score, NULL, ecran, &position_score);
+    SDL_Flip(ecran);
+    fclose(fichier);
 }
