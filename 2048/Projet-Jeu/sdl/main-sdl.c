@@ -13,6 +13,8 @@ int main(int argc, char *argv[]){
   SDL_Init(SDL_INIT_VIDEO);
   ecran = SDL_SetVideoMode(400, 500, 32, SDL_HWSURFACE);
   grid g = new_grid();
+  add_tile(g);
+  add_tile(g);
   SDL_Flip(ecran);
   
   jeu(g, ecran);
@@ -53,11 +55,11 @@ void jeu(grid g, SDL_Surface *ecran)
 	break;
       default:
 	break;
-      }
+      }/*
     if(game_over(g)){
       display_gameover(g, ecran);
       continuer = 0;
-    }
+      }*/
     display_grid_sdl(g, ecran);
   }
 }

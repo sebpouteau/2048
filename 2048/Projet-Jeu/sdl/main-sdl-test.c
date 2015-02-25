@@ -8,26 +8,26 @@
 static void jeu();
 static void display_grid_sdl(grid g, SDL_Surface *ecran);
 static void display_gameover(grid g, SDL_Surface *ecran);
-static void display_highscore(grid g, SDL_Surface *ecran, SDL_Surface *texte_score, SDL_Rect position_score, SDL_Color couleur_score, SDL_Color couleur_fond, TTF_Font *police_score, char *char_score);
+static void display_score(grid g, SDL_Surface *ecran, SDL_Surface *texte_score, SDL_Rect position_score, SDL_Color couleur_score, SDL_Color couleur_fond, TTF_Font *police_score, char *char_score);
+
 
 int main(int argc, char *argv[]){
   SDL_Surface *ecran = NULL;
   SDL_Init(SDL_INIT_VIDEO);
   TTF_Init();
-
- 
+  
   ecran = SDL_SetVideoMode(400, 500, 32, SDL_HWSURFACE);
   SDL_WM_SetCaption("Jeu 2048", NULL);
   SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 255, 255, 255));
   SDL_Flip(ecran);
   
   grid g = new_grid();
-
+  add_tile(g);
+  add_tile(g);
+  
   jeu(g, ecran);
 
-  
   TTF_Quit();
-
   SDL_Quit();
   
   return EXIT_SUCCESS;
@@ -44,10 +44,10 @@ void jeu(grid g, SDL_Surface *ecran){
   TTF_Font *police_score = TTF_OpenFont("angelina.TTF", 40);
   SDL_Color couleur_score = {255, 0, 0}, couleur_fond ={255,255,255};
   char char_score[20] = "";
-  display_highscore(g, ecran, texte_score, position_score, couleur_score, couleur_fond, police_score, char_score);
 
-
+  display_score(g, ecran, texte_score, position_score, couleur_score, couleur_fond, police_score, char_score);
   display_grid_sdl(g, ecran);
+  
   while (continuer){
     SDL_WaitEvent(&event);
     switch(event.type){
@@ -76,9 +76,7 @@ void jeu(grid g, SDL_Surface *ecran){
       break;
     }
     display_grid_sdl(g, ecran);
-    
-    display_highscore(g, ecran, texte_score, position_score, couleur_score, couleur_fond, police_score, char_score);
-
+    display_score(g, ecran, texte_score, position_score, couleur_score, couleur_fond, police_score, char_score);
     if(game_over(g)){
       display_gameover(g, ecran);
       continuer = 0;
@@ -89,17 +87,7 @@ void jeu(grid g, SDL_Surface *ecran){
   TTF_CloseFont(police_score);
 }
 
-static void display_highscore(grid g, SDL_Surface *ecran, SDL_Surface *texte_score, SDL_Rect position_score, SDL_Color couleur_score, SDL_Color couleur_fond, TTF_Font *police_score, char *char_score){
-    sprintf(char_score, "Score : %lu", grid_score(g));
-    SDL_FreeSurface(texte_score);
-    texte_score = TTF_RenderText_Shaded(police_score, char_score, couleur_score, couleur_fond);
-    position_score.x = 50;
-    position_score.y = 400;
-    SDL_BlitSurface(texte_score, NULL, ecran, &position_score);
-    SDL_Flip(ecran);
-}
-
-
+  
 static void display_gameover(grid g, SDL_Surface *ecran){
   bool end = true;
   SDL_Event event;
@@ -189,3 +177,12 @@ static void display_grid_sdl(grid g, SDL_Surface *ecran){
 }
 
 
+static void display_score(grid g, SDL_Surface *ecran, SDL_Surface *texte_score, SDL_Rect position_score, SDL_Color couleur_score, SDL_Color couleur_fond, TTF_Font *police_score, char *char_score){
+    sprintf(char_score, "Score : %lu", grid_score(g));
+    SDL_FreeSurface(texte_score);
+    texte_score = TTF_RenderText_Shaded(police_score, char_score, couleur_score, couleur_fond);
+    position_score.x = 50;
+    position_score.y = 400;
+    SDL_BlitSurface(texte_score, NULL, ecran, &position_score);
+    SDL_Flip(ecran);
+}
