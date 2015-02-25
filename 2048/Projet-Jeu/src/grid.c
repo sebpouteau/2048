@@ -14,7 +14,7 @@ Choix d'implémentaion de la structure:
 struct grid_s{
   tile **grid; 
   int **case_empty;
-  int nbr_case_empty;e
+  int nbr_case_empty;
   unsigned long score;
 };
 
@@ -294,3 +294,4 @@ static bool possible(grid g, int i,int j,int indenti,int indentj){
   }
   return false;
 }
+ 
