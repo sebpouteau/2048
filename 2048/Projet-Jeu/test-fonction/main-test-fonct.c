@@ -19,14 +19,14 @@ int main(){
       break;
     }
   }
-  printf(valide?"Test 1/6 - set_tile :  Ok":"Test 1/6 - set_tile : False");
+  printf(valide?"Test 1/7 - set_tile :  Ok":"Test 1/6 - set_tile : False");
   printf("\n");
   
   
   //test copy_grid;
   grid g1 = new_grid();
   copy_grid(g,g1);
-  printf( egalite_grid(g,g1) ? "Test 2/6 - copy_grid : Ok" : "Test 2/6 - copy_grid : False");
+  printf( egalite_grid(g,g1) ? "Test 2/7 - copy_grid : Ok" : "Test 2/6 - copy_grid : False");
   printf("\n");
   
   valide = true;
@@ -34,7 +34,7 @@ int main(){
   do_move(g,UP);
   if(grid_score(g) != 8)
     valide=false;
-  printf(valide?"Test 3/6 - grid_score : Ok":"Test 3/6 - grid_score : False");
+  printf(valide?"Test 3/7 - grid_score : Ok":"Test 3/6 - grid_score : False");
   printf("\n");
   
   valide = true;
@@ -51,10 +51,22 @@ int main(){
   set_tile (g,0,1,1);
   if (game_over(g))  //si il indique que c'est game_over c'est qu'il ne fonctionne pas
     valide=false;
-  printf(valide ? "Test 4/6 - game_over : Ok" : "Test 4/6 - Game_Over : False");
+  printf(valide ? "Test 4/7 - game_over : Ok" : "Test 4/6 - Game_Over : False");
   printf("\n");
   
   valide = true;
+  for(int i = 0;i<GRID_SIDE;i++)
+    for(int j = 0;j<GRID_SIDE;j++)
+      set_tile(g,i,j,0);
+  set_tile(g,3,0,2);
+  do_move(g,UP);
+  printf(get_tile(g,0,0)==2?"Test 5/7 - do_move UP : Ok\n":"Test 5/6 - do_move : False\n");
+  do_move(g,DOWN);
+  printf(get_tile(g,3,0)==2?"         - do_move DOWN : Ok\n":"Test 5/6 - do_move : False\n");
+  do_move(g,RIGHT);
+  printf(get_tile(g,3,3)==2?"         - do_move RIGHT : Ok\n":"Test 5/6 - do_move : False\n");
+  do_move(g,LEFT);
+  printf(get_tile(g,3,0)==2?"         - do_move LEFT : Ok\n":"Test 5/6 - do_move : False\n");
   for(int i = 0;i<GRID_SIDE;i++)
     for(int j = 0;j<GRID_SIDE;j++)
       set_tile(g,i,j,2);
@@ -62,6 +74,7 @@ int main(){
   do_move(g,DOWN);
   do_move(g,LEFT);
   do_move(g,RIGHT);
+
   if (get_tile(g,3,3)!=32)
     valide=false;
   set_tile(g,3,0,32);
@@ -72,7 +85,8 @@ int main(){
   do_move(g,LEFT);
   if (get_tile(g,3,0)!=128)
     valide=false;
-  printf(valide ?"Test 5/6 - do_move : Ok":"Test 5/6 - do_move : False");
+  printf(valide ?"Test 6/7 - do_move avec fusion: Ok":"Test 5/6 - do_move : False");
+
   printf("\n");
   
   //test delete_grid;
@@ -80,7 +94,7 @@ int main(){
   delete_grid(g1);
   if(g == NULL || g1 == NULL)
     valide =false;
-  printf(valide ?"Test 6/6 - delete_Grid : Ok":"Test 6/6 - delete_Grid : False");
+  printf(valide ?"Test 7/7 - delete_Grid : Ok":"Test 6/6 - delete_Grid : False");
   printf("\n");
   
   valide = true;
