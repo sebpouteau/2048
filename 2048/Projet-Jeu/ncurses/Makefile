@@ -18,5 +18,5 @@ dep:
 	$(CC) $(CPPFLAGS) -MM *.c >dep
 
 
-run: 
+run_ncurses: 
 	./jeu

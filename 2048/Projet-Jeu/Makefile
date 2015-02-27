@@ -1,11 +1,11 @@
 LIBS= src test-fonction ncurses sdl
+
 all:
 	for i in $(LIBS);do\
 		$(MAKE) -C $$i;\
 	done
 
 check: 
-	$(MAKE) -C test-fonction check
 	$(MAKE) -C test-fonction check
 
 clean:
@@ -14,8 +14,8 @@ clean:
 	done
 
 
-run:
-	$(MAKE) -C  ncurses run
+run_curses:
+	$(MAKE) -C  ncurses run_ncurses
 
 
 run_sdl:

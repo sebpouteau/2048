@@ -1,22 +1,24 @@
 ### PROJET 2048 ###
 
 Réalisé par:
-Ysabelle emery, Jimmy Gouraud, Yordan Kirov, Sébastien Pouteau
+  Ysabelle Emery,
+  Jimmy Gouraud,
+  Yordan Kirov,
+  Sébastien Pouteau.
 
 
-Compilation grace a la commande make. 
-make 
-Attention il faut avoir ncurses d'installé !!
+/!\ WARNING /!\ Vérifiez au préalable que vous avez bien ncurses d'intallé (pour la version ncurses) et la SDL ainsi que deux bibliothèque tierces (SDL_image et SDL_ttf), sous peine de provoquer un échec de la compilation.
 
-création de deux tests et du Jeu 2048.
 
-#
-test-grid -> affiche des tests de déplacment avec affichage de la grille.
-./test-grid
+Compilation du Projet 2048 grace à la commande make :
+  make 
 
-#
-test-temps-deplacment -> Permet de tester le temps d'execution de 400.000 déplacements. 
-time ./test-temps-deplacement 
 
-jeu -> jeu en ncurses 
-./jeu
+Pour lancer le 2048 en ncurses, faite la commande :
+ make run_ncurses
+
+Pour lancer le 2048 en SDL, faite la commande :
+ make run_sdl
+
+Pour vérifier que toutes les fonctions marchent, lancer le test avec :
+ make check

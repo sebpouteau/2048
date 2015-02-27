@@ -21,3 +21,4 @@ check:
 	for i in $(EXEC); do\
 		./$$i;\
 	done
+
