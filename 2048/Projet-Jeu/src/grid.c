@@ -3,6 +3,8 @@
 #include <assert.h>
 #include <math.h>
 #include "grid.h"
+#include "gridIA.h"
+#include "gridComplementaire.h"
 
 /*
 Choix d'implémentaion de la structure:
@@ -18,10 +20,6 @@ struct grid_s{
   unsigned long int score;
 };
 
-static void move( grid g,int i, int j,int a, int b );
-static void fusion (grid g,int i,int j,int a,int b);
-static void grid_case_empty(grid g);
-static bool possible(grid g, int i,int j,int a,int b);
 
 
 
@@ -183,12 +181,12 @@ int get_nbr_case_empty(grid g){
 
 
 
-/* =====================================
-    IMPLEMENTATION DES FONCTIONS STATIC
-   ===================================== */
+/* ====================================================
+    IMPLEMENTATION DES FONCTIONS GRIDCOMPLEMENATAIRE.H
+   ==================================================== */
 
 // parcours la grille et récupère les coordonnées des cases vides et les copie dans le tableau de case vide
-static void grid_case_empty(grid g){ 
+void grid_case_empty(grid g){ 
   assert(g!=NULL && g->grid != NULL && g->case_empty !=NULL);
   int a=0;
   for(int i=0; i<GRID_SIDE; i++){
@@ -204,20 +202,20 @@ static void grid_case_empty(grid g){
 }
 
 // fusion permet de fusionner deux cases et met 0 dans l'autre case
-static void fusion (grid g,int i1,int j1,int i2,int j2){
+void fusion (grid g,int i1,int j1,int i2,int j2){
   assert(g!=NULL);
   set_tile(g,i1,j1,get_tile(g,i1,j1)+get_tile(g,i2,j2));
   set_tile(g,i2,j2,0);
 }
 
 // incrementation permet d'incrémenter deux variables ayant des incrémentations différentes.
-static void incrementation(int *i1, int *i2, int incrementationI1, int incrementationI2){
+void incrementation(int *i1, int *i2, int incrementationI1, int incrementationI2){
   *i1+=incrementationI1;
   *i2+=incrementationI2;
 }
 
 // déplace l'ensemble de la grille dans la direction voulue (en fonction des paramètres)
-static void move(grid g,int i, int j,int indenti, int indentj){
+void move(grid g,int i, int j,int indenti, int indentj){
   assert(g!=NULL);
   for (int cpt=0;cpt<GRID_SIDE;cpt++){
     int tmpi=i;
@@ -246,7 +244,7 @@ static void move(grid g,int i, int j,int indenti, int indentj){
 }
 
 // teste s'il est possible de faire un déplacement dans une direction
-static bool possible(grid g, int i,int j,int indenti,int indentj){
+bool possible(grid g, int i,int j,int indenti,int indentj){
   assert(g!=NULL);
   int tmpi=i;
   int tmpj=j;
