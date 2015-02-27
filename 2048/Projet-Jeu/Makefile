@@ -5,7 +5,7 @@ all:
 	done
 
 check: 
-
+	$(MAKE) -C test-fonction check
 	$(MAKE) -C test-fonction check
 
 clean:
