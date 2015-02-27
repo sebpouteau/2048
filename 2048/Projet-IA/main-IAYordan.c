@@ -7,99 +7,119 @@
 #include <curses.h>
 #include <time.h>
 
-//static void display_grid(grid g);
+struct tabBestM{
+  int score;
+  dir best; 
+};
+
+static dir best_move(grid g);
+static void display_grid(grid g);
+static tabBestM new_tabBestM();
+//static void delete_tabBestM(tabBestM tab);
 //static void display_gameOver(bool *continuer,int *reponse_valide);
-static bool objectif_atteint(grid g);
-static long maximum_tile(grid g);
+//static bool objectif_atteint(grid g);
+//static long maximum_tile(grid g);
 
-int main(int argc,char **argv){
+int main(int argc, char **argv){
+  grid g = new_grid();
+  set_tile(g,0,0,16);
+  set_tile(g,0,1,16);
+  set_tile(g,1,0,8);
+  set_tile(g,2,0,8);
+  display_grid(g);
+  play(g,best_move(g));
+  display_grid(g);
+}  
 
 
-  int n = 10;
-  srand(time(NULL));
+/* int main(int argc,char **argv){ */
+
+
+/*   int n = 10; */
+/*   srand(time(NULL)); */
  
-  while(n >0){
-    grid g= new_grid();
-  //int ch=0;
+/*   while(n >0){ */
+/*     grid g= new_grid(); */
+/*   //int ch=0; */
     
   
-    while(!game_over(g)){
-      int somme_ligne = 0;
-      int somme_colonne = 0;
-      int case_libre_ligne = 0;
-      int case_libre_colonne = 0;
+/*     while(!game_over(g)){ */
+/*       int somme_ligne = 0; */
+/*       int somme_colonne = 0; */
+/*       int case_libre_ligne = 0; */
+/*       int case_libre_colonne = 0; */
       
-      for(int i = 0; i<4; i++){
-	int tile = get_tile(g,0,i);
-	if(tile == 0)
-	  case_libre_ligne += 1;
-      }
+/*       for(int i = 0; i<4; i++){ */
+/* 	int tile = get_tile(g,0,i); */
+/* 	if(tile == 0) */
+/* 	  case_libre_ligne += 1; */
+/*       } */
 
-      for(int i = 0; i<4; i++){
-	int tile = get_tile(g,i,0);
-	if(tile == 0)
-	  case_libre_colonne += 1;
-      }
+/*       for(int i = 0; i<4; i++){ */
+/* 	int tile = get_tile(g,i,0); */
+/* 	if(tile == 0) */
+/* 	  case_libre_colonne += 1; */
+/*       } */
 
-      for(int i = 0; i<4; i++){
-	int tile = get_tile(g,0,i);
-	somme_ligne += tile;
-      }
-      for(int i = 0; i<4; i++){
-	int tile = get_tile(g,i,0);
-	somme_colonne += tile;
-      }
+/*       for(int i = 0; i<4; i++){ */
+/* 	int tile = get_tile(g,0,i); */
+/* 	somme_ligne += tile; */
+/*       } */
+/*       for(int i = 0; i<4; i++){ */
+/* 	int tile = get_tile(g,i,0); */
+/* 	somme_colonne += tile; */
+/*       } */
       
-      if(can_move(g,UP) || can_move(g,LEFT) ){
-	play(g,LEFT);
-	play(g,UP);
-      }
+/*       if(can_move(g,UP) || can_move(g,LEFT) ){ */
+/* 	play(g,LEFT); */
+/* 	play(g,UP); */
+/*       } */
       
-      if(!can_move(g, UP) && !can_move(g,LEFT)){
-	if(somme_ligne >= somme_colonne || case_libre_ligne >= case_libre_colonne)
-	   play(g,RIGHT);
-	   play(g, UP);
-	}
-	else{
-	  play(g,DOWN);
-      }
-      if(!can_move(g, UP) && !can_move(g,LEFT) && !can_move(g,RIGHT)){
-	play(g,DOWN);
-	play(g,UP);
-      }
-    }
-    // display_grid(g,&ch);
-    printf("Objectif atteint? %s \n", objectif_atteint(g)?"oui":"non");
-    printf("Tile max = %ld \n", maximum_tile(g));
-    delete_grid(g);
-    n-=1;
-  }
-}
+/*       if(!can_move(g, UP) && !can_move(g,LEFT)){ */
+/* 	if(somme_ligne >= somme_colonne || case_libre_ligne >= case_libre_colonne) */
+/* 	   play(g,RIGHT); */
+/* 	   play(g, UP); */
+/* 	} */
+/* 	else{ */
+/* 	  play(g,DOWN); */
+/*       } */
+/*       if(!can_move(g, UP) && !can_move(g,LEFT) && !can_move(g,RIGHT)){ */
+/* 	play(g,DOWN); */
+/* 	play(g,UP); */
+/*       } */
+/*     } */
+/*     // display_grid(g,&ch); */
+/*     printf("Objectif atteint? %s \n", objectif_atteint(g)?"oui":"non"); */
+/*     printf("Tile max = %ld \n", maximum_tile(g)); */
+/*     delete_grid(g); */
+/*     n-=1; */
+/*   } */
+/* } */
 
 
 
-static bool objectif_atteint(grid g){
-  for(int i = 0; i<GRID_SIDE; i++){
-    for(int j = 0; j< GRID_SIDE; j++){
-      if(get_tile(g, i, j)>=2048)
-	return true;
-    }
-  }
-  return false;
-}
+/* static bool objectif_atteint(grid g){ */
+/*   for(int i = 0; i<GRID_SIDE; i++){ */
+/*     for(int j = 0; j< GRID_SIDE; j++){ */
+/*       if(get_tile(g, i, j)>=2048) */
+/* 	return true; */
+/*     } */
+/*   } */
+/*   return false; */
+/* } */
 
-static long maximum_tile(grid g){
-  long max_tile = 2;
-  for(int i = 0; i<GRID_SIDE; i++){
-    for(int j = 0; j< GRID_SIDE; j++){
-      if(get_tile(g, i, j)>max_tile)
-	max_tile = get_tile(g, i, j);
-    }
-  }
-  return max_tile;
- }
+/* static long maximum_tile(grid g){ */
+/*   long max_tile = 2; */
+/*   for(int i = 0; i<GRID_SIDE; i++){ */
+/*     for(int j = 0; j< GRID_SIDE; j++){ */
+/*       if(get_tile(g, i, j)>max_tile) */
+/* 	max_tile = get_tile(g, i, j); */
+/*     } */
+/*   } */
+/*   return max_tile; */
+/*  } */
 
-/*
+
 static void display_grid(grid g){
   initscr();
   clear();
@@ -184,4 +204,40 @@ static void display_grid(grid g){
   //ch=getch();
   endwin();    
 }
-*/
+
+static tabBestM new_tabBestM(){
+  tabBestM tab;
+  //assert(tab);
+  tab.score = 0;
+  tab.best = UP;
+  return tab;
+}
+
+/* static void delete_tabBestM(tabBestM tab){ */
+/*   free(tab); */
+/* } */
+  
+
+static dir best_move(grid g){
+  grid test = new_grid();
+  tabBestM tab = new_tabBestM();
+  for(dir i = UP;i<=RIGHT;i++){ 
+      copy_grid(g,test);
+      do_move(test,i);
+      if(grid_score(test) > tab.score){
+	tab.score = grid_score(test);
+	tab.best = i;
+      }
+  }
+  dir b = tab.best;
+  //delete_tabBestM(tab);
+  delete_grid(test);
+  return b;
+}
+
+
+      
+  
+    
+  
+  
