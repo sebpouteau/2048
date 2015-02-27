@@ -1,19 +1,27 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
-#include "../src/grid.h"
+#include "grid.h"
 #include "gridSDL.h"
 
 // affiche la grille en SDL
-static void display_grid_sdl(grid g, SDL_Surface *ecran, SDL_Surface *tile, SDL_Rect position_tile);
+static void display_grid_sdl(grid g, SDL_Surface *ecran, SDL_Surface *tile, SDL_Rect position_tile, char *name_tile);
 
 // affiche le score en SDL
 static void display_score_sdl(grid g, SDL_Surface *ecran, SDL_Surface *texte_score, SDL_Rect position_score, SDL_Color color_score, SDL_Color color_background, TTF_Font *police_score, char *char_score, FILE *highscore_txt, unsigned long int highscore);
 
 // affiche le game over en SDL
 static void display_gameover_sdl(grid g, SDL_Surface *ecran);
+
+//modification des fonctions de déplacement, afin d'obtenir un mouvement de "glisse" des tiles, lors des déplacements
+static void play_sdl(grid g, dir d);
+static void do_move_sdl(grid g, dir d);
+static void move_sdl(grid g,int i, int j,int indenti, int indentj);
+static void fusion (grid g,int i1,int j1,int i2,int j2);
+static void incrementation(int *i1, int *i2, int incrementationI1, int incrementationI2);
 
 
 void game_sdl(){
@@ -46,6 +54,7 @@ void game_sdl(){
 
   //paramètres affichage grille
   SDL_Surface *tile = NULL;
+  char name_tile[30];
   SDL_Rect position_tile;
   
   // boucle du jeu
@@ -58,16 +67,16 @@ void game_sdl(){
     case SDL_KEYDOWN:
       switch(event.key.keysym.sym){
       case SDLK_UP:
-	play(g,UP);
+	play_sdl(g,UP);
 	break;
       case SDLK_DOWN:
-	play(g,DOWN);
+	play_sdl(g,DOWN);
 	break;
       case SDLK_LEFT:
-	play(g,LEFT);
+	play_sdl(g,LEFT);
 	break;
       case SDLK_RIGHT:
-	play(g,RIGHT);
+	play_sdl(g,RIGHT);
 	break;
       default:
 	break;
@@ -78,11 +87,11 @@ void game_sdl(){
     }
     if(game_over(g)){
       ecran = SDL_SetVideoMode(810, 455, 32, SDL_HWSURFACE);
-      display_grid_sdl(g, ecran, tile, position_tile);
+      display_grid_sdl(g, ecran, tile, position_tile, name_tile);
       display_gameover_sdl(g, ecran);
       continuer = 0;
     }
-    display_grid_sdl(g, ecran, tile, position_tile);
+    display_grid_sdl(g, ecran, tile, position_tile, name_tile);
     display_score_sdl(g, ecran, texte_score, position_score, color_score, color_background, police_score, char_score, highscore_txt, highscore);
   }
   SDL_FreeSurface(tile);
@@ -92,63 +101,13 @@ void game_sdl(){
 }
 
 
-static void display_grid_sdl(grid g, SDL_Surface *ecran, SDL_Surface *tile, SDL_Rect position_tile){
+static void display_grid_sdl(grid g, SDL_Surface *ecran, SDL_Surface *tile, SDL_Rect position_tile, char *name_tile){
   for(int i=0; i<GRID_SIDE; i++){
     for(int j=0; j<GRID_SIDE; j++){
       position_tile.x = j*100;
       position_tile.y = i*100;
-      switch(get_tile(g,i,j)){
-      case 0:
-	tile = SDL_LoadBMP("../../tiles/tile0.bmp");
-	break;
-      case 2:
-	tile = SDL_LoadBMP("../../tiles/tile2.bmp");
-	break;
-      case 4:
-	tile = SDL_LoadBMP("../../tiles/tile4.bmp");
-	break;
-      case 8:
-	tile = SDL_LoadBMP("../../tiles/tile8.bmp");
-	break;
-      case 16:
-	tile = SDL_LoadBMP("../../tiles/tile16.bmp");
-	break;
-      case 32:
-	tile = SDL_LoadBMP("../../tiles/tile32.bmp");
-	break;
-      case 64:
-	tile = SDL_LoadBMP("../../tiles/tile64.bmp");
-	break;
-      case 128:
-	tile = SDL_LoadBMP("../../tiles/tile128.bmp");
-	break;
-      case 256:
-	tile = SDL_LoadBMP("../../tiles/tile256.bmp");
-	break;
-      case 512:
-	tile = SDL_LoadBMP("../../tiles/tile512.bmp");
-	break;
-      case 1024:
-	tile = SDL_LoadBMP("../../tiles/tile1024.bmp");
-	break;
-      case 2048:
-	tile = SDL_LoadBMP("../../tiles/tile2048.bmp");
-	break;
-      case 4096:
-	tile = SDL_LoadBMP("../../tiles/tile4096.bmp");
-	break;
-      case 8192:
-	tile = SDL_LoadBMP("../../tiles/tile8192.bmp");
-	break;
-      case 16384:
-	tile = SDL_LoadBMP("../../tiles/tile16384.bmp");
-	break;
-      case 32768:
-	tile = SDL_LoadBMP("../../tiles/tile32768.bmp");
-	break;
-      default:
-	break;
-      }
+      sprintf(name_tile, "../../tiles/tile%d.bmp", get_tile(g,i,j));
+      tile = SDL_LoadBMP(name_tile);
       SDL_BlitSurface(tile, NULL, ecran, &position_tile);
     }
   }
@@ -210,3 +169,83 @@ static void display_gameover_sdl(grid g, SDL_Surface *ecran){
     }
   }
 }
+
+
+
+static void play_sdl(grid g, dir d){
+  assert(g!=NULL);
+  if(can_move(g, d)){
+    do_move_sdl(g, d);
+    add_tile(g);
+  }
+}
+
+
+static void do_move_sdl(grid g, dir d){
+  assert(g!=NULL);
+  switch (d){
+  case UP:
+    move_sdl(g,0,0,1,0);
+    break;
+  case DOWN:
+    move_sdl(g,3,0,-1,0);
+    break;
+  case LEFT:
+    move_sdl(g,0,0,0,1);
+    break;
+  case RIGHT:
+    move_sdl(g,0,3,0,-1);
+    break;
+  default:
+    break;
+  }
+}
+
+static void move_sdl(grid g,int i, int j,int indenti, int indentj){
+  assert(g!=NULL);
+  for (int cpt=0;cpt<GRID_SIDE;cpt++){
+    int tmpi=i;
+    int tmpj=j;
+    int cpti=i+indenti;
+    int cptj=j+indentj;
+    while(cpti<GRID_SIDE && cptj<GRID_SIDE && 0<=cpti && 0<=cptj){
+      if( (tmpi==cpti && tmpj==cptj) || get_tile(g,cpti,cptj)==0 )
+	incrementation(&cpti,&cptj,indenti,indentj);
+      else if(get_tile(g,tmpi,tmpj)==0)
+	fusion(g,tmpi,tmpj,cpti,cptj);
+      else if (get_tile(g,cpti,cptj)==get_tile(g,tmpi,tmpj)){
+	fusion(g,tmpi,tmpj,cpti,cptj);
+	set_grid_score(g,get_tile(g,tmpi,tmpj));
+	incrementation(&tmpi,&tmpj,indenti,indentj);
+	incrementation(&cpti,&cptj,indenti,indentj);
+      }
+      else
+	incrementation(&tmpi,&tmpj,indenti,indentj);
+    }
+    if(indenti==-1 || indenti==1)
+      j++;
+    else
+      i++;
+  }
+}
+
+// fusion permet de fusionner deux cases et met 0 dans l'autre case
+static void fusion (grid g,int i1,int j1,int i2,int j2){
+  assert(g!=NULL);
+  set_tile(g,i1,j1,get_tile(g,i1,j1)+get_tile(g,i2,j2));
+  set_tile(g,i2,j2,0);
+  /*
+  if(i1>i2){
+    while(i1>12){
+      
+      SDL_Delay(10);
+    }
+  }*/
+}
+
+// incrementation permet d'incrémenter deux variables ayant des incrémentations différentes.
+static void incrementation(int *i1, int *i2, int incrementationI1, int incrementationI2){
+  *i1+=incrementationI1;
+  *i2+=incrementationI2;
+}
+

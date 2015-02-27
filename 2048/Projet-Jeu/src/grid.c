@@ -15,7 +15,7 @@ struct grid_s{
   tile **grid; 
   int **case_empty;
   int nbr_case_empty;
-  unsigned long score;
+  unsigned long int score;
 };
 
 static void move( grid g,int i, int j,int a, int b );
@@ -159,6 +159,10 @@ void play (grid g, dir d){
   }
 }
 
+void set_grid_score(grid g,unsigned long int add_score){
+  assert(g!=NULL);
+  g->score+=add_score;
+}
 
 
 /* ========================================
@@ -182,12 +186,6 @@ int get_nbr_case_empty(grid g){
 /* =====================================
     IMPLEMENTATION DES FONCTIONS STATIC
    ===================================== */
-
-// permet de modifier le score 
-static void set_grid_score(grid g,unsigned long int add_score){
-  assert(g!=NULL);
-  g->score+=add_score;
-}
 
 // parcours la grille et récupère les coordonnées des cases vides et les copie dans le tableau de case vide
 static void grid_case_empty(grid g){ 
