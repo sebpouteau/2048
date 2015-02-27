@@ -40,6 +40,8 @@ typedef unsigned int tile;
  */
 typedef enum dir_e {UP,LEFT,DOWN,RIGHT} dir;
 
+typedef struct tabBestM tabBestM;
+
 
 
 /**
