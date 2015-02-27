@@ -5,7 +5,9 @@
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 #include "grid.h"
+#include "gridComplementaire.h"
 #include "gridSDL.h"
+
 
 // affiche la grille en SDL
 static void display_grid_sdl(grid g, SDL_Surface *ecran, SDL_Surface *tile, SDL_Rect position_tile, char *name_tile);
@@ -17,13 +19,6 @@ static void display_score_sdl(grid g, SDL_Surface *ecran, SDL_Surface *texte_sco
 static void display_gameover_sdl(grid g, SDL_Surface *ecran);
 
 //modification des fonctions de déplacement, afin d'obtenir un mouvement de "glisse" des tiles, lors des déplacements
-static void play_sdl(grid g, dir d);
-static void do_move_sdl(grid g, dir d);
-static void move_sdl(grid g,int i, int j,int indenti, int indentj);
-static void fusion (grid g,int i1,int j1,int i2,int j2);
-static void incrementation(int *i1, int *i2, int incrementationI1, int incrementationI2);
-
-
 void game_sdl(){
   // Initialisation de la fenetre du jeu
   SDL_Surface *ecran = NULL;
@@ -60,30 +55,27 @@ void game_sdl(){
   // boucle du jeu
   while (continuer){
     SDL_WaitEvent(&event);
-    switch(event.type){
-    case SDL_QUIT:
+    // permet de quitter
+    if (event.type == SDL_QUIT)
       continuer = false;
-      break;
-    case SDL_KEYDOWN:
+    // choix direction avec touche directionnelle
+    else if(event.type == SDL_KEYDOWN){
       switch(event.key.keysym.sym){
       case SDLK_UP:
-	play_sdl(g,UP);
+	play(g,UP);
 	break;
       case SDLK_DOWN:
-	play_sdl(g,DOWN);
+	play(g,DOWN);
 	break;
       case SDLK_LEFT:
-	play_sdl(g,LEFT);
+	play(g,LEFT);
 	break;
       case SDLK_RIGHT:
-	play_sdl(g,RIGHT);
+	play(g,RIGHT);
 	break;
       default:
 	break;
       }
-      break;
-    default:
-      break;
     }
     if(game_over(g)){
       ecran = SDL_SetVideoMode(810, 455, 32, SDL_HWSURFACE);
@@ -100,7 +92,6 @@ void game_sdl(){
   TTF_CloseFont(police_score);
 }
 
-
 static void display_grid_sdl(grid g, SDL_Surface *ecran, SDL_Surface *tile, SDL_Rect position_tile, char *name_tile){
   for(int i=0; i<GRID_SIDE; i++){
     for(int j=0; j<GRID_SIDE; j++){
@@ -113,7 +104,6 @@ static void display_grid_sdl(grid g, SDL_Surface *ecran, SDL_Surface *tile, SDL_
   }
   SDL_Flip(ecran);
 }
-
 
 static void display_score_sdl(grid g, SDL_Surface *ecran, SDL_Surface *texte_score, SDL_Rect position_score, SDL_Color color_score, SDL_Color color_background, TTF_Font *police_score, char *char_score, FILE *highscore_txt, unsigned long int highscore){
   // on stock dans char_score "Score : " + grid_score(g)
@@ -148,7 +138,6 @@ static void display_score_sdl(grid g, SDL_Surface *ecran, SDL_Surface *texte_sco
   fclose(highscore_txt);
 }
 
-
 static void display_gameover_sdl(grid g, SDL_Surface *ecran){
   bool end = true;
   SDL_Event event;
@@ -169,83 +158,3 @@ static void display_gameover_sdl(grid g, SDL_Surface *ecran){
     }
   }
 }
-
-
-
-static void play_sdl(grid g, dir d){
-  assert(g!=NULL);
-  if(can_move(g, d)){
-    do_move_sdl(g, d);
-    add_tile(g);
-  }
-}
-
-
-static void do_move_sdl(grid g, dir d){
-  assert(g!=NULL);
-  switch (d){
-  case UP:
-    move_sdl(g,0,0,1,0);
-    break;
-  case DOWN:
-    move_sdl(g,3,0,-1,0);
-    break;
-  case LEFT:
-    move_sdl(g,0,0,0,1);
-    break;
-  case RIGHT:
-    move_sdl(g,0,3,0,-1);
-    break;
-  default:
-    break;
-  }
-}
-
-static void move_sdl(grid g,int i, int j,int indenti, int indentj){
-  assert(g!=NULL);
-  for (int cpt=0;cpt<GRID_SIDE;cpt++){
-    int tmpi=i;
-    int tmpj=j;
-    int cpti=i+indenti;
-    int cptj=j+indentj;
-    while(cpti<GRID_SIDE && cptj<GRID_SIDE && 0<=cpti && 0<=cptj){
-      if( (tmpi==cpti && tmpj==cptj) || get_tile(g,cpti,cptj)==0 )
-	incrementation(&cpti,&cptj,indenti,indentj);
-      else if(get_tile(g,tmpi,tmpj)==0)
-	fusion(g,tmpi,tmpj,cpti,cptj);
-      else if (get_tile(g,cpti,cptj)==get_tile(g,tmpi,tmpj)){
-	fusion(g,tmpi,tmpj,cpti,cptj);
-	set_grid_score(g,get_tile(g,tmpi,tmpj));
-	incrementation(&tmpi,&tmpj,indenti,indentj);
-	incrementation(&cpti,&cptj,indenti,indentj);
-      }
-      else
-	incrementation(&tmpi,&tmpj,indenti,indentj);
-    }
-    if(indenti==-1 || indenti==1)
-      j++;
-    else
-      i++;
-  }
-}
-
-// fusion permet de fusionner deux cases et met 0 dans l'autre case
-static void fusion (grid g,int i1,int j1,int i2,int j2){
-  assert(g!=NULL);
-  set_tile(g,i1,j1,get_tile(g,i1,j1)+get_tile(g,i2,j2));
-  set_tile(g,i2,j2,0);
-  /*
-  if(i1>i2){
-    while(i1>12){
-      
-      SDL_Delay(10);
-    }
-  }*/
-}
-
-// incrementation permet d'incrémenter deux variables ayant des incrémentations différentes.
-static void incrementation(int *i1, int *i2, int incrementationI1, int incrementationI2){
-  *i1+=incrementationI1;
-  *i2+=incrementationI2;
-}
-
