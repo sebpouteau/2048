@@ -4,7 +4,7 @@
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 #include "../src/grid.h"
-#include "../src/gridSDL.h"
+#include "gridSDL.h"
 
 // affiche la grille en SDL
 static void display_grid_sdl(grid g, SDL_Surface *ecran, SDL_Surface *tile, SDL_Rect position_tile);
