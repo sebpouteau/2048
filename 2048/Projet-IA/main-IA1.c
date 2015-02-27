@@ -20,6 +20,8 @@ int main(int argc,char **argv){
  
   while(n >0){
     grid g= new_grid();
+    add_tile(g);
+    add_tile(g);
   //int ch=0;
     
   

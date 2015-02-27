@@ -30,7 +30,9 @@ int main(int argc,char **argv){
  
   while(n>0){
     grid g= new_grid();
-    //int ch=0;
+    add_tile(g);
+    add_tile(g);
+
     int cpt_up;
     int cpt_down;
     int cpt_left;

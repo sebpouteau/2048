@@ -22,6 +22,8 @@ static tabBestM new_tabBestM();
 
 int main(int argc, char **argv){
   grid g = new_grid();
+  add_tile(g);
+  add_tile(g);
   set_tile(g,0,0,16);
   set_tile(g,0,1,16);
   set_tile(g,1,0,8);
@@ -40,6 +42,8 @@ int main(int argc, char **argv){
  
 /*   while(n >0){ */
 /*     grid g= new_grid(); */
+/*     add_tile(g); */
+/*     add_tile(g); */
 /*   //int ch=0; */
     
   
