@@ -169,7 +169,7 @@ static unsigned long int read_highscore(){
   unsigned long int score[1];
   FILE *highscore = NULL; //On initialise un pointeur de fichier
 
-  highscore = fopen("../src/Highscore.txt","r"); //On ouvre HIGHSCORE.txt
+  highscore = fopen("highscore_ncurses.txt","r"); //On ouvre HIGHSCORE.txt
   // "r" = read only
 
   if (highscore == NULL) //On a pas réussi a ouvrir le fichier
@@ -187,7 +187,7 @@ static unsigned long int read_highscore(){
 
 static void write_highscore(unsigned long int score){
   FILE *highscore = NULL;
-  highscore=fopen("../src/Highscore.txt","w"); //On ouvre HIGHSCORE.txt
+  highscore=fopen("highscore_ncurses.txt","w"); //On ouvre HIGHSCORE.txt
   // "w" = write only => On va écraser le contenu du fichier
   fprintf(highscore,"%lu",score);
   fclose(highscore);

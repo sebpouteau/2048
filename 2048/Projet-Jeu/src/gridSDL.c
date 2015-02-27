@@ -18,7 +18,6 @@ static void display_score_sdl(grid g, SDL_Surface *ecran, SDL_Surface *texte_sco
 // affiche le game over en SDL
 static void display_gameover_sdl(grid g, SDL_Surface *ecran);
 
-//modification des fonctions de déplacement, afin d'obtenir un mouvement de "glisse" des tiles, lors des déplacements
 void game_sdl(){
   // Initialisation de la fenetre du jeu
   SDL_Surface *ecran = NULL;
@@ -116,7 +115,7 @@ static void display_score_sdl(grid g, SDL_Surface *ecran, SDL_Surface *texte_sco
   SDL_Flip(ecran);  
 
   // "r+" = lecture et ecriture
-  highscore_txt = fopen("highscore.txt", "r+");
+  highscore_txt = fopen("highscore_sdl.txt", "r+");
   // on stocke dans "highscore", l'highscore mémorisé dans highscore_txt
   //** ("f" de fprintf pour file)
   fscanf(highscore_txt, "%lu", &highscore); 
