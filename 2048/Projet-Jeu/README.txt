@@ -1,4 +1,6 @@
 ### PROJET 2048 ###
+(Licence 2 d'informatique - Année 2015)
+
 
 Réalisé par:
   Ysabelle Emery,
@@ -7,7 +9,8 @@ Réalisé par:
   Sébastien Pouteau.
 
 
-/!\ WARNING /!\ Vérifiez au préalable que vous avez bien ncurses d'intallé (pour la version ncurses) et la SDL ainsi que deux bibliothèque tierces (SDL_image et SDL_ttf), sous peine de provoquer un échec de la compilation.
+/!\ WARNING /!\
+Vérifiez au préalable que vous avez bien ncurses d'intallé (pour la version ncurses) et la SDL ainsi que deux bibliothèques tierces (SDL_image et SDL_ttf), sous peine de provoquer un échec lors de la compilation.
 
 
 Compilation du Projet 2048 grace à la commande make :
