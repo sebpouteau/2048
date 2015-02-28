@@ -135,8 +135,12 @@ static void display_score_sdl(grid g, SDL_Surface *ecran, SDL_Surface *surface_s
 static void display_gameover_sdl(grid g, SDL_Surface *ecran, SDL_Color color_score, SDL_Color color_background, TTF_Font *police_score, FILE *highscore_txt, unsigned long int highscore){
   SDL_Surface *surface_gameover = NULL;
   SDL_Rect position;
-  char *char_gameover = " GAME OVER ";
-  display_texte(char_gameover, 500, 100, ecran, surface_gameover, position, police_score, color_score, color_background);
+  char *char_gameover = "\n\n\n\n\n\n\n\n\n\n\n\n";
+  display_texte(char_gameover, 470, 70, ecran, surface_gameover, position, police_score, color_score, color_background);
+  char_gameover = "\n GAME  OVER \n";
+  display_texte(char_gameover, 463, 100, ecran, surface_gameover, position, police_score, color_score, color_background);
+  char_gameover = "\n\n\n\n\n\n\n\n\n\n\n\n";
+  display_texte(char_gameover, 470, 130, ecran, surface_gameover, position, police_score, color_score, color_background);
   
   highscore_txt = fopen("highscore_sdl.txt", "r+");
   fscanf(highscore_txt, "%lu", &highscore);
@@ -144,9 +148,9 @@ static void display_gameover_sdl(grid g, SDL_Surface *ecran, SDL_Color color_sco
   if(highscore == grid_score(g)){
     char char_highscore[30] = "";
     sprintf(char_highscore, "New Highscore : %lu", highscore);
-    display_texte(char_highscore, 450, 150, ecran, surface_gameover, position, police_score, color_score, color_background);
+    display_texte(char_highscore, 450, 180, ecran, surface_gameover, position, police_score, color_score, color_background);
     char char_pseudo[30] = "Veuillez entrer votre pseudo :";
-    display_texte(char_pseudo, 420, 200, ecran, surface_gameover, position, police_score, color_score, color_background);
+    display_texte(char_pseudo, 420, 230, ecran, surface_gameover, position, police_score, color_score, color_background);
   }
   
   bool end = true;
