@@ -10,7 +10,7 @@
 
 
 // affiche la grille
-static void display_grid_sdl(grid g, SDL_Surface *ecran, SDL_Surface *tile, SDL_Rect position_tile, char *name_tile);
+static void display_grid_sdl(grid g, SDL_Surface *ecran, SDL_Surface *surface_tile, SDL_Rect position_tile, char *name_tile);
 
 // affiche le score
 static void display_score_sdl(grid g, SDL_Surface *ecran, SDL_Surface *surface_score, SDL_Rect position_score, SDL_Color color_score, SDL_Color color_background, TTF_Font *police_score, char *char_score, FILE *highscore_txt, unsigned long int highscore);
@@ -52,7 +52,7 @@ void game_sdl(){
   fscanf(highscore_txt, "%lu", &highscore);
 
   //paramètres affichage grille
-  SDL_Surface *tile = NULL;
+  SDL_Surface *surface_tile = NULL;
   char name_tile[30];
   SDL_Rect position_tile;
   
@@ -81,12 +81,12 @@ void game_sdl(){
 	break;
       }
     }
-    display_grid_sdl(g, ecran, tile, position_tile, name_tile);
+    display_grid_sdl(g, ecran, surface_tile, position_tile, name_tile);
     display_score_sdl(g, ecran, surface_score, position_score, color_score, color_background, police_score, char_score, highscore_txt, highscore);
     if(game_over(g)){
       ecran = SDL_SetVideoMode(800, 500, 32, SDL_HWSURFACE);
       SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 255, 255, 255));
-      display_grid_sdl(g, ecran, tile, position_tile, name_tile);
+      display_grid_sdl(g, ecran, surface_tile, position_tile, name_tile);
       display_score_sdl(g, ecran, surface_score, position_score, color_score, color_background, police_score, char_score, highscore_txt, highscore);
       display_gameover_sdl(g, ecran, color_score, color_background, police_score, highscore_txt, highscore);
       continuer = 0;
@@ -100,14 +100,14 @@ void game_sdl(){
 
 
 
-static void display_grid_sdl(grid g, SDL_Surface *ecran, SDL_Surface *tile, SDL_Rect position_tile, char *name_tile){
+static void display_grid_sdl(grid g, SDL_Surface *ecran, SDL_Surface *surface_tile, SDL_Rect position_tile, char *name_tile){
   for(int i=0; i<GRID_SIDE; i++){
     for(int j=0; j<GRID_SIDE; j++){
       position_tile.x = j*100;
       position_tile.y = i*100;
       sprintf(name_tile, "../../tiles/tile%d.bmp", get_tile(g,i,j));
       tile = SDL_LoadBMP(name_tile);
-      SDL_BlitSurface(tile, NULL, ecran, &position_tile);
+      SDL_BlitSurface(surface_tile, NULL, ecran, &position_tile);
     }
   }
   SDL_Flip(ecran);
@@ -118,7 +118,7 @@ static void display_score_sdl(grid g, SDL_Surface *ecran, SDL_Surface *surface_s
   sprintf(char_score, "Score : %lu ", grid_score(g));
   display_texte(char_score, 50, 400, ecran, surface_score, position_score, police_score, color_score, color_background);
 
-  // Afficher le score
+  // Afficher le highscore
   highscore_txt = fopen("highscore_sdl.txt", "r+"); // "r+" = lecture et ecriture
   fscanf(highscore_txt, "%lu", &highscore); 
   if(grid_score(g) > highscore){
