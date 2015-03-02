@@ -10,7 +10,7 @@ Réalisé par:
 
 
 /!\ WARNING /!\
-Vérifiez au préalable que vous avez bien ncurses d'intallé (pour la version ncurses) et la SDL ainsi que deux bibliothèques tierces (SDL_image et SDL_ttf), sous peine de provoquer un échec lors de la compilation.
+Vérifiez au préalable que vous avez bien les bibliothèques ncurses et SDL d'installé ainsi que deux bibliothèques tierces (SDL_image et SDL_ttf), sous peine de provoquer un échec lors de la compilation.
 
 
 Compilation du Projet 2048 grace à la commande make :
