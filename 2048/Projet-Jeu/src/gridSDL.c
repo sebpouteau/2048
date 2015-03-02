@@ -26,7 +26,7 @@ static void saisir_pseudo(char *char_pseudo, int nbr_char, char *char_highscore,
 
 
 // lit une ligne dans un fichier, de nb_char et la stocke dans char_line
-static void read_line(FILE *fichier, int num_line, char *char_line, int nb_char);
+static void read_line(FILE *fichier, int num_line, char *char_line);
 
 // écrit une ligne dans un fichier.
 static void write_line(FILE *fichier, int num_line, char *char_line);
@@ -60,8 +60,8 @@ void game_sdl(){
   FILE* highscore_txt = fopen("highscore_sdl.txt", "r+"); //fichier contenant l'highscore
   char char_highscore[7] = "";
   char char_pseudo[9] = "";
-  read_line(highscore_txt, 1, char_highscore, 7);
-  read_line(highscore_txt, 2, char_pseudo, 9);
+  read_line(highscore_txt, 1, char_highscore);
+  read_line(highscore_txt, 2, char_pseudo);
   
   //paramètres affichage grille
   SDL_Surface *surface_tile = NULL;
@@ -132,8 +132,8 @@ static void display_score_sdl(grid g, SDL_Surface *ecran, SDL_Surface *surface_s
 
   // Afficher le highscore
   highscore_txt = fopen("highscore_sdl.txt", "r+"); // "r+" = lecture et ecriture
-  read_line(highscore_txt, 1, char_highscore, strlen(char_highscore));
-  read_line(highscore_txt, 2, char_pseudo, 9);
+  read_line(highscore_txt, 1, char_highscore);
+  read_line(highscore_txt, 2, char_pseudo);
   unsigned long int highscore = strtoul(char_highscore, NULL, 10); // convertir un chaine en unsigned long int
   if(grid_score(g) >= highscore){
     sprintf(char_highscore, "%lu", grid_score(g));
@@ -159,14 +159,14 @@ static void display_gameover_sdl(grid g, SDL_Surface *ecran, SDL_Color color_sco
   display_texte(char_gameover, 470, 130, ecran, surface_gameover, position, police_score, color_score, color_background);
 
   highscore_txt = fopen("highscore_sdl.txt", "r+");
-  read_line(highscore_txt, 1, char_highscore, strlen(char_highscore));
+  read_line(highscore_txt, 1, char_highscore);
   unsigned long int highscore = strtoul(char_highscore, NULL, 10); // convertir un chaine en unsigned long int
   if(grid_score(g) == highscore){
     char display_highscore[30] = "";
     sprintf(display_highscore, "New Highscore : %s !!", char_highscore);
     display_texte(display_highscore, 450, 180, ecran, surface_gameover, position, police_score, color_score, color_background);
     display_texte("Veuillez entrer votre pseudo :", 420, 230, ecran, surface_gameover, position, police_score, color_score, color_background);
-    printf(char_pseudo, "");
+    sprintf(char_pseudo, "");
     saisir_pseudo(char_pseudo, 8, char_highscore, 420, 280, ecran, surface_gameover, position, police_score, color_score, color_background);
     write_line(highscore_txt, 1, char_highscore);
     write_line(highscore_txt, 2, char_pseudo);
@@ -230,7 +230,7 @@ static void saisir_pseudo(char *char_pseudo, int nbr_char, char *char_highscore,
 
 
 
-static void read_line(FILE *fichier, int num_line, char *char_line, int nb_char){
+static void read_line(FILE *fichier, int num_line, char *char_line){
   char char_read;
   rewind(fichier); // on se place au début du fichier
   while(num_line>1){
@@ -238,7 +238,8 @@ static void read_line(FILE *fichier, int num_line, char *char_line, int nb_char)
     if(char_read == '\n' || feof(fichier)) //foef(fichier) = la fin du fichier
       num_line--;
   }
-  fscanf(fichier, "%s", char_line); // on stocke nb_char caractère dans char_line (à partir de là où l'on se trouve
+  fgets(char_line, 100, fichier); // on stocke nb_char caractère dans char_line (à partir de là où l'on se trouve). lit une ligne seulement (s'arrête au premier '\n')
+  char_line[ftell(fichier)-1] = '\0';
 }
 
 static void write_line(FILE *fichier, int num_line, char *char_line){
@@ -246,7 +247,7 @@ static void write_line(FILE *fichier, int num_line, char *char_line){
   rewind(fichier); // on se place au début du fichier
   while(num_line>1){
     char_read = fgetc(fichier); // on récup le carac et on avance le curseur
-    if(char_read == '\n')
+    if(char_read == '\n' || feof(fichier))
       num_line--;
     if(feof(fichier)){
       fputc('\n', fichier);
