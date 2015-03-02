@@ -167,7 +167,7 @@ static void display_gameover_sdl(grid g, SDL_Surface *ecran, SDL_Color color_sco
     display_texte(display_highscore, 450, 180, ecran, surface_gameover, position, police_score, color_score, color_background);
     display_texte("Veuillez entrer votre pseudo :", 420, 230, ecran, surface_gameover, position, police_score, color_score, color_background);
     sprintf(char_pseudo, "");
-    saisir_pseudo(char_pseudo, 8, char_highscore, 420, 280, ecran, surface_gameover, position, police_score, color_score, color_background);
+    saisir_pseudo(char_pseudo, 8, char_highscore, 500, 280, ecran, surface_gameover, position, police_score, color_score, color_background);
     write_line(highscore_txt, 1, char_highscore);
     write_line(highscore_txt, 2, char_pseudo);
   }
@@ -239,7 +239,8 @@ static void read_line(FILE *fichier, int num_line, char *char_line){
       num_line--;
   }
   fgets(char_line, 100, fichier); // on stocke nb_char caractère dans char_line (à partir de là où l'on se trouve). lit une ligne seulement (s'arrête au premier '\n')
-  char_line[ftell(fichier)-1] = '\0';
+  if(char_line[ftell(fichier)-1] == '\n')
+    char_line[ftell(fichier)-1] = '\0';
 }
 
 static void write_line(FILE *fichier, int num_line, char *char_line){
@@ -247,12 +248,14 @@ static void write_line(FILE *fichier, int num_line, char *char_line){
   rewind(fichier); // on se place au début du fichier
   while(num_line>1){
     char_read = fgetc(fichier); // on récup le carac et on avance le curseur
-    if(char_read == '\n' || feof(fichier))
+    if(char_read == '\n')
       num_line--;
     if(feof(fichier)){
       fputc('\n', fichier);
       num_line--;
     }
   }
+  if(char_line[ftell(fichier)-1] == '\n')
+    char_line[ftell(fichier)-1] = '\0';
   fprintf(fichier, char_line); // on ecrit char_line dans le fichier à la ligne num_line
 }
