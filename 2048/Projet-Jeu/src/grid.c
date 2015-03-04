@@ -29,18 +29,22 @@ struct grid_s{
 
 grid new_grid (){
   grid g = malloc(sizeof(struct grid_s));
-  assert(g);
-  assert (g->grid = malloc(sizeof(tile*)*GRID_SIDE));
-  assert (g->case_empty = malloc(sizeof(int*)*GRID_SIDE*GRID_SIDE));
+  assert(g!= NULL);
+  g->grid = malloc(sizeof(tile*)*GRID_SIDE);
+  assert (g->grid !=NULL);
+  g->case_empty = malloc(sizeof(int*)*GRID_SIDE*GRID_SIDE);
+  assert (g->case_empty!=NULL);
   // Initialisation de chaque case du tableau à 0
   for(int i=0; i< GRID_SIDE; i++){
-    assert (g->grid[i] = malloc(sizeof(tile)*GRID_SIDE));
+    g->grid[i] = malloc(sizeof(tile)*GRID_SIDE);
+    assert (g->grid[i] != NULL);
     for(int j=0; j< GRID_SIDE; j++)
       set_tile(g,i,j,0);
   }
   // création de la deuxième colonne du tableau de case vide
   for (int i=0; i<GRID_SIDE*GRID_SIDE;i++){
-    assert (g->case_empty[i] = malloc(sizeof(int)*2));
+    g->case_empty[i] = malloc(sizeof(int)*2);
+    assert (g->case_empty[i]!=NULL);
   }
   grid_case_empty(g);
   g->nbr_case_empty=GRID_SIDE*GRID_SIDE;
@@ -54,14 +58,20 @@ void delete_grid (grid g){
   for(int i = 0; i< GRID_SIDE; i++){       
     assert( g->grid[i] != NULL);     
     free(g->grid[i]);
+    g->grid[i] = NULL;
   }
   free(g->grid);
+  g->grid = NULL;
   // destruction tableau de case vide
-  for(int i=0; i< GRID_SIDE* GRID_SIDE; i++)
+  for(int i=0; i< GRID_SIDE* GRID_SIDE; i++){
     free(g->case_empty[i]);
+    g->case_empty[i] = NULL;
+  }
   free(g->case_empty);
+  g->case_empty = NULL;
   //destruction de la structure grid
   free(g);
+  g = NULL;
 }
 
 void copy_grid (grid src,grid dst){
