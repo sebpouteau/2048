@@ -4,10 +4,12 @@ CPPFLAGS =
 EXEC =test-fonction
 
 
-all: test-fonction 
+all: test-fonction test
+test: main-test.o ../src/grid.o ../src/gridIA.o ./fonction-test.o
+	${CC} ${LDFLAGS} -o test main-test.o ../src/grid.o ../src/gridIA.o ./fonction-test.o
 
-test-fonction: main-test-fonct.o ../src/grid.o ../src/gridIA.o
-	${CC} ${LDFLAGS} -o test-fonction main-test-fonct.o ../src/grid.o ../src/gridIA.o
+test-fonction: main-fonction-test.o ../src/grid.o ../src/gridIA.o ./fonction-test.o
+	${CC} ${LDFLAGS} -o test-fonction main-fonction-test.o ../src/grid.o ../src/gridIA.o ./fonction-test.o
 
 include dep
 

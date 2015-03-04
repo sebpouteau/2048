@@ -23,7 +23,7 @@ int main(int argc,char **argv){
   display_grid(g);
   do_move(g,RIGHT);
   display_grid(g);
-  
+  delete_grid(g);  
 
 }
 

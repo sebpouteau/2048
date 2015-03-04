@@ -8,6 +8,7 @@ all:
 check: 
 	$(MAKE) -C test-fonction check
 
+
 clean:
 	for i in $(LIBS);do\
 		$(MAKE) -C $$i clean;\
