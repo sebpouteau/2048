@@ -5,7 +5,6 @@
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 #include "grid.h"
-#include "gridComplementaire.h"
 #include "gridSDL.h"
 
 

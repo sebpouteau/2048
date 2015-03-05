@@ -8,7 +8,7 @@ static void display_test(char* t,bool valide);
 int main(int argc, char **argv){
   grid g = new_grid();
   display_test("new_grid",test_new_grid());
-  display_test("delete_grid",test_delete_grid());
+  //display_test("delete_grid",test_delete_grid());
   display_test("get_tile",test_get_tile(g));
   display_test("set_tile",test_set_tile(g));
   display_test("get_score",test_get_score_grid(g));
@@ -24,6 +24,7 @@ int main(int argc, char **argv){
   display_test("test_can_move_LEFT", test_can_move_left(g));
   display_test("test_can_move_RIGHTt", test_can_move_right(g));
   display_test("test_add_tile", test_add_tile(g));
+  delete_grid(g);
 }
 
 

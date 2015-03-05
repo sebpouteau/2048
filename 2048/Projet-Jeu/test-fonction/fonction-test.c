@@ -5,17 +5,9 @@
 #include "../src/grid.h"
 #include "fonction-test.h"
 
-bool test_delete_grid(){
-  bool resultat = true;
-  grid g = new_grid();
-  delete_grid(g);
-  if (g !=NULL)
-    resultat = false;
-  return resultat;
-}
   
 bool test_new_grid(){
-    grid g = new_grid();
+  grid g = new_grid();
   if (g==NULL)
     return false;
   delete_grid(g);
@@ -50,11 +42,12 @@ bool test_set_tile(grid g){
 
 bool test_copy_grid(grid g){
   grid g1 = new_grid();
+  copy_grid(g,g1);  
   for (int i = 0 ; i<GRID_SIDE;i++)
     for (int j = 0 ; j<GRID_SIDE;j++)
       if (get_tile(g,i,j)!= get_tile(g1,i,j))
  	return false;
-    copy_grid(g,g1);
+  delete_grid(g1);
   return true;;
 }
 bool test_get_score_grid(grid g){
@@ -111,7 +104,7 @@ bool test_do_move_up(grid g){
   do_move(g,UP);
   //cas mouvement de la grille vide
   resultat = check_case_empty(g,0,GRID_SIDE,0,GRID_SIDE);
-
+  
   for (int i =0 ; i<GRID_SIDE;i++)
     set_tile(g,0,i,2);
   do_move(g,UP);
@@ -121,7 +114,7 @@ bool test_do_move_up(grid g){
       return false;
   resultat = check_case_empty(g,1,GRID_SIDE,0,GRID_SIDE);
   
-
+  
   for (int i =0 ; i<GRID_SIDE;i++)
     set_tile(g,GRID_SIDE-1,i,2);
   do_move(g,UP);
@@ -130,7 +123,7 @@ bool test_do_move_up(grid g){
     if (get_tile(g,0,i)!=4)
       return false;
   resultat = check_case_empty(g,1,GRID_SIDE,0,GRID_SIDE);
-         
+  
   for (int i =0 ; i<GRID_SIDE;i++)
     set_tile(g,GRID_SIDE-1,i,2);
   do_move(g,UP);
@@ -138,36 +131,211 @@ bool test_do_move_up(grid g){
   for (int i =0 ; i<GRID_SIDE;i++)
     if (get_tile(g,0,i)!=4)
       return false;
-   for (int i =0 ; i<GRID_SIDE;i++)
-     if (get_tile(g,1,i)!=2)
-       return false;
-   resultat = check_case_empty(g,2,GRID_SIDE,0,GRID_SIDE);
-     
-     for (int i =0 ; i<GRID_SIDE;i++)
-      set_tile(g,GRID_SIDE-1,i,2);
-  do_move(g,UP);
-  // des 4 sur toute la 1ere ligne et 2 sur la deuxieme ligne et des 0 partout ailleur
   for (int i =0 ; i<GRID_SIDE;i++)
-    if (get_tile(g,0,i)!=4)
-      return false;
-   for (int i =0 ; i<GRID_SIDE;i++)
     if (get_tile(g,1,i)!=2)
       return false;
   resultat = check_case_empty(g,2,GRID_SIDE,0,GRID_SIDE);
   
-  for (int i = 0 ; i<4;i++){
+  for (int i =0 ; i<GRID_SIDE;i++)
     set_tile(g,GRID_SIDE-1,i,2);
-    do_move(g,UP);
-    if ( get_tile(g,0,i)!=4)
+  do_move(g,UP);
+  // des 4 sur toute la 1ere ligne et 4 sur la deuxieme ligne et des 0 partout ailleur
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,0,i)!=4)
       return false;
-    set_tile(g,GRID_SIDE-1,i,2);
-    do_move(g,UP);
-    if ( get_tile(g,0,i)!=4 && get_tile(g,1,i)!=2)
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,1,i)!=4)
       return false;
-  }  
+  resultat = check_case_empty(g,2,GRID_SIDE,0,GRID_SIDE);
+  
+  do_move(g,UP);
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,0,i)!=8)
+      return false;
+  resultat = check_case_empty(g,1,GRID_SIDE,0,GRID_SIDE);
   return resultat;
 }
 
+
+bool test_do_move_down(grid g){
+  bool resultat = true;
+  for (int i = 0 ; i<GRID_SIDE;i++)
+    for (int j = 0 ; j<GRID_SIDE;j++)
+      set_tile(g,i,j,0);
+  do_move(g,DOWN);
+  //cas mouvement de la grille vide
+  resultat = check_case_empty(g,0,GRID_SIDE,0,GRID_SIDE);
+  
+  for (int i =0 ; i<GRID_SIDE;i++)
+    set_tile(g,GRID_SIDE-1,i,2);
+  do_move(g,DOWN);
+  // des 2 sur toute la 1ere ligne et des 0 partout ailleur
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,GRID_SIDE-1,i)!=2)
+      return false;
+  resultat = check_case_empty(g,0,GRID_SIDE-1,0,GRID_SIDE);
+  
+  
+  for (int i =0 ; i<GRID_SIDE;i++)
+    set_tile(g,0,i,2);
+  do_move(g,DOWN);
+  // des 2 sur toute la 1ere ligne et des 0 partout ailleur
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,GRID_SIDE-1,i)!=4)
+      return false;
+  resultat = check_case_empty(g,0,GRID_SIDE-1,0,GRID_SIDE);
+  
+  for (int i =0 ; i<GRID_SIDE;i++)
+    set_tile(g,0,i,2);
+  do_move(g,DOWN);
+  // des 4 sur toute la 1ere ligne et 2 sur la deuxieme ligne et des 0 partout ailleur
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,GRID_SIDE-1,i)!=4)
+      return false;
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,GRID_SIDE-2,i)!=2)
+      return false;
+  resultat = check_case_empty(g,0,GRID_SIDE-2,0,GRID_SIDE);
+  
+  for (int i =0 ; i<GRID_SIDE;i++)
+    set_tile(g,0,i,2);
+  do_move(g,DOWN);
+  // des 4 sur toute la 1ere ligne et 4 sur la deuxieme ligne et des 0 partout ailleur
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,GRID_SIDE-1,i)!=4)
+      return false;
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,GRID_SIDE-2,i)!=4)
+      return false;
+  resultat = check_case_empty(g,0,GRID_SIDE-2,0,GRID_SIDE);
+ 
+  do_move(g,DOWN);
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,GRID_SIDE-1,i)!=8)
+      return false;
+  resultat = check_case_empty(g,0,GRID_SIDE-1,0,GRID_SIDE);
+  return resultat;
+}
+
+bool test_do_move_left(grid g){
+  bool resultat = true;
+  for (int i = 0 ; i<GRID_SIDE;i++)
+    for (int j = 0 ; j<GRID_SIDE;j++)
+      set_tile(g,i,j,0);
+  do_move(g,LEFT);
+  //cas mouvement de la grille vide
+  resultat = check_case_empty(g,0,GRID_SIDE,0,GRID_SIDE);
+  
+  for (int i =0 ; i<GRID_SIDE;i++)
+    set_tile(g,i,0,2);
+  do_move(g,LEFT);
+  // des 2 sur toute la 1ere ligne et des 0 partout ailleur
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,i,0)!=2)
+      return false;
+  resultat = check_case_empty(g,0,GRID_SIDE,1,GRID_SIDE);
+  
+  
+  for (int i =0 ; i<GRID_SIDE;i++)
+    set_tile(g,i,GRID_SIDE-1,2);
+  do_move(g,LEFT);
+  // des 2 sur toute la 1ere ligne et des 0 partout ailleur
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,i,0)!=4)
+      return false;
+  resultat = check_case_empty(g,0,GRID_SIDE,1,GRID_SIDE);
+  
+  for (int i =0 ; i<GRID_SIDE;i++)
+    set_tile(g,i,GRID_SIDE-1,2);
+  do_move(g,LEFT);
+  // des 4 sur toute la 1ere ligne et 2 sur la deuxieme ligne et des 0 partout ailleur
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,i,0)!=4)
+      return false;
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,i,1)!=2)
+      return false;
+  resultat = check_case_empty(g,0,GRID_SIDE,2,GRID_SIDE);
+  
+  for (int i =0 ; i<GRID_SIDE;i++)
+    set_tile(g,i,GRID_SIDE-1,2);
+  do_move(g,LEFT);
+  // des 4 sur toute la 1ere ligne et 4 sur la deuxieme ligne et des 0 partout ailleur
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,i,0)!=4)
+      return false;
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,i,1)!=4)
+      return false;
+  resultat = check_case_empty(g,0,GRID_SIDE,2,GRID_SIDE);
+  
+  do_move(g,LEFT);
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,i,0)!=8)
+      return false;
+  resultat = check_case_empty(g,0,GRID_SIDE,1,GRID_SIDE);
+  return resultat;
+}
+
+bool test_do_move_right(grid g){
+  bool resultat = true;
+  for (int i = 0 ; i<GRID_SIDE;i++)
+    for (int j = 0 ; j<GRID_SIDE;j++)
+      set_tile(g,i,j,0);
+  do_move(g,RIGHT);
+  //cas mouvement de la grille vide
+  resultat = check_case_empty(g,0,GRID_SIDE,0,GRID_SIDE);
+  
+  for (int i =0 ; i<GRID_SIDE;i++)
+    set_tile(g,i,GRID_SIDE-1,2);
+  do_move(g,RIGHT);
+  // des 2 sur toute la 1ere ligne et des 0 partout ailleur
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,i,GRID_SIDE-1)!=2)
+      return false;
+  resultat = check_case_empty(g,0,GRID_SIDE,0,GRID_SIDE-1);
+  
+  
+  for (int i =0 ; i<GRID_SIDE;i++)
+    set_tile(g,i,0,2);
+  do_move(g,RIGHT);
+  // des 2 sur toute la 1ere ligne et des 0 partout ailleur
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,i,GRID_SIDE-1)!=4)
+      return false;
+  resultat = check_case_empty(g,0,GRID_SIDE,0,GRID_SIDE-1);
+  
+  for (int i =0 ; i<GRID_SIDE;i++)
+    set_tile(g,i,0,2);
+  do_move(g,RIGHT);
+  // des 4 sur toute la 1ere ligne et 2 sur la deuxieme ligne et des 0 partout ailleur
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,i,GRID_SIDE-1)!=4)
+      return false;
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,i,GRID_SIDE-2)!=2)
+      return false;
+  resultat = check_case_empty(g,0,GRID_SIDE,0,GRID_SIDE-2);
+  
+  for (int i =0 ; i<GRID_SIDE;i++)
+    set_tile(g,i,0,2);
+  do_move(g,RIGHT);
+  // des 4 sur toute la 1ere ligne et 4 sur la deuxieme ligne et des 0 partout ailleur
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,i,GRID_SIDE-1)!=4)
+      return false;
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,i,GRID_SIDE-2)!=4)
+      return false;
+  resultat = check_case_empty(g,0,GRID_SIDE,0,GRID_SIDE-2);
+ 
+  do_move(g,RIGHT);
+  for (int i =0 ; i<GRID_SIDE;i++)
+    if (get_tile(g,i,GRID_SIDE-1)!=8)
+      return false;
+  resultat = check_case_empty(g,0,GRID_SIDE,0,GRID_SIDE-1);
+  return resultat;
+}
 
 
 bool test_can_move_up(grid g){
