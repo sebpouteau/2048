@@ -16,6 +16,9 @@ int main(int argc, char **argv){
   display_test("copy_grid",test_copy_grid(g));
   display_test("game_over",test_game_over(g));
   display_test("do_move_UP",test_do_move_up(g));
+  display_test("do_move_DOWN",test_do_move_down(g));
+  display_test("do_move_LEFT",test_do_move_left(g));
+  display_test("do_move_RIGHT",test_do_move_right(g));
   display_test("test_can_move_UP", test_can_move_up(g));
   display_test("test_can_move_DOWN", test_can_move_down(g));
   display_test("test_can_move_LEFT", test_can_move_left(g));
@@ -26,8 +29,11 @@ int main(int argc, char **argv){
 
 
 static void display_test(char* t,bool valide){
-  printf("[TEST ");printf("%d] - ",nbrTest);
+  printf("[TEST ");printf("%d]",nbrTest);
   int i=0;
+  if ( nbrTest <10)
+    printf(" ");
+  printf(" - ");
   while (t[i]!='\0'){
     printf("%c",t[i]);
     i++;

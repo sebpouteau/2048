@@ -4,18 +4,16 @@ CPPFLAGS =
 EXEC =test-fonction
 
 
-all: test-fonction test
-test: main-test.o ../src/grid.o ../src/gridIA.o ./fonction-test.o
-	${CC} ${LDFLAGS} -o test main-test.o ../src/grid.o ../src/gridIA.o ./fonction-test.o
+all: test-fonction 
 
-test-fonction: main-fonction-test.o ../src/grid.o ../src/gridIA.o ./fonction-test.o
-	${CC} ${LDFLAGS} -o test-fonction main-fonction-test.o ../src/grid.o ../src/gridIA.o ./fonction-test.o
+test-fonction: main-fonction-test.o ../src/grid.o ./fonction-test.o
+	${CC} ${LDFLAGS} -o test-fonction main-fonction-test.o ../src/grid.o ./fonction-test.o
 
 include dep
 
 .PHONY: clean
 clean:
-	rm -f dep  *.o test-fonction
+	rm -f dep *~ *.o test-fonction
 dep:
 	$(CC) $(CPPFLAGS) -MM *.c >dep
 
