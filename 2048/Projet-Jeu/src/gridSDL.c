@@ -13,10 +13,10 @@
 static void display_grid_sdl(grid g, SDL_Surface *ecran, SDL_Surface *surface_tile, SDL_Rect position_tile, char *name_tile);
 
 // affiche le score
-static void display_score_sdl(grid g, SDL_Surface *ecran, SDL_Surface *surface_score, SDL_Rect position_score, SDL_Color color_score, SDL_Color color_background, TTF_Font *police_score, char *char_score, FILE *highscore_txt, char *char_highscore, char *char_pseudo);
+static void display_score_sdl(grid g, SDL_Surface *ecran, SDL_Surface *surface_score, SDL_Rect position_score, SDL_Color color_score, SDL_Color color_background, TTF_Font *police_score, char *char_score, FILE *highscore_txt);
 
 // affiche le game over
-static void display_gameover_sdl(grid g, SDL_Surface *ecran, SDL_Color color_score, SDL_Color color_background, TTF_Font *police_score, FILE *highscore_txt, char *char_highscoree, char *char_pseudo);
+static void display_gameover_sdl(grid g, SDL_Surface *ecran, SDL_Color color_score, SDL_Color color_background, TTF_Font *police_score, FILE *highscore_txt);
 
 // affiche du texte
 static void display_texte(char *char_texte, int position_x, int position_y, SDL_Surface *ecran, SDL_Surface *surface_texte, SDL_Rect position_texte, TTF_Font *police_texte, SDL_Color color_texte, SDL_Color color_background);
@@ -26,11 +26,14 @@ static void saisir_pseudo(char *char_pseudo, int nbr_char, char *char_highscore,
 
 
 // lit une ligne dans un fichier, de nb_char et la stocke dans char_line
-static void read_line(FILE *fichier, int num_line, char *char_line);
+static void read_line(FILE *fichier, char *char_pseudo, char *char_highscore);
 
 // écrit une ligne dans un fichier.
-static void write_line(FILE *fichier, int num_line, char *char_line);
+static void write_line(FILE *fichier, char *char_pseudo, char *char_highscore);
 
+
+
+// ====== FONCTIONS ========
 
 void game_sdl(){
   // Initialisation de la fenetre du jeu
@@ -58,10 +61,6 @@ void game_sdl(){
 
   //paramètre pour l'highscore
   FILE* highscore_txt = fopen("highscore_sdl.txt", "r+"); //fichier contenant l'highscore
-  char char_highscore[7] = "";
-  char char_pseudo[9] = "";
-  read_line(highscore_txt, 1, char_highscore);
-  read_line(highscore_txt, 2, char_pseudo);
   
   //paramètres affichage grille
   SDL_Surface *surface_tile = NULL;
@@ -94,13 +93,13 @@ void game_sdl(){
       }
     }
     display_grid_sdl(g, ecran, surface_tile, position_tile, name_tile);
-    display_score_sdl(g, ecran, surface_score, position_score, color_score, color_background, police_score, char_score, highscore_txt, char_highscore, char_pseudo);
+    display_score_sdl(g, ecran, surface_score, position_score, color_score, color_background, police_score, char_score, highscore_txt);
     if(game_over(g)){
       ecran = SDL_SetVideoMode(850, 500, 32, SDL_HWSURFACE);
       SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 255, 255, 255));
       display_grid_sdl(g, ecran, surface_tile, position_tile, name_tile);
-      display_score_sdl(g, ecran, surface_score, position_score, color_score, color_background, police_score, char_score, highscore_txt, char_highscore, char_pseudo);
-      display_gameover_sdl(g, ecran, color_score, color_background, police_score, highscore_txt, char_highscore, char_pseudo);
+      display_score_sdl(g, ecran, surface_score, position_score, color_score, color_background, police_score, char_score, highscore_txt);
+      display_gameover_sdl(g, ecran, color_score, color_background, police_score, highscore_txt);
       continuer = 0;
     }
   }
@@ -125,30 +124,35 @@ static void display_grid_sdl(grid g, SDL_Surface *ecran, SDL_Surface *surface_ti
   SDL_Flip(ecran);
 }
 
-static void display_score_sdl(grid g, SDL_Surface *ecran, SDL_Surface *surface_score, SDL_Rect position_score, SDL_Color color_score, SDL_Color color_background, TTF_Font *police_score, char *char_score, FILE *highscore_txt, char *char_highscore, char *char_pseudo){
+static void display_score_sdl(grid g, SDL_Surface *ecran, SDL_Surface *surface_score, SDL_Rect position_score, SDL_Color color_score, SDL_Color color_background, TTF_Font *police_score, char *char_score, FILE *highscore_txt){
   // Afficher le score
   sprintf(char_score, "Score : %lu ", grid_score(g));
   display_texte(char_score, 10, 400, ecran, surface_score, position_score, police_score, color_score, color_background);
 
   // Afficher le highscore
   highscore_txt = fopen("highscore_sdl.txt", "r+"); // "r+" = lecture et ecriture
-  read_line(highscore_txt, 1, char_highscore);
-  read_line(highscore_txt, 2, char_pseudo);
+
+  char char_highscore[10] = "          ";
+  char char_pseudo[10] = "          ";
+
+  read_line(highscore_txt, char_pseudo, char_highscore);
   unsigned long int highscore = strtoul(char_highscore, NULL, 10); // convertir un chaine en unsigned long int
+
   if(grid_score(g) >= highscore){
     sprintf(char_highscore, "%lu", grid_score(g));
-    write_line(highscore_txt, 1, char_highscore);
-    sprintf(char_score, "New Highscore : %s !!               ", char_highscore);
+    write_line(highscore_txt, char_pseudo, char_highscore);
+    sprintf(char_score, "New Highscore : %s !!      ", char_highscore);
   }
   else
     sprintf(char_score, "Highscore : %s - %s ", char_highscore, char_pseudo);
+  
   display_texte(char_score, 10, 450, ecran, surface_score, position_score, police_score, color_score, color_background);
   
   SDL_Flip(ecran);
   fclose(highscore_txt);
 }
 
-static void display_gameover_sdl(grid g, SDL_Surface *ecran, SDL_Color color_score, SDL_Color color_background, TTF_Font *police_score, FILE *highscore_txt, char *char_highscore, char *char_pseudo){
+static void display_gameover_sdl(grid g, SDL_Surface *ecran, SDL_Color color_score, SDL_Color color_background, TTF_Font *police_score, FILE *highscore_txt){
   SDL_Surface *surface_gameover = NULL;
   SDL_Rect position;
   char *char_gameover = "\n\n\n\n\n\n\n\n\n\n\n";
@@ -158,18 +162,27 @@ static void display_gameover_sdl(grid g, SDL_Surface *ecran, SDL_Color color_sco
   char_gameover = "\n\n\n\n\n\n\n\n\n\n\n";
   display_texte(char_gameover, 470, 130, ecran, surface_gameover, position, police_score, color_score, color_background);
 
+
+  char char_highscore[10];
+  char char_pseudo[10];
+
   highscore_txt = fopen("highscore_sdl.txt", "r+");
-  read_line(highscore_txt, 1, char_highscore);
+  read_line(highscore_txt, char_pseudo, char_highscore);
+
   unsigned long int highscore = strtoul(char_highscore, NULL, 10); // convertir un chaine en unsigned long int
+
   if(grid_score(g) == highscore){
-    char display_highscore[30] = "";
+    char display_highscore[30];
+    fclose(highscore_txt);
+    highscore_txt = fopen("highscore_sdl.txt", "w+");
+
     sprintf(display_highscore, "New Highscore : %s !!", char_highscore);
     display_texte(display_highscore, 450, 180, ecran, surface_gameover, position, police_score, color_score, color_background);
     display_texte("Veuillez entrer votre pseudo :", 420, 230, ecran, surface_gameover, position, police_score, color_score, color_background);
-    sprintf(char_pseudo, "");
-    saisir_pseudo(char_pseudo, 8, char_highscore, 500, 280, ecran, surface_gameover, position, police_score, color_score, color_background);
-    write_line(highscore_txt, 1, char_highscore);
-    write_line(highscore_txt, 2, char_pseudo);
+    char char_tmp[10];
+    saisir_pseudo(char_tmp, 8, char_highscore, 500, 280, ecran, surface_gameover, position, police_score, color_score, color_background);
+    write_line(highscore_txt, char_tmp, char_highscore);
+    fclose(highscore_txt);
   }
   SDL_Flip(ecran);
   
@@ -183,7 +196,6 @@ static void display_gameover_sdl(grid g, SDL_Surface *ecran, SDL_Color color_sco
       break;
     }
   }
-  fclose(highscore_txt);
 }
 
 
@@ -199,11 +211,13 @@ static void display_texte(char *char_texte, int position_x, int position_y, SDL_
 static void saisir_pseudo(char *char_pseudo, int nbr_char, char *char_highscore, int position_x, int position_y, SDL_Surface *ecran, SDL_Surface *surface_texte, SDL_Rect position_texte, TTF_Font *police_texte, SDL_Color color_texte, SDL_Color color_background){
   SDL_Event event;
   int cpt = 0;
-  char char_display[30];
+
+  char char_display[60];
   char char_tmp[8] = "********";
-  SDL_EnableUNICODE(1); // active l'unicode
-  sprintf(char_display, "%s - %s%s ", char_highscore, char_pseudo, char_tmp);
+  sprintf(char_display, "%s - ********", char_highscore);
   display_texte(char_display, position_x, position_y, ecran, surface_texte, position_texte, police_texte, color_texte, color_background);
+
+  SDL_EnableUNICODE(1); // active l'unicode
   while(nbr_char > cpt){
     SDL_WaitEvent(&event);
     if(event.type == SDL_QUIT)
@@ -217,7 +231,7 @@ static void saisir_pseudo(char *char_pseudo, int nbr_char, char *char_highscore,
 	if(event.key.keysym.unicode>=32 && event.key.keysym.unicode<=126){
 	  sprintf(char_pseudo, "%s%c", char_pseudo, (char)event.key.keysym.unicode);
 	  char_tmp[nbr_char - cpt - 1] = '\0';
-	  sprintf(char_display, "%s - %s%s ", char_highscore, char_pseudo, char_tmp);
+	  sprintf(char_display, "%s - %s%-10s", char_highscore, char_pseudo, char_tmp);
 	  display_texte(char_display, position_x, position_y, ecran, surface_texte, position_texte, police_texte, color_texte, color_background);
 	  cpt += 1;
 	}
@@ -229,33 +243,26 @@ static void saisir_pseudo(char *char_pseudo, int nbr_char, char *char_highscore,
 }
 
 
-
-static void read_line(FILE *fichier, int num_line, char *char_line){
-  char char_read;
-  rewind(fichier); // on se place au début du fichier
-  while(num_line>1){
-    char_read = fgetc(fichier); // on récup le carac et on avance le curseur
-    if(char_read == '\n' || feof(fichier)) //foef(fichier) = la fin du fichier
-      num_line--;
-  }
-  fgets(char_line, 100, fichier); // on stocke nb_char caractère dans char_line (à partir de là où l'on se trouve). lit une ligne seulement (s'arrête au premier '\n')
-  if(char_line[ftell(fichier)-1] == '\n')
-    char_line[ftell(fichier)-1] = '\0';
-}
-
-static void write_line(FILE *fichier, int num_line, char *char_line){
-  char char_read;
-  rewind(fichier); // on se place au début du fichier
-  while(num_line>1){
-    char_read = fgetc(fichier); // on récup le carac et on avance le curseur
-    if(char_read == '\n')
-      num_line--;
-    if(feof(fichier)){
-      fputc('\n', fichier);
-      num_line--;
+static void read_line(FILE *fichier, char *char_pseudo, char *char_highscore){
+  rewind(fichier); 
+  if(!feof(fichier)){
+    fscanf(fichier, "%10s", char_pseudo);
+    fscanf(fichier, "%10s", char_highscore);
+    for(int i=10; i>0; i--){
+      if(char_pseudo[i-1] == ' ')
+	char_pseudo[i-1] = '\0';
+    }
+    for(int i=10; i>0; i--){
+      if(char_highscore[i-1] == ' ')
+	char_highscore[i-1] = '\0';
     }
   }
-  if(char_line[ftell(fichier)-1] == '\n')
-    char_line[ftell(fichier)-1] = '\0';
-  fprintf(fichier, char_line); // on ecrit char_line dans le fichier à la ligne num_line
+}
+
+static void write_line(FILE *fichier, char *char_pseudo, char *char_highscore){
+  rewind(fichier);
+  if(strlen(char_pseudo) == 0){
+    char_pseudo = "aaa";
+  }
+  fprintf(fichier, "%-10s%-10s", char_pseudo, char_highscore);
 }
