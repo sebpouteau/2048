@@ -3,12 +3,6 @@
 
 #include <stdbool.h>
 
-/* retourne le tableau g->case_empty, qui contient toutes les cases vides */
-int** get_grid_case_empty(grid g);
-
-/* retourne le nombre de case vide */
-int get_nbr_case_empty(grid g);
-
 /* retourne la différence entre le score de la grille avant le déplacement,
    et aprés le déplacement */
 unsigned long int poids_fusion(grid g, dir d);

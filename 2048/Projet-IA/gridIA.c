@@ -18,12 +18,14 @@ unsigned long int poids_fusion_jimmy(grid g, dir d){
   return grid_score(grid_copy)-grid_score(g)+tile_up_left;
 }
 
-int nombre_fusion(grid g,dir d){
-  grid grid_copy= new_grid();
-  copy_grid(g,grid_copy);
-  do_move(grid_copy,d);
-  return get_nbr_case_empty(g)-get_nbr_case_empty(grid_copy);
-}
+ int nombre_fusion(grid g,dir d){
+   return 0;
+ }
+/*   grid grid_copy= new_grid(); */
+/*   copy_grid(g,grid_copy); */
+/*   do_move(grid_copy,d); */
+/*   return get_nbr_case_empty(g)-get_nbr_case_empty(grid_copy); */
+/* } */
 
 /* test si la ligne ou la colonne en question peut faire une fusion */
 bool possible_lc(grid g, int i, int j, int a,int b){

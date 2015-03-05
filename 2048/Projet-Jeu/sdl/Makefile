@@ -18,6 +18,4 @@ clean:
 dep:
 	$(CC) $(CPPFLAGS) -MM *.c >dep
 
-run_sdl:
-	./jeu
 
