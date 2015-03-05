@@ -12,7 +12,7 @@ struct tabBestM{
 };
 
 
-static void display_grid(grid g);
+//static void display_grid(grid g);
 static long maximum_tile(grid g);
 static tabBestM new_tabBestM();
 static dir best_move(grid g);
