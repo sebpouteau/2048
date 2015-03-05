@@ -15,7 +15,7 @@ clean:
 	done
 
 
-run_curses:
+run_ncurses:
 	$(MAKE) -C  ncurses run_ncurses
 
 
