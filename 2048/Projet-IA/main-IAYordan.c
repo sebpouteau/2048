@@ -96,9 +96,8 @@ static dir best_move(grid g){
 static void boucle_best_move(tabBestM tab,dir def, grid g, grid test){
   for(dir i = UP;i<=RIGHT;i++){
     copy_grid(g,test);
-    if(i == def)
-      continue;
-    do_move(test,i);
+    if(i != def)
+      do_move(test,i);
     if(grid_score(test) > tab.score){
       tab.score = grid_score(test);
       tab.best = i;
