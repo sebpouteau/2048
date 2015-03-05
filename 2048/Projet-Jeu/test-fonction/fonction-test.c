@@ -136,26 +136,228 @@ bool test_game_over(grid g){
 }
 
 bool test_can_move_up(grid g){
-
   bool resultat = true;
+  for (int i = 0 ; i<GRID_SIDE;i++)
+    for (int j = 0 ; j<GRID_SIDE;j++)
+      set_tile(g,i,j,0); // on initialise tout à 0
+  if(can_move(g, UP))
+    return false;
+
+  set_tile(g, 3, 0, 2);
+  set_tile(g, 3, 1, 2);
+  if(!can_move(g, UP))
+    return false;
+  set_tile(g, 3, 0, 0);
+  set_tile(g, 3, 1, 0);
+  
+  set_tile(g, 0, 0, 2);
+  set_tile(g, 0, 1, 2);
+  if(can_move(g, UP))
+    return false;
+  set_tile(g, 2, 2, 2);
+  if(!can_move(g, UP))
+    return false;
+  set_tile(g, 0, 0, 0);
+  set_tile(g, 2, 2, 0);
+
+  set_tile(g, 1, 1, 2);
+  if(!can_move(g, UP))
+    return false;
+  
+  set_tile(g, 1, 1, 4);
+   if(can_move(g, UP))
+    return false;
+
+   set_tile(g, 2, 1, 2);
+   set_tile(g, 3, 1, 4);
+   if(can_move(g, UP))
+    return false;
+   set_tile(g, 3, 1, 2);
+   
+   if(!can_move(g, UP))
+    return false;
+
+   for(int i = 0; i< GRID_SIDE - 1; i++)
+     set_tile(g, i, 1, 0);
+    if(!can_move(g, UP))
+      return false;
+  
   return resultat;
 }
+
+
+
 bool test_can_move_down(grid g){
 
   bool resultat = true;
+  for (int i = 0 ; i<GRID_SIDE;i++)
+    for (int j = 0 ; j<GRID_SIDE;j++)
+      set_tile(g,i,j,0); // on initialise tout à 0
+  if(can_move(g, DOWN))
+    return false;
+
+  set_tile(g, 0, 0, 2);
+  set_tile(g, 0, 1, 2); //on pose des tiles en (0,0) et (0,1)
+  if(!can_move(g,DOWN))
+    return false;
+  set_tile(g, 0, 0, 0);
+  set_tile(g, 0, 1, 0);
+   
+  set_tile(g, 3, 0, 2);//on pose des tiles en (3,0) et (3,1)
+  set_tile(g, 3, 1, 2);
+  if(can_move(g, DOWN))
+    return false;
+  set_tile(g, 2, 2, 2);
+  if(!can_move(g, DOWN))
+    return false;
+  set_tile(g, 2, 2, 0);
+  set_tile(g, 3, 0, 0);
+
+  set_tile(g, 2, 1, 2);
+  if(!can_move(g, DOWN))
+    return false;
+  
+  set_tile(g, 2, 1, 4);
+   if(can_move(g, DOWN))
+    return false;
+
+   set_tile(g, 1, 1, 2);
+   set_tile(g, 0, 1, 4);
+   if(can_move(g, DOWN))
+    return false;
+   set_tile(g, 0, 1, 2);
+   
+   if(!can_move(g, DOWN))
+    return false;
+
+   for(int i = 3; i>0; i--)
+     set_tile(g, i, 1, 0);
+    if(!can_move(g, DOWN))
+      return false;
+  
   return resultat;
 }
+
+
+
+
+
 bool test_can_move_left(grid g){
 
   bool resultat = true;
+  for (int i = 0 ; i<GRID_SIDE;i++)
+    for (int j = 0 ; j<GRID_SIDE;j++)
+      set_tile(g,i,j,0); // on initialise tout à 0
+   if(can_move(g, LEFT))
+    return false;
+
+   set_tile(g, 0, 0, 2);
+   set_tile(g, 1, 0, 2);
+   if(can_move(g, LEFT))
+     return false;
+   set_tile(g, 2, 2, 2);
+   if(!can_move(g, LEFT))
+     return false;
+   set_tile(g, 2, 2, 0);
+   
+   set_tile(g, 0, 1, 2);
+   if(!can_move(g,LEFT))
+     return false;
+   
+   set_tile(g, 0, 1, 4);
+   if(can_move(g, LEFT))
+     return false;
+   
+   set_tile(g, 0, 2, 2);
+   set_tile(g, 0, 3, 4);
+   if(can_move(g, LEFT))
+     return false;
+   
+   set_tile(g, 0, 3, 2);
+   if(!can_move(g, LEFT))
+     return false;
+   
+   for(int j = 0; j>GRID_SIDE -1; j++)
+     set_tile(g, 0, j, 0);
+   if(!can_move(g, LEFT))
+     return false;
+   
   return resultat;
 }
+
+
+
+
+
 bool test_can_move_right(grid g){
   bool resultat = true;
-  return resultat;}
+   for (int i = 0 ; i<GRID_SIDE;i++)
+    for (int j = 0 ; j<GRID_SIDE;j++)
+      set_tile(g,i,j,0); // on initialise tout à 0
+   if(can_move(g, RIGHT))
+    return false;
+
+   set_tile(g, 0, 3, 2);
+   set_tile(g, 1, 3, 2);
+   if(can_move(g, RIGHT))
+     return false;
+   set_tile(g, 2, 2, 2);
+   if(!can_move(g, RIGHT))
+     return false;
+   set_tile(g, 2, 2, 0);
+   
+   set_tile(g, 0, 2, 2);
+   if(!can_move(g,RIGHT))
+     return false;
+   
+   set_tile(g, 0, 2, 4);
+   if(can_move(g, RIGHT))
+     return false;
+   
+   set_tile(g, 0, 1, 2);
+   set_tile(g, 0, 0, 4);
+   if(can_move(g, RIGHT))
+     return false;
+   
+   set_tile(g, 0, 0, 2);
+   if(!can_move(g, RIGHT))
+     return false;
+   
+   for(int j = 3; j>0; j--)
+     set_tile(g, 0, j, 0);
+   if(!can_move(g, RIGHT))
+     return false; 
+
+  return resultat;
+}
+
+
+
+
+
 
 bool test_play(grid g){
   bool resultat = true;
+  return resultat;
+}
+
+bool test_add_tile(grid g){
+  bool resultat = true;
+  int rand4 =0;
+  for (int i = 0 ; i<GRID_SIDE;i++)
+    for (int j = 0 ; j<GRID_SIDE;j++)
+      set_tile(g,i,j,0); // on initialise tout à 0
+  for(int c = 16; c >0; c--)
+    add_tile(g);
+  for(int i = 0; i< GRID_SIDE; i++)
+    for(int j = 0; j< GRID_SIDE; j++){
+      if(get_tile(g, i, j) == 0)
+	return false;
+      if(get_tile(g, i, j) == 4)
+	rand4 +=1;
+    }
+  if(rand4<1)
+    return false;
   return resultat;
 }
 

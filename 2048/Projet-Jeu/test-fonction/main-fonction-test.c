@@ -16,6 +16,11 @@ int main(int argc, char **argv){
   display_test("copy_grid",test_copy_grid(g));
   display_test("game_over",test_game_over(g));
   display_test("do_move_UP",test_do_move_up(g));
+  display_test("test_can_move_UP", test_can_move_up(g));
+  display_test("test_can_move_DOWN", test_can_move_down(g));
+  display_test("test_can_move_LEFT", test_can_move_left(g));
+  display_test("test_can_move_RIGHTt", test_can_move_right(g));
+  display_test("test_add_tile", test_add_tile(g));
 }
 
 
