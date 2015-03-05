@@ -50,15 +50,15 @@ int main(int argc,char **argv){
 }
 
 
-static void display_grid(grid g){
-  for (int i=0;i<GRID_SIDE;i++){
-    for (int j=0;j<GRID_SIDE;j++){
-      printf("%d ",get_tile(g,i,j));
-    }
-    printf("\n");
-  }
-  printf("\n");
-}
+/* static void display_grid(grid g){ */
+/*   for (int i=0;i<GRID_SIDE;i++){ */
+/*     for (int j=0;j<GRID_SIDE;j++){ */
+/*       printf("%d ",get_tile(g,i,j)); */
+/*     } */
+/*     printf("\n"); */
+/*   } */
+/*   printf("\n"); */
+/* } */
 
 
 static long maximum_tile(grid g){
