@@ -5,8 +5,8 @@ CPPFLAGS=
 
 all:jeu
  
-jeu: main-sdl.o ../src/gridSDL.o ../src/grid.o 
-	$(CC) -o jeu main-sdl.o ../src/gridSDL.o ../src/grid.o  $(LDLIBS)
+jeu: main-sdl.o gridSDL.o ../src/grid.o 
+	$(CC) -o jeu main-sdl.o gridSDL.o ../src/grid.o  $(LDLIBS)
 
 
 include dep

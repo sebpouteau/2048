@@ -4,10 +4,11 @@
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 #include "../src/grid.h"
-#include "../src/gridSDL.h"
-
+#include "gridSDL.h"
+#include <time.h>
 
 int main(int argc, char *argv[]){
+  srand(time(NULL));
   SDL_Init(SDL_INIT_VIDEO);
   TTF_Init();
   

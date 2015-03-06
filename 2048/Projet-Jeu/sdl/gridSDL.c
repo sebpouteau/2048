@@ -4,7 +4,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
-#include "grid.h"
+#include "../src/grid.h"
 #include "gridSDL.h"
 
 
@@ -115,7 +115,7 @@ static void display_grid_sdl(grid g, SDL_Surface *ecran, SDL_Surface *surface_ti
     for(int j=0; j<GRID_SIDE; j++){
       position_tile.x = j*100;
       position_tile.y = i*100;
-      sprintf(name_tile, "../tiles/tile%d.bmp", get_tile(g,i,j));
+      sprintf(name_tile, "tiles/tile%d.bmp", get_tile(g,i,j));
       surface_tile = SDL_LoadBMP(name_tile);
       SDL_BlitSurface(surface_tile, NULL, ecran, &position_tile);
     }
