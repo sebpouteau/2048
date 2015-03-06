@@ -245,15 +245,19 @@ static void saisir_pseudo(char *char_pseudo, int nbr_char, char *char_highscore,
 static void read_line(FILE *fichier, char *char_pseudo, char *char_highscore){
   rewind(fichier); 
   if(!feof(fichier)){
-    fscanf(fichier, "%10s", char_pseudo);
-    fscanf(fichier, "%10s", char_highscore);
-    for(int i=10; i>0; i--){
+    fgets(char_pseudo, 10, fichier);
+    fgets(char_highscore, 10, fichier);
+    for(int i=9; i>0; i--){
       if(char_pseudo[i-1] == ' ')
 	char_pseudo[i-1] = '\0';
+      else
+	break;
     }
-    for(int i=10; i>0; i--){
+    for(int i=9; i>0; i--){
       if(char_highscore[i-1] == ' ')
 	char_highscore[i-1] = '\0';
+      else
+	break;
     }
   }
 }
