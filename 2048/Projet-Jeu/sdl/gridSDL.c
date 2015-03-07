@@ -37,10 +37,11 @@ static void write_line(FILE *fichier, char *char_pseudo, char *char_highscore);
 void game_sdl(){
   // Initialisation de la fenetre du jeu
   SDL_Surface *ecran = NULL;
-  ecran = SDL_SetVideoMode(500, 600, 32, SDL_HWSURFACE);
+  ecran = SDL_SetVideoMode(500, 600, 32, SDL_HWSURFACE | SDL_RESIZABLE | SDL_DOUBLEBUF);
   SDL_WM_SetCaption("Jeu 2048", NULL);
   SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 255, 255, 255));
 
+  // Initialisation du fond autour de la grille
   SDL_Rect position_fond_grid;
   SDL_Surface *fond_grid = NULL;
   position_fond_grid.x = 40;
@@ -57,7 +58,8 @@ void game_sdl(){
   add_tile(g);
   
   //paramètres boucle du jeu
-  bool continuer = true;
+  bool play_continue = true;
+  bool try_again = false;
   SDL_Event event;
 
   //paramètres affichage score
@@ -74,13 +76,14 @@ void game_sdl(){
   SDL_Surface *surface_tile = NULL;
   char name_tile[30];
   SDL_Rect position_tile;
-  
+
+
   // boucle du jeu
-  while (continuer){
+  while (play_continue){
     SDL_WaitEvent(&event);
     // permet de quitter
     if (event.type == SDL_QUIT)
-      continuer = false;
+      play_continue = false;
     // choix direction avec touche directionnelle
     else if(event.type == SDL_KEYDOWN){
       switch(event.key.keysym.sym){
@@ -96,17 +99,20 @@ void game_sdl(){
       case SDLK_RIGHT:
 	play(g,RIGHT);
 	break;
-      case SDLK_y:
-	game_sdl();
-	continuer = false;
+      // Rejouer
+      case SDLK_y: 
+	try_again = true;
+	play_continue = false;
 	break;
+      // Give Up
       case SDLK_g:
-	continuer = false;
+	play_continue = false;
 	break;
       default:
 	break;
       }
     }
+    // s'il y a des déplacements de souris, les ignorer
     else if(event.type == SDL_MOUSEMOTION)
       continue;
     display_grid_sdl(g, ecran, surface_tile, position_tile, name_tile);
@@ -119,13 +125,16 @@ void game_sdl(){
       display_grid_sdl(g, ecran, surface_tile, position_tile, name_tile);
       display_score_sdl(g, ecran, surface_score, position_score, color_score, color_background, police_score, char_score, highscore_txt);
       display_gameover_sdl(g, ecran, color_score, color_background, police_score, highscore_txt);
-      continuer = 0;
+      play_continue = false;
     }
   }
   SDL_FreeSurface(surface_tile);
   SDL_FreeSurface(surface_score);
   SDL_FreeSurface(ecran);
   TTF_CloseFont(police_score);
+
+  if(try_again)
+    game_sdl();
 }
 
 
@@ -164,12 +173,11 @@ static void display_score_sdl(grid g, SDL_Surface *ecran, SDL_Surface *surface_s
   if(grid_score(g) >= highscore){
     sprintf(char_highscore, "%lu", grid_score(g));
     write_line(highscore_txt, char_pseudo, char_highscore);
-    sprintf(char_score, "New Highscore : %s !!", char_highscore);
+    sprintf(char_score, "     New Highscore : %s !!     ", char_highscore);
   }
   else
-    sprintf(char_score, "Highscore :%s - %s", char_highscore, char_pseudo);
-  display_texte("                                                                            ", 0, 470, ecran, surface_score, position_score, police_score, color_score, color_background);
-  display_texte(char_score, (500/2)-(strlen(char_score)*7), 470, ecran, surface_score, position_score, police_score, color_score, color_background);
+    sprintf(char_score, "   Highscore :%s - %s   ", char_highscore, char_pseudo);
+  display_texte(char_score, (500/2)-(strlen(char_score)*6.5), 470, ecran, surface_score, position_score, police_score, color_score, color_background);
 
   // Afficher "recommencer"
   char char_recommencer[30] = "New Game (y)";
@@ -191,7 +199,7 @@ static void display_gameover_sdl(grid g, SDL_Surface *ecran, SDL_Color color_sco
   SDL_Rect position;
   char *char_gameover = "\n\n\n\n\n\n\n\n\n";
   display_texte(char_gameover, 540, 70, ecran, surface_gameover, position, police_score, color_score, color_background);
-  char_gameover = " GAME OVER  ";
+  char_gameover = "  GAME OVER   ";
   display_texte(char_gameover, 540, 100, ecran, surface_gameover, position, police_score, color_score, color_background);
   char_gameover = "\n\n\n\n\n\n\n\n\n";
   display_texte(char_gameover, 540, 130, ecran, surface_gameover, position, police_score, color_score, color_background);
@@ -220,20 +228,34 @@ static void display_gameover_sdl(grid g, SDL_Surface *ecran, SDL_Color color_sco
   }
   SDL_Flip(ecran);
   
+  //boucle de fin
   bool end = true;
   SDL_Event event;
   while(end){
     SDL_WaitEvent(&event);
-    switch(event.type){
-    case SDL_QUIT:
+    // permet de quitter
+    if (event.type == SDL_QUIT)
       end = false;
-      break;
+    else if(event.type == SDL_KEYDOWN){
+      switch(event.key.keysym.sym){
+      // Rejouer
+      case SDLK_y: 
+	game_sdl();
+	end = false;
+	break;
+      // Give Up
+      case SDLK_g:
+	end = false;
+	break;
+      default:
+	break;
+      }
     }
   }
 }
 
 
-
+/*  =========================AFFICHE TEXTE====================*/
 
 static void display_texte(char *char_texte, int position_x, int position_y, SDL_Surface *ecran, SDL_Surface *surface_texte, SDL_Rect position_texte, TTF_Font *police_texte, SDL_Color color_texte, SDL_Color color_background){
   surface_texte = TTF_RenderText_Shaded(police_texte, char_texte, color_texte, color_background);
