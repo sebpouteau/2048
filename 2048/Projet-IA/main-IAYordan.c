@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <math.h>
 #include "../Projet-Jeu/src/grid.h"
-#include "../Projet-Jeu/src/gridComplementaire.h"
+//#include "../Projet-Jeu/src/gridComplementaire.h"
 #include <time.h>
 
 struct tabBestM{
@@ -20,7 +20,7 @@ static void boucle_best_move(tabBestM tab,dir def, grid g, grid test);
 static dir mouvement_impossible(grid g);
 
 int main(int argc,char **argv){
-  int n = 10;
+  int n = 100;
   srand(time(NULL));
   while(n >0){
     grid g= new_grid();
@@ -42,7 +42,7 @@ int main(int argc,char **argv){
 	play(g,b);
       }
       printf("Tile max = %ld \n", maximum_tile(g));
-      delete_grid(g);
+      //delete_grid(g);
       n-=1;
     }
   }
@@ -112,7 +112,22 @@ static dir mouvement_impossible(grid g){
   }
   return 0;
 }
- 
-   
+
+  
+/* static int* max_position(grid(g)){ */
+/*   int t[2] = [0,0]; */
+/*   long max_tile = 2; */
+/*   for(int i = 0; i<GRID_SIDE; i++){ */
+/*     for(int j = 0; j< GRID_SIDE; j++){ */
+/*       if(get_tile(g, i, j)>max_tile){ */
+/* 	max_tile = get_tile(g, i, j); */
+/* 	t[0] = i; */
+/* 	t[1] = j; */
+/*       } */
+/*     } */
+/*   } */
+/*   return t; */
+/* } */
+  
   
   
