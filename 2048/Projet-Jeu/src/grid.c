@@ -168,7 +168,12 @@ void set_grid_score(grid g,unsigned long int add_score){
     IMPLEMENTATION DES FONCTIONS STATIC
    ===================================== */
 
-// fusion permet de fusionner deux cases et met 0 dans l'autre case
+/**
+/brief fusion deux case et met la deuxième case a 0
+/param1 grid
+/param2,3 coordonnée de la première case
+/param4,5 coordonnée de la deuxième case
+ **/
 static void fusion (grid g,int i1,int j1,int i2,int j2){
   assert(g!=NULL);
   if (get_tile(g,i1,j1)==0){
@@ -180,13 +185,26 @@ static void fusion (grid g,int i1,int j1,int i2,int j2){
   set_tile(g,i2,j2,0);
 }
 
-// incrementation permet d'incrémenter deux variables ayant des incrémentations différentes.
+/**
+ * /brief incrementation permet d'incrémenter deux variables ayant des incrémentations différentes.
+ * /param1,2 les variables a incrémenter 
+ * /param3 incrementation du premier parametre
+ * /param4 incrementation du deuxième parametre
+ **/
 static void incrementation(int *i1, int *i2, int incrementationI1, int incrementationI2){
   *i1+=incrementationI1;
   *i2+=incrementationI2;
 }
 
-// déplace l'ensemble de la grille dans la direction voulue (en fonction des paramètres)
+/**
+ * /brief  déplace l'ensemble de la grille dans la direction voulue (en fonction des paramètres)
+ * /param1 grid visée
+ * /param2 indice de l'ordonné de départ
+ * /param3 indice de l'abscisse de départ
+ * /param4 méthode d'indentation de l'ordonnée
+ * /param4 méthode d'indentation de l'abscisse
+ * /pre les directions prérequit UP (grid , 0, 0, 1, 0) DOWN (grid ,GRID_SIDE-1,0,-1,0) LEFT (grid,0,0,0,1); RIGHT (grid,0,GRID_SIDE-1,0,-1)
+ **/
 static void move(grid g,int i, int j,int indenti, int indentj){
   assert(g!=NULL);
   for (int cpt=0;cpt<GRID_SIDE;cpt++){
@@ -215,7 +233,16 @@ static void move(grid g,int i, int j,int indenti, int indentj){
   }
 }
 
-// teste s'il est possible de faire un déplacement dans une direction
+/**
+ * /brief déplace l'ensemble de la grille dans la direction voulue (en fonction des paramètres)
+ * /param1 grid visée
+ * /param2 indice de l'ordonné de départ
+ * /param3 indice de l'abscisse de départ
+ * /param4 méthode d'indentation de l'ordonnée
+ * /param4 méthode d'indentation de l'abscisse
+ * /ret bool true si possible false sinon
+ * /pre les directions prérequit UP (grid , 0, 0, 1, 0) DOWN (grid ,GRID_SIDE-1,0,-1,0) LEFT (grid,0,0,0,1); RIGHT (grid,0,GRID_SIDE-1,0,-1);
+ **/
 static bool possible(grid g, int i,int j,int indenti,int indentj){
   assert(g!=NULL);
   int tmpi=i;
