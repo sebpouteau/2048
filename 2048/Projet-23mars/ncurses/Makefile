@@ -5,8 +5,8 @@ CPPFLAGS=
 
 all:jeu
  
-jeu: main-jeu.o ../src/grid.o
-	$(CC) -o jeu main-jeu.o ../src/grid.o $(LDLIBS)
+jeu: main-jeu.o #../src/grid.o
+	$(CC) -o jeu main-jeu.o $(LDLIBS)
 
 include dep
 

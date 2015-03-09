@@ -18,7 +18,7 @@ dep:
 	$(CC) $(CPPFLAGS) -MM *.c >dep
 
 check: 
-	for i in $(EXEC); do\
-		./$$i;\
-	done
+	# for i in $(EXEC); do\
+	# 	./$$i;\
+	# done
 	valgrind ./test-fonction
