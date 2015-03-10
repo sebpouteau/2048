@@ -57,18 +57,6 @@ bool test_get_score_grid(grid g){
   return true;
 }
 
-bool test_set_score_grid(grid g){
-  set_grid_score(g,2);
-  if (grid_score(g)!=4)
-    return false;
-  set_grid_score(g,2);
-  if (grid_score(g)!=8)
-    return false;
-  set_grid_score(g,-1);
-  if (grid_score(g)!=0)
-    return false;
-  return true;
-}
 
 bool test_game_over(grid g){
   int nbr=1;

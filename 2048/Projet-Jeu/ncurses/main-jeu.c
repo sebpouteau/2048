@@ -39,26 +39,22 @@ int main(int argc,char **argv){
       case KEY_LEFT:
 	play(g,LEFT);
 	break;
-
-      case 113: // quit avec q
+      case 113: //q pour quitter
 	continuer=false;
 	reponse_valide=1;
 	break;
-     case 114:
+      case 114: //r pour rejouer
 	reponse_valide=1;
 	break;
       }
       display_grid(g);
     }
-    
     while (reponse_valide == 0 && continuer==true)
       display_gameOver(&continuer,&reponse_valide);
     endwin();    
   }
   return EXIT_SUCCESS;
 }
-
-
 
 static void display_gameOver(bool *continuer,int *reponse_valide){
   keypad(stdscr, TRUE);
@@ -77,8 +73,6 @@ static void display_gameOver(bool *continuer,int *reponse_valide){
   endwin();    
 }  
 
-   
- 
 static void display_grid(grid g){
   initscr();
   clear();
@@ -95,60 +89,23 @@ static void display_grid(grid g){
     y+=8;
   }
   start_color();
-  init_pair(1,1,0); //rouge
-  init_pair(2,2,0); //vert
-  init_pair(3,3,0); //jaune
-  init_pair(4,4,0); //bleu fonce
-  init_pair(5,5,0); //violet
-  init_pair(6,6,0); // bleu turquoise
-  init_pair(7,7,0); //blanc
-
+  //definition des couleur (rouge vert jaune bleu fonce violet bleu turquoise blanc)
+  for (int i = 1;i<8;i++){
+    init_pair(i,i,0);
+  }
   // mise des valeur dans la grille
   x=5; 
+  int t[]={1,3,2,6,4,5,7};
   for (int i=0;i<GRID_SIDE;i++){
     y=5;
     for (int j=0;j<GRID_SIDE;j++){
       if (get_tile(g,i,j)!=0){
-	  switch(get_tile(g,i,j)){
-	  case 1:
-	    attron(COLOR_PAIR(1));
-	    break;
-	  case 2:
-	    attron(COLOR_PAIR(3));
-	    break;
-	  case 3:
-	    attron(COLOR_PAIR(2));
-	    break;
-	  case 4:
-	    attron(COLOR_PAIR(6));
-	    break;
-	  case 5:
-	    attron(COLOR_PAIR(4));
-	    break;
-	  case 6:
-	    attron(COLOR_PAIR(5));
-	    break;
-	  case 7:
-	    attron(COLOR_PAIR(7));
-	    break;
-	  case 8:
-	    attron(COLOR_PAIR(1));
-	    break;
-	  case 9:
-	    attron(COLOR_PAIR(3));
-	    break;
-	  case 10:
-	    attron(COLOR_PAIR(2));
-	    break;
-	  default:
-	    attron(COLOR_PAIR(6));
-	    break;
-	  }
-	  //recuperation d'un nombre et coloration
-	  char buff[5];
-	  sprintf(buff, "%d",(unsigned int)pow(2, get_tile(g,i,j)));
-	  mvprintw(x,y,buff);
-	  attroff(COLOR_PAIR(1));
+	attron(COLOR_PAIR(t[(get_tile(g,i,j)-1)%7]));
+	//recuperation d'un nombre et coloration
+	char buff[5];
+	sprintf(buff, "%d",(unsigned int)pow(2, get_tile(g,i,j)));
+	mvprintw(x,y,buff);
+	attroff(COLOR_PAIR(1));
       }
       y+=8;
     }
@@ -162,29 +119,23 @@ static void display_grid(grid g){
   }
   mvprintw(6,36,"High Score: %lu ",read_highscore());
   mvprintw(21,3,"Recommencer Partie / Quitter Partie (r / q)");
-
   refresh();
 }
-static unsigned long int read_highscore(){
 
+static unsigned long int read_highscore(){
   unsigned long int score[1];
   FILE *highscore = NULL; //On initialise un pointeur de fichier
-
   highscore = fopen("../ncurses/highscore_ncurses.txt","r"); //On ouvre HIGHSCORE.txt
   // "r" = read only
-
   if (highscore == NULL) //On a pas réussi a ouvrir le fichier
     return 0;
-
   else
     {
       fscanf(highscore,"%lu",&score[0]);
       fclose(highscore);
     }
-
   return score[0];
 }
-
 
 static void write_highscore(unsigned long int score){
   FILE *highscore = NULL;

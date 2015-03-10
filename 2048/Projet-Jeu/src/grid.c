@@ -30,7 +30,7 @@ struct grid_s{
 static void move( grid g,int i, int j,int a, int b );
 static void fusion (grid g,int i,int j,int a,int b);
 static bool possible(grid g, int i,int j,int a,int b);
-
+static void set_grid_score(grid g,unsigned long int add_score);
 
 /* ======================================
     IMPLEMENTATION DE L'INTERFACE GRID.H
@@ -52,7 +52,6 @@ grid new_grid (){
   return g;
 }
 
-
 void delete_grid (grid g){
   assert ( g!=NULL && g->grid!=NULL);
   // destruction du tableau grid
@@ -68,7 +67,6 @@ void delete_grid (grid g){
   g = NULL;
 }
 
-
 void copy_grid (grid src,grid dst){
   assert(src!=NULL && dst!=NULL);
   // copie du tableau grid
@@ -78,12 +76,10 @@ void copy_grid (grid src,grid dst){
   dst->score = src->score;
 }
 
-
 unsigned long int grid_score (grid g){
   assert(g!=NULL);
   return g->score;
 }
-
 
 tile get_tile(grid g,int x, int y){
   assert(g!=NULL && g->grid!=NULL);
@@ -91,19 +87,16 @@ tile get_tile(grid g,int x, int y){
   return g->grid[x][y];
 }
 
-
 void set_tile(grid g,int x, int y, tile t){
   assert(g!=NULL && g->grid!=NULL);
   assert(0<=x && x<GRID_SIDE && 0<=y && y<GRID_SIDE);
   g->grid[x][y]=t;
 }
 
-
 bool game_over(grid g){
   assert (g!=NULL);
   return (can_move(g,UP)==false && can_move(g,LEFT)==false && can_move(g,RIGHT)==false && can_move(g,DOWN)==false);
 }
-
 
 bool can_move(grid g,dir d){
   assert(g!=NULL);
@@ -120,7 +113,6 @@ bool can_move(grid g,dir d){
     return false;
   }
 }
-
 
 void do_move(grid g, dir d){
   assert(g!=NULL);
@@ -141,7 +133,6 @@ void do_move(grid g, dir d){
     break;
   }
 }
-
 
 void add_tile (grid g){
   assert(g!=NULL);
@@ -169,19 +160,12 @@ void add_tile (grid g){
   }
 }
 
-
 void play (grid g, dir d){
   assert(g!=NULL);
   if(can_move(g, d)){
     do_move(g, d);
     add_tile(g);
   }
-}
-
-
-void set_grid_score(grid g,unsigned long int add_score){
-  assert(g!=NULL);
-  g->score+=pow(2,add_score);
 }
 
 
@@ -206,7 +190,6 @@ static void fusion (grid g,int i1,int j1,int i2,int j2){
   set_tile(g,i2,j2,0);
 }
 
-
 /**
  * \brief incrémentation permet d'incrémenter deux variables ayant des incrémentations différentes.
  * \param i1, i2 les variables à incrémenter 
@@ -217,7 +200,6 @@ static void incrementation(int *i1, int *i2, int incrementationI1, int increment
   *i1+=incrementationI1;
   *i2+=incrementationI2;
 }
-
 
 /**
  * \brief  déplace l'ensemble de la grille dans la direction voulue (en fonction des paramètres)
@@ -260,7 +242,6 @@ static void move(grid g, int i, int j,int indenti, int indentj){
   }
 }
 
-
 /**
  * \brief déplace l'ensemble de la grille dans la direction voulue (en fonction des paramètres)
  * \param g grid visée
@@ -280,7 +261,7 @@ static bool possible(grid g, int i,int j,int indenti,int indentj){
   int tmpj=j;
   for (int cpt=0;cpt<GRID_SIDE;cpt++){
     while(i<GRID_SIDE-indenti && i>=0-indenti && j<GRID_SIDE-indentj && j>=0-indentj){
-      // si deux cases collés sont indentique alors return true
+      // si deux cases collées sont indentique alors return true
       if( (get_tile(g,i,j)==get_tile(g,i+indenti,j+indentj) && get_tile(g,i,j)!=0) )
 	return true;
       // si une case vide est suivi d'une case non vide alors return true
@@ -295,4 +276,14 @@ static bool possible(grid g, int i,int j,int indenti,int indentj){
       incrementation (&i,&j,1,tmpj-j); 
   }
   return false;
+}
+
+/**
+ * \brief ajoute un score au score de la grid
+ * \param g grid 
+ * \param add_score
+ **/
+static void set_grid_score(grid g,unsigned long int add_score){
+  assert(g!=NULL);
+  g->score+=pow(2,add_score);
 }

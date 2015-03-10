@@ -6,7 +6,6 @@
 extern bool test_get_tile(grid g);
 extern bool test_set_tile(grid g);
 extern bool test_copy_grid(grid g);
-extern bool test_set_score_grid(grid g);
 extern bool test_get_score_grid(grid g);
 extern bool test_game_over(grid g);
 extern bool test_do_move_up(grid g);

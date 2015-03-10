@@ -128,7 +128,5 @@ void add_tile (grid g);
  */
 void play (grid g, dir d);
 
-// permet de modifier le score 
-void set_grid_score(grid g,unsigned long int add_score);
 
 #endif

@@ -13,7 +13,6 @@ int main(int argc, char **argv){
   display_test("get_tile",test_get_tile(g));
   display_test("set_tile",test_set_tile(g));
   display_test("get_score",test_get_score_grid(g));
-  display_test("set_score_grid",test_set_score_grid(g)); 
   display_test("copy_grid",test_copy_grid(g));
   display_test("game_over",test_game_over(g));
   display_test("do_move_UP",test_do_move_up(g));
