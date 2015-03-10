@@ -1,30 +1,38 @@
 CC = gcc
 CFLAGS =-std=c99 -g -Wall 
-LDLIBS = -lncurses -lm 
+LDLIBS = -lgrid -lm -L ../Projet-Jeu/lib/
 CPPFLAGS= 
 
-all: test-IAYordan #test-IA1  # test-IAJimmy test-IAJimmy-1 test-IAJimmy-2 test-IAJimmy-3-TRICHE
- 
-test-IA1: main-IA1.o ../Projet-Jeu/src/grid.o
-	$(CC) -o test-IA1 main-IA1.o ../Projet-Jeu/src/grid.o  $(LDLIBS)
+all: verif-libgrid test-IAYordan deplacement #test-IA1  test-IAJimmy test-IAJimmy-1 test-IAJimmy-2 test-IAJimmy-3-TRICHE 
 
-test-IAYordan: main-IAYordan.o ../Projet-Jeu/src/grid.o 
-	$(CC) -o test-IAYordan main-IAYordan.o ../Projet-Jeu/src/grid.o $(LDLIBS)
+verif-libgrid:
+	if [ ! -f "../Projet-Jeu/lib/libgrid.a" ];then $(MAKE) -C ../Projet-Jeu; fi
 
-test-IAJimmy: main-IAJimmy.o ../Projet-Jeu/src/grid.o ../Projet-Jeu/src/gridIA.o
-	$(CC) -o test-IAJimmy main-IAJimmy.o ../Projet-Jeu/src/grid.o ../Projet-Jeu/src/gridIA.o $(LDLIBS)
-test-IAJimmy-1: main-IAJimmy-1.o ../Projet-Jeu/src/grid.o ../Projet-Jeu/src/gridIA.o
-	$(CC) -o test-IAJimmy-1 main-IAJimmy-1.o ../Projet-Jeu/src/grid.o ../Projet-Jeu/src/gridIA.o $(LDLIBS)
-test-IAJimmy-2: main-IAJimmy-2.o ../Projet-Jeu/src/grid.o ../Projet-Jeu/src/gridIA.o
-	$(CC) -o test-IAJimmy-2 main-IAJimmy-2.o ../Projet-Jeu/src/grid.o ../Projet-Jeu/src/gridIA.o $(LDLIBS)
-test-IAJimmy-3-TRICHE: main-IAJimmy-3-TRICHE.o ../Projet-Jeu/src/grid.o ../Projet-Jeu/src/gridIA.o
-	$(CC) -o test-IAJimmy-3-TRICHE main-IAJimmy-3-TRICHE.o ../Projet-Jeu/src/grid.o ../Projet-Jeu/src/gridIA.o $(LDLIBS)
+deplacement:
+	if [ ! -d "bin" ];then mkdir bin; fi
+	mv test* bin/
+test-IA1: main-IA1.o 
+	$(CC) -o test-IA1 main-IA1.o   $(LDLIBS)
+
+test-IAYordan: main-IAYordan.o  
+	$(CC) -o test-IAYordan main-IAYordan.o  $(LDLIBS)
+
+test-IAJimmy: main-IAJimmy.o  
+	$(CC) -o test-IAJimmy main-IAJimmy.o $(LDLIBS)
+test-IAJimmy-1: main-IAJimmy-1.o
+	$(CC) -o test-IAJimmy-1 main-IAJimmy-1.o $(LDLIBS)
+test-IAJimmy-2: main-IAJimmy-2.o
+	$(CC) -o test-IAJimmy-2 main-IAJimmy-2.o  $(LDLIBS)
+test-IAJimmy-3-TRICHE: main-IAJimmy-3-TRICHE.o  
+	$(CC) -o test-IAJimmy-3-TRICHE main-IAJimmy-3-TRICHE.o  $(LDLIBS)
+
 
 include dep
 
 .PHONY: clean
 clean:
-	rm -f dep *.o *~ test-IA1 test-IAYordan test-IAJimmy test-IAJimmy-1 test-IAJimmy-2 test-IAJimmy-3-TRICHE
+	rm -f dep *.o *~ 
+	if [ -d "bin" ];then rm -rf bin/; fi
 dep:
 	$(CC) $(CPPFLAGS) -MM *.c > dep
 
