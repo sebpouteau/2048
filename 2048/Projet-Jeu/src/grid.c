@@ -4,13 +4,23 @@
 #include <math.h>
 #include "grid.h"
 
-/*
-Choix d'implémentaion de la structure:
- - tableau 2D de tile 
- - tableau 2D stockant les coordonnées des cases vides. (t[a][0] = abscisse ; t[a][1] = ordonnée)
- - nombre de cases vides
- - score de la grille
-*/
+/**
+ * \file grid.c
+ * \brief Implémentation de grid.h
+ * \author Ysabelle Emery, \n
+ *         Jimmy Gouraud, \n
+ *         Yordan Kirov, \n
+ *         Sébastien Pouteau.
+ * \version 1.0
+ * \date Licence 2 d'informatique - Mars 2015
+ **/
+
+
+/**
+ * \brief Choix d'implémentaion de la structure:
+ *    - tableau 2D de tile 
+ *    - score de la grille
+ **/
 struct grid_s{
   tile **grid; 
   unsigned long int score;
@@ -42,6 +52,7 @@ grid new_grid (){
   return g;
 }
 
+
 void delete_grid (grid g){
   assert ( g!=NULL && g->grid!=NULL);
   // destruction du tableau grid
@@ -57,6 +68,7 @@ void delete_grid (grid g){
   g = NULL;
 }
 
+
 void copy_grid (grid src,grid dst){
   assert(src!=NULL && dst!=NULL);
   // copie du tableau grid
@@ -66,10 +78,12 @@ void copy_grid (grid src,grid dst){
   dst->score = src->score;
 }
 
+
 unsigned long int grid_score (grid g){
   assert(g!=NULL);
   return g->score;
 }
+
 
 tile get_tile(grid g,int x, int y){
   assert(g!=NULL && g->grid!=NULL);
@@ -77,16 +91,19 @@ tile get_tile(grid g,int x, int y){
   return g->grid[x][y];
 }
 
+
 void set_tile(grid g,int x, int y, tile t){
   assert(g!=NULL && g->grid!=NULL);
   assert(0<=x && x<GRID_SIDE && 0<=y && y<GRID_SIDE);
   g->grid[x][y]=t;
 }
 
+
 bool game_over(grid g){
   assert (g!=NULL);
   return (can_move(g,UP)==false && can_move(g,LEFT)==false && can_move(g,RIGHT)==false && can_move(g,DOWN)==false);
 }
+
 
 bool can_move(grid g,dir d){
   assert(g!=NULL);
@@ -103,6 +120,7 @@ bool can_move(grid g,dir d){
     return false;
   }
 }
+
 
 void do_move(grid g, dir d){
   assert(g!=NULL);
@@ -123,6 +141,7 @@ void do_move(grid g, dir d){
     break;
   }
 }
+
 
 void add_tile (grid g){
   assert(g!=NULL);
@@ -150,6 +169,7 @@ void add_tile (grid g){
   }
 }
 
+
 void play (grid g, dir d){
   assert(g!=NULL);
   if(can_move(g, d)){
@@ -157,6 +177,7 @@ void play (grid g, dir d){
     add_tile(g);
   }
 }
+
 
 void set_grid_score(grid g,unsigned long int add_score){
   assert(g!=NULL);
@@ -169,10 +190,10 @@ void set_grid_score(grid g,unsigned long int add_score){
    ===================================== */
 
 /**
-/brief fusion deux case et met la deuxième case a 0
-/param1 grid
-/param2,3 coordonnée de la première case
-/param4,5 coordonnée de la deuxième case
+ * \brief fusionne deux cases et met la deuxième case à 0
+ * \param g grid
+ * \param i1, j1 coordonnée de la première case
+ * \param i2, j2 coordonnée de la deuxième case
  **/
 static void fusion (grid g,int i1,int j1,int i2,int j2){
   assert(g!=NULL);
@@ -185,27 +206,32 @@ static void fusion (grid g,int i1,int j1,int i2,int j2){
   set_tile(g,i2,j2,0);
 }
 
+
 /**
- * /brief incrementation permet d'incrémenter deux variables ayant des incrémentations différentes.
- * /param1,2 les variables a incrémenter 
- * /param3 incrementation du premier parametre
- * /param4 incrementation du deuxième parametre
+ * \brief incrémentation permet d'incrémenter deux variables ayant des incrémentations différentes.
+ * \param i1, i2 les variables à incrémenter 
+ * \param incrementationI1 incrémentation du premier paramètre
+ * \param incrementationI2 incrémentation du deuxième paramètre
  **/
 static void incrementation(int *i1, int *i2, int incrementationI1, int incrementationI2){
   *i1+=incrementationI1;
   *i2+=incrementationI2;
 }
 
+
 /**
- * /brief  déplace l'ensemble de la grille dans la direction voulue (en fonction des paramètres)
- * /param1 grid visée
- * /param2 indice de l'ordonné de départ
- * /param3 indice de l'abscisse de départ
- * /param4 méthode d'indentation de l'ordonnée
- * /param4 méthode d'indentation de l'abscisse
- * /pre les directions prérequit UP (grid , 0, 0, 1, 0) DOWN (grid ,GRID_SIDE-1,0,-1,0) LEFT (grid,0,0,0,1); RIGHT (grid,0,GRID_SIDE-1,0,-1)
+ * \brief  déplace l'ensemble de la grille dans la direction voulue (en fonction des paramètres)
+ * \param g grid visée
+ * \param i indice de l'ordonnée de départ
+ * \param j indice de l'abscisse de départ
+ * \param indenti méthode d'indentation de l'ordonnée
+ * \param indentj méthode d'indentation de l'abscisse
+ * \pre les directions prérequis : UP (grid , 0, 0, 1, 0)
+ *                                 DOWN (grid ,GRID_SIDE-1,0,-1,0)
+ *                                 LEFT (grid,0,0,0,1)
+ *                                 RIGHT (grid,0,GRID_SIDE-1,0,-1)
  **/
-static void move(grid g,int i, int j,int indenti, int indentj){
+static void move(grid g, int i, int j,int indenti, int indentj){
   assert(g!=NULL);
   for (int cpt=0;cpt<GRID_SIDE;cpt++){
     int tmpi=i;
@@ -213,6 +239,7 @@ static void move(grid g,int i, int j,int indenti, int indentj){
     int cpti=i+indenti;
     int cptj=j+indentj;
     while(cpti<GRID_SIDE && cptj<GRID_SIDE && 0<=cpti && 0<=cptj){
+      // si les 
       if( (tmpi==cpti && tmpj==cptj) || get_tile(g,cpti,cptj)==0 )
 	incrementation(&cpti,&cptj,indenti,indentj);
       else if(get_tile(g,tmpi,tmpj)==0)
@@ -233,15 +260,19 @@ static void move(grid g,int i, int j,int indenti, int indentj){
   }
 }
 
+
 /**
- * /brief déplace l'ensemble de la grille dans la direction voulue (en fonction des paramètres)
- * /param1 grid visée
- * /param2 indice de l'ordonné de départ
- * /param3 indice de l'abscisse de départ
- * /param4 méthode d'indentation de l'ordonnée
- * /param4 méthode d'indentation de l'abscisse
- * /ret bool true si possible false sinon
- * /pre les directions prérequit UP (grid , 0, 0, 1, 0) DOWN (grid ,GRID_SIDE-1,0,-1,0) LEFT (grid,0,0,0,1); RIGHT (grid,0,GRID_SIDE-1,0,-1);
+ * \brief déplace l'ensemble de la grille dans la direction voulue (en fonction des paramètres)
+ * \param g grid visée
+ * \param i indice de l'ordonné de départ
+ * \param j indice de l'abscisse de départ
+ * \param indenti méthode d'indentation de l'ordonnée
+ * \param indentj méthode d'indentation de l'abscisse
+ * \ret bool true si possible false sinon
+ * \pre les directions prérequis : UP (grid , 0, 0, 1, 0)
+ *                                 DOWN (grid ,GRID_SIDE-1,0,-1,0)
+ *                                 LEFT (grid,0,0,0,1)
+ *                                 RIGHT (grid,0,GRID_SIDE-1,0,-1)
  **/
 static bool possible(grid g, int i,int j,int indenti,int indentj){
   assert(g!=NULL);
