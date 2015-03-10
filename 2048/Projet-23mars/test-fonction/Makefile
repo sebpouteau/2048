@@ -1,13 +1,14 @@
 CC = gcc
 CFLAGS = -std=c99 -g -Wall
+LDLIBS =  -lgrid -lm  -L ../lib/
 CPPFLAGS = 
 EXEC =test-fonction
 
 
 all: test-fonction 
 
-test-fonction: main-fonction-test.o ../src/grid.o ./fonction-test.o
-	${CC} ${LDFLAGS} -o test-fonction main-fonction-test.o ../src/grid.o ./fonction-test.o
+test-fonction: main-fonction-test.o ./fonction-test.o
+	${CC} ${LDFLAGS} -o test-fonction main-fonction-test.o ./fonction-test.o $(LDLIBS)
 
 include dep
 

@@ -160,7 +160,7 @@ void play (grid g, dir d){
 
 void set_grid_score(grid g,unsigned long int add_score){
   assert(g!=NULL);
-  g->score+=add_score;
+  g->score+=pow(2,add_score);
 }
 
 
@@ -233,7 +233,16 @@ static void move(grid g,int i, int j,int indenti, int indentj){
   }
 }
 
-// teste s'il est possible de faire un déplacement dans une direction
+/**
+ * /brief déplace l'ensemble de la grille dans la direction voulue (en fonction des paramètres)
+ * /param1 grid visée
+ * /param2 indice de l'ordonné de départ
+ * /param3 indice de l'abscisse de départ
+ * /param4 méthode d'indentation de l'ordonnée
+ * /param4 méthode d'indentation de l'abscisse
+ * /ret bool true si possible false sinon
+ * /pre les directions prérequit UP (grid , 0, 0, 1, 0) DOWN (grid ,GRID_SIDE-1,0,-1,0) LEFT (grid,0,0,0,1); RIGHT (grid,0,GRID_SIDE-1,0,-1);
+ **/
 static bool possible(grid g, int i,int j,int indenti,int indentj){
   assert(g!=NULL);
   int tmpi=i;

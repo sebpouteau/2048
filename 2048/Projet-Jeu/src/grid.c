@@ -160,7 +160,7 @@ void play (grid g, dir d){
 
 void set_grid_score(grid g,unsigned long int add_score){
   assert(g!=NULL);
-  g->score+=add_score;
+  g->score+=pow(2,add_score);
 }
 
 

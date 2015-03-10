@@ -4,8 +4,9 @@
 #include <math.h>
 #include "../src/grid.h"
 #include "fonction-test.h"
-
+#include <math.h>
   
+
 bool test_new_grid(){
   grid g = new_grid();
   if (g==NULL)
@@ -57,11 +58,14 @@ bool test_get_score_grid(grid g){
 }
 
 bool test_set_score_grid(grid g){
-  set_grid_score(g,20);
-  if (grid_score(g)!=20)
+  set_grid_score(g,2);
+  if (grid_score(g)!=4)
+    return false;
+  set_grid_score(g,2);
+  if (grid_score(g)!=8)
     return false;
   set_grid_score(g,-1);
-  if (grid_score(g)==0)
+  if (grid_score(g)!=0)
     return false;
   return true;
 }
