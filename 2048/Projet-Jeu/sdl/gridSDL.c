@@ -227,9 +227,7 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
   // Réécriture de l'highscore si nouveau highscore
   if(grid_score(g) == highscore){
     char char_tmp_nickname[10]="";
-    bool try_again_tmp = *try_again;
-    enter_nickname(char_tmp_nickname, char_highscore, 148, 355, surface_screen, surface_gameover, surface_tile, surface_background_grid, g, &end, &try_again_tmp);
-    *try_again = try_again_tmp;
+    enter_nickname(char_tmp_nickname, char_highscore, 148, 355, surface_screen, surface_gameover, surface_tile, surface_background_grid, g, &end, try_again);
   }
 
   SDL_Flip(surface_screen);
@@ -319,18 +317,18 @@ static void enter_nickname(char *char_nickname, char *char_highscore, int positi
     SDL_WaitEvent(&event);
     if(event.type == SDL_QUIT){
       cpt = num_char+1;
-      end = false;
+      *end = false;
     }
     else if(event.type == SDL_KEYDOWN){
       switch(event.key.keysym.sym){
       // Give Up
       case SDLK_ESCAPE:
 	cpt = num_char+1;
-	end = false;
+	*end = false;
 	break;
       case SDLK_RETURN: // touche "entrer"
 	cpt = num_char+1;
-	end = false;
+	*end = false;
 	*try_again = true;
 	break;
       case SDLK_BACKSPACE: // touche "supprimer"
