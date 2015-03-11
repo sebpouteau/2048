@@ -20,9 +20,8 @@ static void boucle_best_move(tabBestM tab,dir def, grid g, grid test);
 static dir mouvement_impossible(grid g);
 
 int main(int argc,char **argv){
-  int n = 100;
   srand(time(NULL));
-  while(n >0){
+  for (int j=0; j< 10;j++){
     grid g= new_grid();
     add_tile(g);
     add_tile(g);
@@ -41,10 +40,11 @@ int main(int argc,char **argv){
 	dir b = tab.best;
 	play(g,b);
       }
-      printf("Tile max = %ld \n", maximum_tile(g));
-      //delete_grid(g);
-      n-=1;
     }
+    printf("Tile max = %ld \n", maximum_tile(g));
+    delete_grid(test);
+    delete_grid(g);
+  
   }
 }
 
@@ -85,11 +85,11 @@ static tabBestM new_tabBestM(){
 
 
 static dir best_move(grid g){
-  grid test = new_grid();
+  grid test1 = new_grid();
   tabBestM tab = new_tabBestM();
-  boucle_best_move(tab,mouvement_impossible(test),g,test);
+  boucle_best_move(tab,mouvement_impossible(test1),g,test1);
   dir b = tab.best;
-  delete_grid(test);
+  delete_grid(test1);
   return b;
 }
 
@@ -128,6 +128,39 @@ static dir mouvement_impossible(grid g){
 /*   } */
 /*   return t; */
 /* } */
-  
-  
-  
+
+float board_position(grid g){
+  int fusions_with_4 = 0;
+  int fusions_with_2 = 0;
+  for(int i = 0;i<4;i++){
+    for(int j = 0;j<4;j++){
+      if(get_tile(g,i,j)==0){
+	continue;
+	fusions_with_4=5;
+	fusions_with_2=2;
+	
+
+      }
+    }
+  }
+  return 0.2;
+}
+ 
+int number_of_fusions(grid g,int num,int p1,int p2){
+  int somme = 0;
+  for(int i = 0;i<4;i++){
+    if(i == p1)
+      continue;
+    if(get_tile(g,p1,i) == num)
+      somme+=1;
+  }
+  for(int i = 0;i<4;i++){
+    if(i==p2)
+      continue;
+    if(get_tile(g,i,p2)==num)
+      somme+=1;
+  }
+  return somme;
+}
+
+      
