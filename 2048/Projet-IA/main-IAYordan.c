@@ -18,6 +18,10 @@ static tabBestM new_tabBestM();
 static dir best_move(grid g);
 static void boucle_best_move(tabBestM tab,dir def, grid g, grid test);
 static dir mouvement_impossible(grid g);
+static bool fusion_pissble(grid g,int p1,int p2);
+static int empty_tiles(grid g);
+static int number_of_fusions(grid g,tile num,int p1,int p2);
+static float board_position(grid g);
 
 int main(int argc,char **argv){
   srand(time(NULL));
@@ -129,7 +133,7 @@ static dir mouvement_impossible(grid g){
 /*   return t; */
 /* } */
 
-float board_position(grid g){
+static float board_position(grid g){
   int fusions_with_4 = 0;
   int fusions_with_2 = 0;
   for(int i = 0;i<4;i++){
@@ -142,10 +146,10 @@ float board_position(grid g){
       }
     }
   }
-  return (fusion_with_4 + fusions_with_2)/empty_tiles(g);
+  return (fusions_with_4 + fusions_with_2)/(empty_tiles(g)*10);
 }
  
-int number_of_fusions(grid g,int num,int p1,int p2){
+static int number_of_fusions(grid g,tile num,int p1,int p2){
   int somme = 0;
     for(int i = 0;i<4;i++){
       if(i == p1)
@@ -162,7 +166,7 @@ int number_of_fusions(grid g,int num,int p1,int p2){
     return somme;
 }
 
-int empty_tiles(grid g){
+static int empty_tiles(grid g){
   int nb = 0;
   for(int i = 0; i<4;i++){
     for(int j = 0;j<4;j++){
@@ -173,3 +177,38 @@ int empty_tiles(grid g){
   return nb;
 }
 
+static bool fusion_pissble(grid g,int p1,int p2){
+  for(int i = p1;i<3;i++){
+    if(get_tile(g,i,p2+1) != get_tile(g,p1,p2) && get_tile(g,i,p2+1) != 0)
+      return false;
+    if(get_tile(g,i,p2+1) == 0)
+      continue;
+    if(get_tile(g,i,p2) == get_tile(g,i,p2+1))
+      return true;
+  }
+  for(int i = p1;i>0;i--){
+    if(get_tile(g,i,p2-1) != get_tile(g,p1,p2) && get_tile(g,i,p2-1) != 0)
+      return false;
+    if(get_tile(g,i,p2-1) == 0)
+      continue;
+    if(get_tile(g,i,p2) == get_tile(g,i,p2-1))
+      return true;
+  }
+  for(int i = p2;i<4;i++){
+    if(get_tile(g,p1+1,i) != get_tile(g,p1,p2) && get_tile(g,p1+1,i) != 0)
+      return false;
+    if(get_tile(g,p1+1,i) == 0)
+      continue;
+    if(get_tile(g,p2,i) == get_tile(g,p1+1,i))
+      return true;
+  }
+  for(int i = p2;i>0;i--){
+    if(get_tile(g,p1-1,i) != get_tile(g,p1,p2) && get_tile(g,p1-1,i) != 0)
+      return false;
+    if(get_tile(g,p1-1,i) == 0)
+      continue;
+    if(get_tile(g,p1,i) == get_tile(g,p1-1,i))
+      return true;
+  }
+  return false;
+}

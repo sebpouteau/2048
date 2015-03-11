@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "grid.h"
+#include "../Projet-Jeu/src/grid.h"
 #include "gridIA.h"
 
 unsigned long int poids_fusion(grid g, dir d){
