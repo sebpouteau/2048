@@ -134,33 +134,42 @@ float board_position(grid g){
   int fusions_with_2 = 0;
   for(int i = 0;i<4;i++){
     for(int j = 0;j<4;j++){
-      if(get_tile(g,i,j)==0){
+      if(get_tile(g,i,j)==0)
 	continue;
-	fusions_with_4=5;
-	fusions_with_2=2;
-	
-
+      else{
+	fusions_with_4 = number_of_fusions(g,4,i,j);
+	fusions_with_2 = number_of_fusions(g,2,i,j);
       }
     }
   }
-  return 0.2;
+  return (fusion_with_4 + fusions_with_2)/empty_tiles(g);
 }
  
 int number_of_fusions(grid g,int num,int p1,int p2){
   int somme = 0;
-  for(int i = 0;i<4;i++){
-    if(i == p1)
-      continue;
-    if(get_tile(g,p1,i) == num)
-      somme+=1;
-  }
-  for(int i = 0;i<4;i++){
-    if(i==p2)
-      continue;
-    if(get_tile(g,i,p2)==num)
-      somme+=1;
-  }
-  return somme;
+    for(int i = 0;i<4;i++){
+      if(i == p1)
+	continue;
+      if(get_tile(g,p1,i) == num)
+	somme+=1;
+    }
+    for(int i = 0;i<4;i++){
+      if(i==p2)
+	continue;
+      if(get_tile(g,i,p2)==num)
+	somme+=1;
+    }
+    return somme;
 }
 
-      
+int empty_tiles(grid g){
+  int nb = 0;
+  for(int i = 0; i<4;i++){
+    for(int j = 0;j<4;j++){
+      if(get_tile(g,i,j) == 0)
+	nb += 1;
+    }
+  }
+  return nb;
+}
+
