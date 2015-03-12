@@ -44,7 +44,7 @@ void game_sdl(){
 
   // Initialisation du fond autour de la grille
   SDL_Surface *surface_brackground_grid = NULL;
-  surface_brackground_grid = SDL_CreateRGBSurface(SDL_HWSURFACE, 420, 420, 32, 0, 0, 0, 0);
+  surface_brackground_grid = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_DOUBLEBUF, 420, 420, 32, 0, 0, 0, 0);
   SDL_Rect position_brackground_grid;
   position_brackground_grid.x = 40;
   position_brackground_grid.y = 40;
@@ -128,6 +128,7 @@ void game_sdl(){
 }
 
 
+
 static void display_grid(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_tile){
   char name_tile[30];
   SDL_Rect position_tile;
@@ -145,7 +146,6 @@ static void display_grid(grid g, SDL_Surface *surface_screen, SDL_Surface *surfa
   }
   SDL_Flip(surface_screen);
 }
-
 
 
 
@@ -195,7 +195,6 @@ static void display_score(grid g, SDL_Surface *surface_screen, SDL_Surface *surf
   TTF_CloseFont(police_text);
   TTF_CloseFont(police_menu);
 }
-
 
 
 
@@ -259,7 +258,6 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
 
 
 
-
 static void display_text(char *char_text, int position_height, SDL_Surface *surface_screen, SDL_Surface *surface_text, TTF_Font *police_text, SDL_Color color_text, SDL_Color color_background, bool transparence){
   SDL_Rect position_text;
   surface_text = TTF_RenderText_Shaded(police_text, char_text, color_text, color_background);
@@ -269,8 +267,6 @@ static void display_text(char *char_text, int position_height, SDL_Surface *surf
   position_text.y = position_height;
   SDL_BlitSurface(surface_text, NULL, surface_screen, &position_text);
 }
-
-
 
 
 
@@ -371,6 +367,7 @@ static void enter_nickname(char *char_nickname, char *char_highscore, SDL_Surfac
 	sprintf(display_highscore, "New Highscore : %s !!", char_highscore);
 	display_text(display_highscore, 210, surface_screen, surface_text, police_text, color_text, color_background, true);
 	display_text("Veuillez entrer votre nickname :", 310, surface_screen, surface_text, police_text, color_text, color_background, true);
+
 	display_text(char_display, 355, surface_screen, surface_text, police_text, color_text, color_background, true);
 	SDL_Flip(surface_screen);
 	re_display = false;
