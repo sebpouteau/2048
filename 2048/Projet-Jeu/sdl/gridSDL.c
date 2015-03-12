@@ -8,9 +8,7 @@
 #include "../src/grid.h"
 #include "gridSDL.h"
 
-// TO_DO_LIST :
-// faire des pointeurs de booléens
-// **********************
+
 
 // affiche la grille
 static void display_grid(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_tile);
@@ -280,7 +278,7 @@ static void display_text(char *char_text, int position_x, int position_y, SDL_Su
 static void enter_nickname(char *char_nickname, char *char_highscore, int position_x, int position_y, SDL_Surface *surface_screen, SDL_Surface *surface_text, SDL_Surface *surface_tile, SDL_Surface *surface_background_grid, grid g, bool *end, bool *try_again){
   // affiche grille
   display_grid(g, surface_screen, surface_tile);
-  
+
   // Ajout d'un transparent sur la grille
   SDL_Rect position_background_grid;
   position_background_grid.x = 40;
@@ -288,6 +286,7 @@ static void enter_nickname(char *char_nickname, char *char_highscore, int positi
   SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 0, 255));
   SDL_SetAlpha(surface_background_grid, SDL_SRCALPHA, 125);
   SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
+  SDL_Flip(surface_screen);
   
 // Affiche game over
   TTF_Font *police_text = TTF_OpenFont("arial.ttf", 30);
@@ -296,12 +295,12 @@ static void enter_nickname(char *char_nickname, char *char_highscore, int positi
   char char_display[60];
   char char_tmp[8] = "********";
   sprintf(char_display, "%s - ********", char_highscore);
+  display_text(char_gameover, 140, 112, surface_screen, surface_text, police_text, color_text, color_background, true);
   display_text(char_display, position_x, position_y, surface_screen, surface_text, police_text, color_text, color_background, true);
 
   // Affiche complément game over
   FILE* highscore_txt = fopen("highscore_sdl.txt", "r+");
   char display_highscore[30];
-  display_grid(g, surface_screen, surface_tile);
   sprintf(display_highscore, "New Highscore : %s !!", char_highscore);
   display_text(display_highscore, 80, 210, surface_screen, surface_text, police_text, color_text, color_background, true);
   display_text("Veuillez entrer votre nickname :", 60, 310, surface_screen, surface_text, police_text, color_text, color_background, true);
@@ -312,6 +311,7 @@ static void enter_nickname(char *char_nickname, char *char_highscore, int positi
   SDL_Event event;
   int cpt = 0;
   int num_char = 8;
+  bool re_display = false;
   // Boucle while permettant de récupérer et de sauvegarder le pseudo
   while(num_char >= cpt){
     SDL_WaitEvent(&event);
@@ -341,6 +341,7 @@ static void enter_nickname(char *char_nickname, char *char_highscore, int positi
 	    sprintf(char_display, "%s - %s%-10s", char_highscore, char_nickname, char_tmp);
 	  write_line(highscore_txt, char_nickname, char_highscore);
 	  cpt -= 1;
+	  re_display = true;
 	}
 	break;
       default:
@@ -352,25 +353,29 @@ static void enter_nickname(char *char_nickname, char *char_highscore, int positi
 	    sprintf(char_display, "%s - %s%-10s", char_highscore, char_nickname, char_tmp);
 	    write_line(highscore_txt, char_nickname, char_highscore);
 	    cpt += 1;
+	    re_display = true;
 	  }
 	}
 	break;
       }
-      // affiche grille
-      display_grid(g, surface_screen, surface_tile);
-      
-      // Ajout d'un transparent sur la grille
-      SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 0, 255));
-      SDL_SetAlpha(surface_background_grid, SDL_SRCALPHA, 125);
-      SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
-
-      // Affiche score et pseudo
-      display_text(char_gameover, 140, 112, surface_screen, surface_text, police_text, color_text, color_background, true);
-      sprintf(display_highscore, "New Highscore : %s !!", char_highscore);
-      display_text(display_highscore, 80, 210, surface_screen, surface_text, police_text, color_text, color_background, true);
-      display_text("Veuillez entrer votre nickname :", 60, 310, surface_screen, surface_text, police_text, color_text, color_background, true);
-      display_text(char_display, position_x, position_y, surface_screen, surface_text, police_text, color_text, color_background, true);
-      SDL_Flip(surface_screen);
+      if(re_display){
+	// affiche grille
+	display_grid(g, surface_screen, surface_tile);
+	
+	// Ajout d'un transparent sur la grille
+	SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 0, 255));
+	SDL_SetAlpha(surface_background_grid, SDL_SRCALPHA, 125);
+	SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
+	
+	// Affiche score et pseudo
+	display_text(char_gameover, 140, 112, surface_screen, surface_text, police_text, color_text, color_background, true);
+	sprintf(display_highscore, "New Highscore : %s !!", char_highscore);
+	display_text(display_highscore, 80, 210, surface_screen, surface_text, police_text, color_text, color_background, true);
+	display_text("Veuillez entrer votre nickname :", 60, 310, surface_screen, surface_text, police_text, color_text, color_background, true);
+	display_text(char_display, position_x, position_y, surface_screen, surface_text, police_text, color_text, color_background, true);
+	SDL_Flip(surface_screen);
+	re_display = false;
+      }
     }
     // s'il y a des déplacements de souris, les ignorer
     else if(event.type == SDL_MOUSEMOTION)
