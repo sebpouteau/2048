@@ -44,10 +44,10 @@ void game_sdl(){
 
   // Initialisation du fond autour de la grille
   SDL_Surface *surface_brackground_grid = NULL;
+  surface_brackground_grid = SDL_CreateRGBSurface(SDL_HWSURFACE, 420, 420, 32, 0, 0, 0, 0);
   SDL_Rect position_brackground_grid;
   position_brackground_grid.x = 40;
   position_brackground_grid.y = 40;
-  surface_brackground_grid = SDL_CreateRGBSurface(SDL_HWSURFACE, 420, 420, 32, 0, 0, 0, 0);
   SDL_FillRect(surface_brackground_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 0, 255));
   SDL_BlitSurface(surface_brackground_grid, NULL, surface_screen, &position_brackground_grid);
   SDL_Flip(surface_screen);
@@ -57,27 +57,28 @@ void game_sdl(){
   add_tile(g);
   add_tile(g);
   
-  //paramètres boucle du jeu
+  // Paramètres boucle du jeu
   bool play_continue = true;
   bool try_again = false;
   SDL_Event event;
 
-  //paramètres affichage score
+  // Paramètres affichage score
   SDL_Surface *surface_score = NULL;
   
-  //paramètres affichage grille
+  // Paramètres affichage grille
   SDL_Surface *surface_tile = NULL;
 
+  // Affiche grille et score
   display_grid(g, surface_screen, surface_tile);
   display_score(g, surface_screen, surface_score);
 
   // boucle du jeu
   while (play_continue){
     SDL_WaitEvent(&event);
-    // permet de quitter
+    // Permet de quitter (en cliquant sur la croix pour fermer)
     if (event.type == SDL_QUIT)
       play_continue = false;
-    // choix direction avec touche directionnelle
+    // choix de la direction direction avec touche directionnelle
     else if(event.type == SDL_KEYDOWN){
       switch(event.key.keysym.sym){
       case SDLK_UP:
@@ -153,11 +154,11 @@ static void display_score(grid g, SDL_Surface *surface_screen, SDL_Surface *surf
   SDL_Color color_text = {255, 0, 0}, color_background = {255,255,255};  
   char char_score[100];
 
-  // Afficher le score
+  // Affiche le score
   sprintf(char_score, "Score : %lu ", grid_score(g));
   display_text(char_score, 5, surface_screen, surface_score, police_text, color_text, color_background, false);
 
-  // Ouverture (et si besoin création) du fichier
+  // Ouverture (et si besoin création) du fichier contenant l'highscore
   FILE* highscore_txt = fopen("../sdl/highscore_sdl.txt", "r+");
   if(highscore_txt == NULL){
     highscore_txt = fopen("../sdl/highscore_sdl.txt", "w");
@@ -167,16 +168,16 @@ static void display_score(grid g, SDL_Surface *surface_screen, SDL_Surface *surf
   char char_highscore[10] = "";
   char char_nickname[10] = "";
   read_line(highscore_txt, char_nickname, char_highscore);
-  unsigned long int highscore = strtoul(char_highscore, NULL, 10); // convertir un chaine en unsigned long int
+  unsigned long int highscore = strtoul(char_highscore, NULL, 10); // converti une chaine de caractère en unsigned long int
 
   // Affiche l'highscore
   if(grid_score(g) >= highscore){
     sprintf(char_highscore, "%lu", grid_score(g));
     write_line(highscore_txt, char_nickname, char_highscore);
-    sprintf(char_score, "     New Highscore : %s !!     ", char_highscore);
+    sprintf(char_score, "       New Highscore : %s !!       ", char_highscore);
     display_text(char_score, 470, surface_screen, surface_score, police_text, color_text, color_background, false);
   }else{
-    sprintf(char_score, "   Highscore :%s - %s   ", char_highscore, char_nickname);
+    sprintf(char_score, "Highscore :%s - %s", char_highscore, char_nickname);
     display_text(char_score, 470, surface_screen, surface_score, police_text, color_text, color_background, false);
   }
 
@@ -210,7 +211,7 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
 
   // Affiche "Game Over"
   SDL_Surface *surface_gameover = NULL;
-  char *char_gameover = "  GAME OVER   ";
+  char *char_gameover = " GAME OVER ";
   display_text(char_gameover, 112, surface_screen, surface_gameover, police_text, color_text, color_background, true);
 
   // Paramètre highscore
@@ -221,14 +222,12 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
   read_line(highscore_txt, char_nickname, char_highscore);
   unsigned long int highscore = strtoul(char_highscore, NULL, 10); // convertir un chaine en unsigned long int
 
-
   SDL_Flip(surface_screen);
   // Réécriture de l'highscore si nouveau highscore
   if(grid_score(g) == highscore){
     char char_tmp_nickname[10]="";
     enter_nickname(char_tmp_nickname, char_highscore, surface_screen, surface_gameover, surface_tile, surface_background_grid, g, &end, try_again);
   }
-
 
   SDL_Flip(surface_screen);
   //boucle de fin
@@ -291,7 +290,7 @@ static void enter_nickname(char *char_nickname, char *char_highscore, SDL_Surfac
 // Affiche game over
   TTF_Font *police_text = TTF_OpenFont("../sdl/arial.ttf", 30);
   SDL_Color color_text = {255, 255, 255}, color_background = {0, 0, 0};
-  char *char_gameover = "  GAME OVER   ";
+  char *char_gameover = " GAME OVER ";
   char char_display[60];
   char char_tmp[8] = "********";
   sprintf(char_display, "%s - ********", char_highscore);
