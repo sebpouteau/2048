@@ -3,7 +3,6 @@
 #include <assert.h>
 #include <math.h>
 #include "../Projet-Jeu/src/grid.h"
-//#include "../Projet-Jeu/src/gridComplementaire.h"
 #include <time.h>
 
 struct tabBestM{
@@ -15,13 +14,11 @@ struct tabBestM{
 //static void display_grid(grid g);
 static long maximum_tile(grid g);
 static tabBestM new_tabBestM();
-static dir best_move(grid g);
+static dir best_move(grid g,dir i, int compt, dir best);
 static void boucle_best_move(tabBestM tab,dir def, grid g, grid test);
-static dir mouvement_impossible(grid g);
-static bool fusion_pissble(grid g,int p1,int p2);
+static bool fusion_possible(grid g,int p1,int p2);
 static int empty_tiles(grid g);
-static int number_of_fusions(grid g,tile num,int p1,int p2);
-static float board_position(grid g);
+static float opponent_chance(grid g);
 
 int main(int argc,char **argv){
   srand(time(NULL));
@@ -36,7 +33,7 @@ int main(int argc,char **argv){
       for(dir i = UP; i<=RIGHT;i++){
 	copy_grid(g,test);
 	play(test,i);
-	play(test,best_move(test));
+	//play(test,best_move(test));
 	if(tab.score < grid_score(test)){
 	  tab.score = grid_score(test);
 	  tab.best = i;
@@ -88,13 +85,15 @@ static tabBestM new_tabBestM(){
 
 
 
-static dir best_move(grid g){
-  grid test1 = new_grid();
+static dir best_move(grid g,dir i,int compt,dir best){
+  if(!can_move(g,i))
+    return best_move(g,i++,compt++,best);
+  if(compt == 4)
+    return best;
+  grid test = new_grid();
   tabBestM tab = new_tabBestM();
-  boucle_best_move(tab,mouvement_impossible(test1),g,test1);
-  dir b = tab.best;
-  delete_grid(test1);
-  return b;
+  copy_grid(g,test);
+  return UP;
 }
 
 static void boucle_best_move(tabBestM tab,dir def, grid g, grid test){
@@ -109,13 +108,7 @@ static void boucle_best_move(tabBestM tab,dir def, grid g, grid test){
   }
 }    
 
-static dir mouvement_impossible(grid g){
-  for(dir i = UP; i<=RIGHT;i++){
-    if(!can_move(g,i))
-      return i;
-  }
-  return 0;
-}
+
 
   
 /* static int* max_position(grid(g)){ */
@@ -133,38 +126,31 @@ static dir mouvement_impossible(grid g){
 /*   return t; */
 /* } */
 
-static float board_position(grid g){
+
+static float opponent_chance(grid g){
   int fusions_with_4 = 0;
   int fusions_with_2 = 0;
   for(int i = 0;i<4;i++){
     for(int j = 0;j<4;j++){
-      if(get_tile(g,i,j)==0)
-	continue;
-      else{
-	fusions_with_4 = number_of_fusions(g,4,i,j);
-	fusions_with_2 = number_of_fusions(g,2,i,j);
+      if(get_tile(g,i,j)==0){
+	set_tile(g,i,j,2);
+	if(fusion_possible(g,i,j))
+	  fusions_with_2 += 1;
+        set_tile(g,i,j,0);
       }
+      if(get_tile(g,i,j) == 0){
+	set_tile(g,i,j,4);
+	if(fusion_possible(g,i,j))
+	   fusions_with_4 += 1;
+	set_tile(g,i,j,0);
+	
+      }   
     }
   }
-  return (fusions_with_4 + fusions_with_2)/(empty_tiles(g)*10);
+  return (fusions_with_4 + (fusions_with_2 * 9))/(empty_tiles(g)*10);
 }
  
-static int number_of_fusions(grid g,tile num,int p1,int p2){
-  int somme = 0;
-    for(int i = 0;i<4;i++){
-      if(i == p1)
-	continue;
-      if(get_tile(g,p1,i) == num)
-	somme+=1;
-    }
-    for(int i = 0;i<4;i++){
-      if(i==p2)
-	continue;
-      if(get_tile(g,i,p2)==num)
-	somme+=1;
-    }
-    return somme;
-}
+ 
 
 static int empty_tiles(grid g){
   int nb = 0;
@@ -177,7 +163,7 @@ static int empty_tiles(grid g){
   return nb;
 }
 
-static bool fusion_pissble(grid g,int p1,int p2){
+static bool fusion_possible(grid g,int p1,int p2){
   for(int i = p1;i<3;i++){
     if(get_tile(g,i,p2+1) != get_tile(g,p1,p2) && get_tile(g,i,p2+1) != 0)
       return false;
