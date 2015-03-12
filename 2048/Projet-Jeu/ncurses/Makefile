@@ -3,10 +3,10 @@ CFLAGS = -std=c99 -g -Wall
 LDLIBS = -lncurses -lm -lgrid -L ../lib/
 CPPFLAGS= 
 
-all:jeu
+all:jeu_ncurses
  
-jeu: main-jeu.o 
-	$(CC) -o jeu main-jeu.o $(LDLIBS)
+jeu_ncurses: main-jeu.o 
+	$(CC) -o jeu_ncurses main-jeu.o $(LDLIBS)
 
 include dep
 

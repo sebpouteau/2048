@@ -1,15 +1,18 @@
-LIBS=  test-fonction ncurses
+LIBS=  test-fonction ncurses sdl
 
 all: install
 	for i in $(LIBS);do\
-		$(MAKE) -C $$i;\
+		$(MAKE) -C $$i all;\
 	done
-	mv ./ncurses/jeu ./bin
+	mv ./ncurses/jeu_ncurses ./bin
+	mv ./sdl/jeu_sdl ./bin
 
 install:
 	$(MAKE) -C src;\
+	$(MAKE) -C sdl;\
 	if [ ! -d "lib" ];then mkdir lib; fi
 	if [ ! -f "lib/libgrid.a" ];then ar -cr ./lib/libgrid.a ./src/grid.o; fi
+	if [ ! -f "lib/libgridSDl.a" ];then ar -cr ./lib/libgridSDL.a ./sdl/gridSDL.o; fi
 	if [ ! -d "bin" ];then mkdir bin; fi
 
 

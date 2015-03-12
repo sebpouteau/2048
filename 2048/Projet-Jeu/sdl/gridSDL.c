@@ -135,9 +135,9 @@ static void display_grid(grid g, SDL_Surface *surface_screen, SDL_Surface *surfa
       position_tile.x = 50 + j*100;
       position_tile.y = 50 + i*100;
       if(get_tile(g,i,j) == 0)
-	sprintf(name_tile, "tiles/tile0.bmp");
+	sprintf(name_tile, "../sdl/tiles/tile0.bmp");
       else
-	sprintf(name_tile, "tiles/tile%d.bmp", (int)pow(2,get_tile(g,i,j)));
+	sprintf(name_tile, "../sdl/tiles/tile%d.bmp", (int)pow(2,get_tile(g,i,j)));
       surface_tile = SDL_LoadBMP(name_tile);
       SDL_BlitSurface(surface_tile, NULL, surface_screen, &position_tile);
     }
@@ -149,7 +149,7 @@ static void display_grid(grid g, SDL_Surface *surface_screen, SDL_Surface *surfa
 
 
 static void display_score(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_score){
-  TTF_Font *police_text = TTF_OpenFont("arial.ttf", 30);  
+  TTF_Font *police_text = TTF_OpenFont("../sdl/arial.ttf", 30);  
   SDL_Color color_text = {255, 0, 0}, color_background = {255,255,255};  
   char char_score[100];
 
@@ -158,9 +158,9 @@ static void display_score(grid g, SDL_Surface *surface_screen, SDL_Surface *surf
   display_text(char_score, (500/2)-(strlen(char_score)*6), 5, surface_screen, surface_score, police_text, color_text, color_background, false);
 
   // Ouverture (et si besoin création) du fichier
-  FILE* highscore_txt = fopen("highscore_sdl.txt", "r+");
+  FILE* highscore_txt = fopen("../sdl/highscore_sdl.txt", "r+");
   if(highscore_txt == NULL){
-    highscore_txt = fopen("highscore_sdl.txt", "w");
+    highscore_txt = fopen("../sdl/highscore_sdl.txt", "w");
   }
 
   // Récupère le pseudo et le highscore sauvegardé précédemment
@@ -181,7 +181,7 @@ static void display_score(grid g, SDL_Surface *surface_screen, SDL_Surface *surf
   }
 
   // Affiche "Try Again"
-  TTF_Font *police_menu = TTF_OpenFont("arial.ttf", 25);
+  TTF_Font *police_menu = TTF_OpenFont("../sdl/arial.ttf", 25);
   char char_recommencer[30] = "Press ENTER to TRY AGAIN";
   display_text(char_recommencer, 105, 520, surface_screen, surface_score, police_menu, color_text, color_background, false);
 
@@ -199,7 +199,7 @@ static void display_score(grid g, SDL_Surface *surface_screen, SDL_Surface *surf
 
 
 static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_tile, SDL_Surface *surface_background_grid, bool *try_again){
-  TTF_Font *police_text = TTF_OpenFont("arial.ttf", 30);  
+  TTF_Font *police_text = TTF_OpenFont("../sdl/arial.ttf", 30);  
   SDL_Color color_text = {255, 255, 255}, color_background = {0, 0, 0};
   SDL_Rect position_background_grid;
 
@@ -218,7 +218,7 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
   bool end = true;
   char char_highscore[10];
   char char_nickname[10];
-  FILE* highscore_txt = fopen("highscore_sdl.txt", "r+"); 
+  FILE* highscore_txt = fopen("../sdl/highscore_sdl.txt", "r+"); 
   read_line(highscore_txt, char_nickname, char_highscore);
   unsigned long int highscore = strtoul(char_highscore, NULL, 10); // convertir un chaine en unsigned long int
 
@@ -289,7 +289,7 @@ static void enter_nickname(char *char_nickname, char *char_highscore, int positi
   SDL_Flip(surface_screen);
   
 // Affiche game over
-  TTF_Font *police_text = TTF_OpenFont("arial.ttf", 30);
+  TTF_Font *police_text = TTF_OpenFont("../sdl/arial.ttf", 30);
   SDL_Color color_text = {255, 255, 255}, color_background = {0, 0, 0};
   char *char_gameover = "  GAME OVER   ";
   char char_display[60];
@@ -299,7 +299,7 @@ static void enter_nickname(char *char_nickname, char *char_highscore, int positi
   display_text(char_display, position_x, position_y, surface_screen, surface_text, police_text, color_text, color_background, true);
 
   // Affiche complément game over
-  FILE* highscore_txt = fopen("highscore_sdl.txt", "r+");
+  FILE* highscore_txt = fopen("../sdl/highscore_sdl.txt", "r+");
   char display_highscore[30];
   sprintf(display_highscore, "New Highscore : %s !!", char_highscore);
   display_text(display_highscore, 80, 210, surface_screen, surface_text, police_text, color_text, color_background, true);

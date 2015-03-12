@@ -1,15 +1,17 @@
 CC = gcc
 CFLAGS = -std=c99 -g -Wall 
-LDLIBS = -lm -lSDL -lSDL_image -lSDL_ttf
+LDLIBS = -lgridSDL -lm -lSDL -lSDL_image -lSDL_ttf -lgrid -L ../lib/
 CPPFLAGS= 
 
-all:jeu
- 
-jeu: main-sdl.o gridSDL.o ../src/grid.o 
-	$(CC) -o jeu main-sdl.o gridSDL.o ../src/grid.o  $(LDLIBS)
-
-
 include dep
+
+all:jeu_sdl
+ 
+jeu_sdl: main-sdl.o 
+	$(CC) -o jeu_sdl main-sdl.o $(LDLIBS)
+
+
+
 
 .PHONY: clean
 clean:
