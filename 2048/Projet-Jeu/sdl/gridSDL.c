@@ -64,6 +64,7 @@ void game_sdl(){
 
   // Paramètres affichage score
   SDL_Surface *surface_score = NULL;
+  surface_score = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_DOUBLEBUF, 500, 600, 32, 0, 0, 0, 0);
   
   // Paramètres affichage grille
   SDL_Surface *surface_tile = NULL;
@@ -263,7 +264,7 @@ static void display_text(char *char_text, int position_height, SDL_Surface *surf
   surface_text = TTF_RenderText_Shaded(police_text, char_text, color_text, color_background);
   if(transparence)
     SDL_SetColorKey(surface_text, SDL_SRCCOLORKEY, SDL_MapRGB(surface_text->format, 0, 0, 0));
-  position_text.x = (surface_screen->w - surface_text->w)/2; // centre le texte
+  position_text.x = (surface_screen->w - surface_text->w)/2; // Centre le texte
   position_text.y = position_height;
   SDL_BlitSurface(surface_text, NULL, surface_screen, &position_text);
 }
@@ -333,7 +334,7 @@ static void enter_nickname(char *char_nickname, char *char_highscore, SDL_Surfac
 	  if(cpt == 1)
 	    sprintf(char_display, "%s - ********", char_highscore);
 	  else
-	    sprintf(char_display, "%s - %s%-10s", char_highscore, char_nickname, char_tmp);
+	    sprintf(char_display, "%s - %s%s", char_highscore, char_nickname, char_tmp);
 	  write_line(highscore_txt, char_nickname, char_highscore);
 	  cpt -= 1;
 	  re_display = true;
@@ -345,7 +346,7 @@ static void enter_nickname(char *char_nickname, char *char_highscore, SDL_Surfac
 	  if(num_char > cpt){
 	    sprintf(char_nickname, "%s%c", char_nickname, (char)event.key.keysym.unicode);
 	    char_tmp[num_char - cpt - 1] = '\0';
-	    sprintf(char_display, "%s - %s%-10s", char_highscore, char_nickname, char_tmp);
+	    sprintf(char_display, "%s - %s%s", char_highscore, char_nickname, char_tmp);
 	    write_line(highscore_txt, char_nickname, char_highscore);
 	    cpt += 1;
 	    re_display = true;
