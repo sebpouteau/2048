@@ -43,13 +43,13 @@ void game_sdl(){
   SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 255, 255, 255));
 
   // Initialisation du fond autour de la grille
-  SDL_Surface *surface_brackground_grid = NULL;
-  surface_brackground_grid = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_DOUBLEBUF, 420, 420, 32, 0, 0, 0, 0);
-  SDL_Rect position_brackground_grid;
-  position_brackground_grid.x = 40;
-  position_brackground_grid.y = 40;
-  SDL_FillRect(surface_brackground_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 0, 255));
-  SDL_BlitSurface(surface_brackground_grid, NULL, surface_screen, &position_brackground_grid);
+  SDL_Surface *surface_background_grid = NULL;
+  surface_background_grid = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_DOUBLEBUF, 420, 420, 32, 0, 0, 0, 0);
+  SDL_Rect position_background_grid;
+  position_background_grid.x = 40;
+  position_background_grid.y = 40;
+  SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 0, 255));
+  SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
   SDL_Flip(surface_screen);
 
   // Initialisation de la grille
@@ -115,12 +115,12 @@ void game_sdl(){
     display_score(g, surface_screen, surface_score);
 
     if(game_over(g)){
-      display_gameover(g, surface_screen, surface_tile, surface_brackground_grid, &try_again);
+      display_gameover(g, surface_screen, surface_tile, surface_background_grid, &try_again);
       play_continue = false;
     }
   }
-  SDL_FreeSurface(surface_brackground_grid);
-  SDL_FreeSurface(surface_tile);
+  delete_grid(g);
+  SDL_FreeSurface(surface_background_grid);
   SDL_FreeSurface(surface_score);
   SDL_FreeSurface(surface_screen);
 
@@ -145,6 +145,8 @@ static void display_grid(grid g, SDL_Surface *surface_screen, SDL_Surface *surfa
       SDL_BlitSurface(surface_tile, NULL, surface_screen, &position_tile);
     }
   }
+  SDL_FreeSurface(surface_tile);
+  SDL_FreeSurface(surface_screen);
   SDL_Flip(surface_screen);
 }
 
@@ -194,6 +196,7 @@ static void display_score(grid g, SDL_Surface *surface_screen, SDL_Surface *surf
 
   SDL_Flip(surface_screen);
   fclose(highscore_txt);
+  SDL_FreeSurface(surface_screen);
   TTF_CloseFont(police_text);
   TTF_CloseFont(police_menu);
 }
@@ -263,6 +266,7 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
 
   fclose(highscore_txt);
   SDL_FreeSurface(surface_gameover);
+  SDL_FreeSurface(surface_screen);
   TTF_CloseFont(police_gameover);
 }
 
