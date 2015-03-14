@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <math.h>
 #include "../Projet-Jeu/src/grid.h"
-#include "../Projet-Jeu/src/gridIA.h"
+//#include "../Projet-Jeu/src/gridIA.h"
 #include <ncurses.h>
 #include <curses.h>
 #include <time.h>

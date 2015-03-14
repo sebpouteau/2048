@@ -5,17 +5,17 @@
 #include "../Projet-Jeu/src/grid.h"
 #include <time.h>
 
-struct tabBestM{
-  unsigned long int score;
-  dir best; 
-};
+//struct tabBestM{
+//unsigned long int score;
+//dir best; 
+//};
 
 
 //static void display_grid(grid g);
 static long maximum_tile(grid g);
-static tabBestM new_tabBestM();
-static dir best_move(grid g,dir i, int compt, dir best);
-static void boucle_best_move(tabBestM tab,dir def, grid g, grid test);
+//static tabBestM new_tabBestM();
+static dir best_move(grid g,dir i,int compt,dir best,unsigned long int score);
+static unsigned long int best_score(grid g);
 static bool fusion_possible(grid g,int p1,int p2);
 static int empty_tiles(grid g);
 static float opponent_chance(grid g);
@@ -26,24 +26,11 @@ int main(int argc,char **argv){
     grid g= new_grid();
     add_tile(g);
     add_tile(g);
-    grid test = new_grid();
-    tabBestM tab = new_tabBestM();
     while(!game_over(g)){
-      tab.score = grid_score(test);
-      for(dir i = UP; i<=RIGHT;i++){
-	copy_grid(g,test);
-	play(test,i);
-	//play(test,best_move(test));
-	if(tab.score < grid_score(test)){
-	  tab.score = grid_score(test);
-	  tab.best = i;
-	}
-	dir b = tab.best;
-	play(g,b);
-      }
+      play(g,best_move(g,UP,0,0,0));
     }
+      
     printf("Tile max = %ld \n", maximum_tile(g));
-    delete_grid(test);
     delete_grid(g);
   
   }
@@ -75,37 +62,62 @@ static long maximum_tile(grid g){
 
 
 
-static tabBestM new_tabBestM(){
-  tabBestM tab;
+//static tabBestM new_tabBestM(){
+//tabBestM tab;
   //assert(tab);
-  tab.score = 0;
-  tab.best = UP;
-  return tab;
-}
+  //tab.score = 0;
+  //tab.best = 0;
+  //return tab;
+//}
 
 
 
-static dir best_move(grid g,dir i,int compt,dir best){
+static dir best_move(grid g,dir i,int compt,dir best,unsigned long int score){
   if(!can_move(g,i))
-    return best_move(g,i++,compt++,best);
+    return best_move(g,i++,compt++,best,score);
   if(compt == 4)
     return best;
   grid test = new_grid();
-  tabBestM tab = new_tabBestM();
   copy_grid(g,test);
-  return UP;
-}
-
-static void boucle_best_move(tabBestM tab,dir def, grid g, grid test){
-  for(dir i = UP;i<=RIGHT;i++){
-    copy_grid(g,test);
-    if(i != def)
-      do_move(test,i);
-    if(grid_score(test) > tab.score){
-      tab.score = grid_score(test);
-      tab.best = i;
+  do_move(test,i);
+  unsigned long int new_score = grid_score(test);
+  unsigned long int fin_score = 0;
+  for(int i1 = 0;i1<4;i1++){    //corps de la fonction opponent_chance();
+    for(int j1 = 0; j1<4;j1++){
+      if(get_tile(test,i1,j1) == 0){
+	set_tile(test,i1,j1,2);
+	if(best_score(test)>new_score)
+	  new_score = best_score(test);
+	set_tile(test,i1,j1,0);
+      }
+      if(get_tile(test,i1,j1) == 0){
+	set_tile(test,i1,j1,4);
+	if(best_score(test)>new_score)
+	  new_score = best_score(test);
+	set_tile(test,i1,j1,0);
+      }
     }
   }
+
+  fin_score = new_score/opponent_chance(test);
+  if(fin_score > score)
+    return best_move(g,++i,compt++,i,fin_score);
+  return best_move(g,i++,compt++,best,score);
+}
+
+static unsigned long int best_score(grid g){
+  grid test = new_grid();
+  unsigned long int score = grid_score(g);
+  for(dir i = UP;i<=RIGHT;i++){
+    copy_grid(g,test);
+    if(can_move(test,i)){
+      do_move(test,i);
+      if(grid_score(test) > score)
+	score = grid_score(test);
+    }
+	
+  }
+  return score;
 }    
 
 
