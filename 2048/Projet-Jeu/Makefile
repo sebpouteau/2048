@@ -9,8 +9,8 @@ all: install
 	mv ./sdl/jeu_sdl ./bin
 
 install:
-	$(MAKE) -C src;\
-	$(MAKE) -C sdl;\
+	$(MAKE) -C src
+	$(MAKE) -C sdl gridSDL.o
 	if [ ! -d "lib" ];then mkdir lib; fi
 	if [ ! -f "lib/libgrid.a" ];then ar -cr ./lib/libgrid.a ./src/grid.o; fi
 	if [ ! -f "lib/libgridSDl.a" ];then ar -cr ./lib/libgridSDL.a ./sdl/gridSDL.o; fi

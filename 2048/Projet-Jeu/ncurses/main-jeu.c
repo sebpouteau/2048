@@ -50,8 +50,11 @@ int main(int argc, char *argv[]){
     }
     while(reponse_valide == 0 && continuer == true)
       display_gameOver(&continuer, &reponse_valide);
-    endwin();    
+    delete_grid(g);
+    
   }
+  clear();
+  endwin();    
   return EXIT_SUCCESS;
 }
 
@@ -73,7 +76,7 @@ static void display_gameOver(bool *continuer, int *reponse_valide){
 }  
 
 static void display_grid(grid g){
-  initscr();
+
   clear();
   keypad(stdscr, TRUE);
   // Mise en forme de la grille
@@ -127,7 +130,7 @@ static unsigned long int read_highscore(){
   highscore = fopen("../ncurses/highscore_ncurses.txt","r"); //On ouvre HIGHSCORE.txt
   // "r" = read only
   if(highscore == NULL) //On a pas réussi a ouvrir le fichier
-    return 0;
+    return EXIT_FAILURE;
   else{
       fscanf(highscore, "%lu", &score[0]);
       fclose(highscore);
