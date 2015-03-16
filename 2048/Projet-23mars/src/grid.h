@@ -1,5 +1,5 @@
-#ifndef _GRID_H_
-#define _GRID_H_
+#ifndef _GRILLE_H_
+#define _GRILLE_H_
 /**
  * \file grid.h
  * \brief Contains structures and functions needed to play 2048 game.
@@ -39,8 +39,6 @@ typedef unsigned int tile;
  * \brief List of accepted movement in the game
  */
 typedef enum dir_e {UP,LEFT,DOWN,RIGHT} dir;
-
-typedef struct tabBestM tabBestM;
 
 
 
@@ -128,7 +126,6 @@ void add_tile (grid g);
  */
 void play (grid g, dir d);
 
-// permet de modifier le score 
-void set_grid_score(grid g,unsigned long int add_score);
+
 
 #endif

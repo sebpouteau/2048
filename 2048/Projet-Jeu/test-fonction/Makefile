@@ -18,8 +18,5 @@ clean:
 dep:
 	$(CC) $(CPPFLAGS) -MM *.c >dep
 
-check: 
-	# for i in $(EXEC); do\
-	# 	./$$i;\
-	# done
+check: all 
 	valgrind ./test-fonction

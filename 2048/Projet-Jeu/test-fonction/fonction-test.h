@@ -12,13 +12,9 @@ extern bool test_do_move_up(grid g);
 extern bool test_do_move_down(grid g);
 extern bool test_do_move_left(grid g);
 extern bool test_do_move_right(grid g);
-/* extern bool test_can_move_up(grid g); */
-/* extern bool test_can_move_down(grid g); */
-/* extern bool test_can_move_left(grid g); */
-/* extern bool test_can_move_right(grid g); */
+extern bool test_do_move_all(grid g);
 extern bool test_can_move(grid g);
 extern bool test_add_tile(grid g);
 extern bool test_delete_grid();
 extern bool test_new_grid();
-extern bool test_play(grid g);
 #endif
