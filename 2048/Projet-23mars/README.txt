@@ -10,7 +10,7 @@ Réalisé par:
 
 
 /!\ WARNING /!\
-Vérifiez au préalable que vous avez bien les bibliothèques ncurses, sous peine de provoquer un échec lors de la compilation.
+Vérifiez au préalable que vous avez bien la bibliothèque ncurses, sous peine de provoquer un échec lors de la compilation.
 
 
 Compilation du Projet 2048 grace à la commande make :

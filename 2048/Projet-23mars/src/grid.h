@@ -1,5 +1,5 @@
-#ifndef _GRILLE_H_
-#define _GRILLE_H_
+#ifndef _GRID_H_
+#define _GRID_H_
 /**
  * \file grid.h
  * \brief Contains structures and functions needed to play 2048 game.

@@ -15,7 +15,7 @@ Réalisé par:
 Aller dans Projet-Jeu/
 
 /!\ WARNING /!\
-Vérifiez au préalable que vous avez bien les bibliothèques ncurses et SDL d'installé.
+Vérifiez au préalable que vous avez bien les bibliothèques ncurses et SDL d'installées.
 Ainsi que deux bibliothèques tierces (SDL_image et SDL_ttf),
 sinon il y aura un échec lors de la compilation.
 
@@ -38,4 +38,4 @@ Aller dans Projet-IA/
 Compilation des IA grace à la commande make :
   make 
 
-les executables sont dans bin/
+les exécutables sont dans bin/

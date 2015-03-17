@@ -12,6 +12,7 @@ static void display_gameOver(bool *continuer, int *reponse_valide);
 static unsigned long int read_highscore();
 static void write_highscore(unsigned long int score);
 
+
 int main(int argc, char *argv[]){
   keypad(stdscr, TRUE);
   bool continuer = true;
@@ -55,6 +56,7 @@ int main(int argc, char *argv[]){
   return EXIT_SUCCESS;
 }
 
+
 static void display_gameOver(bool *continuer, int *reponse_valide){
   keypad(stdscr, TRUE);
   int ch = 0;  
@@ -64,11 +66,11 @@ static void display_gameOver(bool *continuer, int *reponse_valide){
   cbreak();   
   ch = getch();
   if(ch == 110){
-    *continuer = false; // Arrete le programme, sort de la boucle
+    *continuer = false; // Arrete le programme et sort de la boucle
     *reponse_valide = 1;
   }
   if(ch == 121)
-    *reponse_valide = 1;// Relance le programme du début 
+    *reponse_valide = 1; // Relance le programme du début 
   endwin();    
 }  
 
@@ -88,7 +90,7 @@ static void display_grid(grid g){
     y += 8;
   }
   start_color();
-  // Définition des couleurs (rouge, vert, jaune, bleu fonce, violet, bleu turquoise, blanc)
+  // Définition des couleurs (rouge, vert, jaune, bleu foncé, violet, bleu turquoise, blanc)
   for(int i = 1; i < 8; i++){
     init_pair(i, i, 0);
   }
@@ -100,7 +102,7 @@ static void display_grid(grid g){
     for(int j = 0; j < GRID_SIDE; j++){
       if(get_tile(g, i, j) != 0){
 	attron(COLOR_PAIR(t[(get_tile(g, i, j) - 1) % 7]));
-	// Récupération d'un nombre et coloration
+	// Récupération d'un nombre et de la coloration
 	char buff[5];
 	sprintf(buff, "%d", (unsigned int)pow(2, get_tile(g, i, j)));
 	mvprintw(x, y, buff);
@@ -123,10 +125,10 @@ static void display_grid(grid g){
 
 static unsigned long int read_highscore(){
   unsigned long int score[1];
-  FILE *highscore = NULL; //On initialise un pointeur de fichier
-  highscore = fopen("../ncurses/highscore_ncurses.txt","r"); //On ouvre HIGHSCORE.txt
+  FILE *highscore = NULL; // On initialise un pointeur de fichier
+  highscore = fopen("../ncurses/highscore_ncurses.txt","r"); // On ouvre HIGHSCORE.txt
   // "r" = read only
-  if(highscore == NULL) //On a pas réussi a ouvrir le fichier
+  if(highscore == NULL) // On a pas réussi à ouvrir le fichier
     return 0;
   else{
       fscanf(highscore, "%lu", &score[0]);
@@ -137,7 +139,7 @@ static unsigned long int read_highscore(){
 
 static void write_highscore(unsigned long int score){
   FILE *highscore = NULL;
-  highscore = fopen("../ncurses/highscore_ncurses.txt","w"); //On ouvre HIGHSCORE.txt
+  highscore = fopen("../ncurses/highscore_ncurses.txt", "w"); // On ouvre HIGHSCORE.txt
   // "w" = write only => On va écraser le contenu du fichier
   fprintf(highscore, "%lu", score);
   fclose(highscore);
