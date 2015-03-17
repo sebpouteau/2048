@@ -10,15 +10,20 @@
 //dir best; 
 //};
 
+#define MONO_WEIGHT 3
+#define MONO_POW 4
+#define SMOOTH_WEIGHT 7
+#define EMPTY_WEIGHT 4
+
 
 //static void display_grid(grid g);
 static long maximum_tile(grid g);
 //static tabBestM new_tabBestM();
 static dir best_move(grid g,dir i,int compt,dir best,unsigned long int score);
-static unsigned long int best_score(grid g);
-static bool fusion_possible(grid g,int p1,int p2);
 static int empty_tiles(grid g);
-static float opponent_chance(grid g);
+static int monotonicity(grid g);
+static int smoothness(grid g);
+static bool max_in_corner(grid g);
 
 int main(int argc,char **argv){
   srand(time(NULL));
@@ -31,7 +36,7 @@ int main(int argc,char **argv){
     }
       
     printf("Tile max = %ld \n", maximum_tile(g));
-    delete_grid(g);
+    //delete_grid(g);
   
   }
 }
@@ -80,90 +85,9 @@ static dir best_move(grid g,dir i,int compt,dir best,unsigned long int score){
   grid test = new_grid();
   copy_grid(g,test);
   do_move(test,i);
-  unsigned long int new_score = grid_score(test);
-  unsigned long int fin_score = 0;
-  for(int i1 = 0;i1<4;i1++){    //corps de la fonction opponent_chance();
-    for(int j1 = 0; j1<4;j1++){
-      if(get_tile(test,i1,j1) == 0){
-	set_tile(test,i1,j1,2);
-	if(best_score(test)>new_score)
-	  new_score = best_score(test);
-	set_tile(test,i1,j1,0);
-      }
-      if(get_tile(test,i1,j1) == 0){
-	set_tile(test,i1,j1,4);
-	if(best_score(test)>new_score)
-	  new_score = best_score(test);
-	set_tile(test,i1,j1,0);
-      }
-    }
-  }
-
-  fin_score = new_score/opponent_chance(test);
-  if(fin_score > score)
-    return best_move(g,++i,compt++,i,fin_score);
-  return best_move(g,i++,compt++,best,score);
+  return UP;
 }
-
-static unsigned long int best_score(grid g){
-  grid test = new_grid();
-  unsigned long int score = grid_score(g);
-  for(dir i = UP;i<=RIGHT;i++){
-    copy_grid(g,test);
-    if(can_move(test,i)){
-      do_move(test,i);
-      if(grid_score(test) > score)
-	score = grid_score(test);
-    }
-	
-  }
-  return score;
-}    
-
-
-
-  
-/* static int* max_position(grid(g)){ */
-/*   int t[2] = [0,0]; */
-/*   long max_tile = 2; */
-/*   for(int i = 0; i<GRID_SIDE; i++){ */
-/*     for(int j = 0; j< GRID_SIDE; j++){ */
-/*       if(get_tile(g, i, j)>max_tile){ */
-/* 	max_tile = get_tile(g, i, j); */
-/* 	t[0] = i; */
-/* 	t[1] = j; */
-/*       } */
-/*     } */
-/*   } */
-/*   return t; */
-/* } */
-
-
-static float opponent_chance(grid g){
-  int fusions_with_4 = 0;
-  int fusions_with_2 = 0;
-  for(int i = 0;i<4;i++){
-    for(int j = 0;j<4;j++){
-      if(get_tile(g,i,j)==0){
-	set_tile(g,i,j,2);
-	if(fusion_possible(g,i,j))
-	  fusions_with_2 += 1;
-        set_tile(g,i,j,0);
-      }
-      if(get_tile(g,i,j) == 0){
-	set_tile(g,i,j,4);
-	if(fusion_possible(g,i,j))
-	   fusions_with_4 += 1;
-	set_tile(g,i,j,0);
-	
-      }   
-    }
-  }
-  return (fusions_with_4 + (fusions_with_2 * 9))/(empty_tiles(g)*10);
-}
- 
- 
-
+    
 static int empty_tiles(grid g){
   int nb = 0;
   for(int i = 0; i<4;i++){
@@ -175,38 +99,51 @@ static int empty_tiles(grid g){
   return nb;
 }
 
-static bool fusion_possible(grid g,int p1,int p2){
-  for(int i = p1;i<3;i++){
-    if(get_tile(g,i,p2+1) != get_tile(g,p1,p2) && get_tile(g,i,p2+1) != 0)
-      return false;
-    if(get_tile(g,i,p2+1) == 0)
-      continue;
-    if(get_tile(g,i,p2) == get_tile(g,i,p2+1))
-      return true;
+
+
+static int monotonicity(grid g){
+  int variation_sign;
+  int compteur = 0;
+  for(int i = 0; i < 3; i++){
+    for(int j = 0; j < 3; j++){
+      if(get_tile(g, i, j) < get_tile(g, i, j+1) && variation_sign = 1){
+	variation_sign = 0;
+	compteur += 1;
+      }
+      if(get_tile(g, i, j) > get_tile(g, i, j+1) && vatiarion_sign = 0){
+	variation_sign = 1;
+	compteur += 1;
+      }
+      if(get_tile(g, j, i) < get_tile(g, j+1, i) && variation_sign = 1){
+	variation_sign = 0;
+	compteur += 1;
+      }
+      if(get_tile(g, j, i) > get_tile(g, j+1, i) && vatiarion_sign = 0){
+	variation_sign = 1;
+	compteur += 1;
+      }
+    }
+  }   
+}
+
+static int smoothness(grid g){
+  int sum = 0;
+  for(int i = 0;i<3;i++){
+    for(int j = 0;j<3;j++){
+      if(get_tile(g,i,j)>=get_tile(g,i,j))
+	sum+=(int)get_tile(g,i,j)-(int)(get_tile(g,i,j+1));
+      else
+	sum+=(int)get_tile(g,i,j+1)-(int)(get_tile(g,i,j));
+      if(get_tile(g,j,i)>=get_tile(g,j+1,i))
+	sum+=(int)get_tile(g,j,i)-(int)(get_tile(g,j+1,i));
+      else
+	sum+=(int)get_tile(g,j+1,i)-(int)(get_tile(g,j,i));
+    }
   }
-  for(int i = p1;i>0;i--){
-    if(get_tile(g,i,p2-1) != get_tile(g,p1,p2) && get_tile(g,i,p2-1) != 0)
-      return false;
-    if(get_tile(g,i,p2-1) == 0)
-      continue;
-    if(get_tile(g,i,p2) == get_tile(g,i,p2-1))
-      return true;
-  }
-  for(int i = p2;i<4;i++){
-    if(get_tile(g,p1+1,i) != get_tile(g,p1,p2) && get_tile(g,p1+1,i) != 0)
-      return false;
-    if(get_tile(g,p1+1,i) == 0)
-      continue;
-    if(get_tile(g,p2,i) == get_tile(g,p1+1,i))
-      return true;
-  }
-  for(int i = p2;i>0;i--){
-    if(get_tile(g,p1-1,i) != get_tile(g,p1,p2) && get_tile(g,p1-1,i) != 0)
-      return false;
-    if(get_tile(g,p1-1,i) == 0)
-      continue;
-    if(get_tile(g,p1,i) == get_tile(g,p1-1,i))
-      return true;
-  }
-  return false;
+  return sum;
+}
+
+bool max_in_corner(grid g){
+  tile max_tile = maximum_tile(g);
+  return get_tile(g, 0, 0) == max_tile || get_tile(g, 3, 0) == max_tile || get_tile(g, 0, 3) == max_tile || get_tile(g, 3, 3) == max_tile;
 }
