@@ -125,22 +125,20 @@ static void display_grid(grid g){
 
 static unsigned long int read_highscore(){
   unsigned long int score[1];
-  FILE *highscore = NULL; // On initialise un pointeur de fichier
-  highscore = fopen("../ncurses/highscore_ncurses.txt","r"); // On ouvre HIGHSCORE.txt
-  // "r" = read only
-  if(highscore == NULL) // On a pas réussi à ouvrir le fichier
+  FILE *highscore = NULL;
+  highscore = fopen("../ncurses/highscore_ncurses.txt","r");
+  if(highscore == NULL)
     return 0;
   else{
-      fscanf(highscore, "%lu", &score[0]);
-      fclose(highscore);
-    }
+    fscanf(highscore, "%lu", &score[0]);
+    fclose(highscore);
+  }
   return score[0];
 }
 
 static void write_highscore(unsigned long int score){
   FILE *highscore = NULL;
-  highscore = fopen("../ncurses/highscore_ncurses.txt", "w"); // On ouvre HIGHSCORE.txt
-  // "w" = write only => On va écraser le contenu du fichier
+  highscore = fopen("../ncurses/highscore_ncurses.txt", "w");
   fprintf(highscore, "%lu", score);
   fclose(highscore);
 }

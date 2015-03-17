@@ -6,6 +6,11 @@
 #include "fonction-test.h"
 #include <math.h>
   
+/**
+ * \file fonction-test.c
+ * \brief Implémentation de fonction-test.h
+ **/
+
 
 bool test_new_grid(){
   grid g = new_grid();
@@ -26,16 +31,16 @@ bool test_get_tile(grid g){
 
 
 bool test_set_tile(grid g){
-  //passage de toute les cases à 2
+  // Passage de toutes les cases à 2
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
       set_tile(g, i, j, 2);
-  //verification que les cases sont à 2
+  // Vérification que les cases sont à 2
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
       if(get_tile(g, i, j) != 2)
  	return false;
-  //reset de la grid a zero
+  // Reset de la grid à zéro
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
       set_tile(g, i, j, 0);
@@ -101,13 +106,13 @@ bool test_do_move_up(grid g){
     for(int j = 0; j < GRID_SIDE; j++)
       set_tile(g, i, j, 0);
   do_move(g, UP);
-  //cas mouvement de la grille vide
+  // Cas mouvement de la grille vide
   resultat = check_case_empty(g, 0, GRID_SIDE, 0, GRID_SIDE);
   
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, 0, i, 1);
   do_move(g, UP);
-  // des 2 sur toute la 1ere ligne et des 0 partout ailleur
+  // On met des 1 sur la première ligne, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
     if(get_tile(g, 0, i) != 1)
       return false;
@@ -116,7 +121,7 @@ bool test_do_move_up(grid g){
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, GRID_SIDE - 1, i, 1);
   do_move(g, UP);
-  // des 2 sur toute la 1ere ligne et des 0 partout ailleur
+  // On met des 2 sur la première ligne, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
     if(get_tile(g, 0, i) != 2)
       return false;
@@ -125,7 +130,7 @@ bool test_do_move_up(grid g){
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, GRID_SIDE - 1, i, 1);
   do_move(g, UP);
-  // des 4 sur toute la 1ere ligne et 2 sur la deuxieme ligne et des 0 partout ailleur
+  // On met des 2 sur la première ligne, des 1 sur la deuxième ligne et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
     if(get_tile(g, 0, i) != 2)
       return false;
@@ -137,7 +142,7 @@ bool test_do_move_up(grid g){
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, GRID_SIDE - 1, i, 1);
   do_move(g, UP);
-  // des 4 sur toute la 1ere ligne et 4 sur la deuxieme ligne et des 0 partout ailleur
+  // On met des 2 sur les deux premières lignes, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
     if(get_tile(g, 0, i) != 2)
       return false;
@@ -161,13 +166,13 @@ bool test_do_move_down(grid g){
     for(int j = 0; j < GRID_SIDE; j++)
       set_tile(g, i, j, 0);
   do_move(g, DOWN);
-  //cas mouvement de la grille vide
+  // Cas mouvement de la grille vide
   resultat = check_case_empty(g, 0, GRID_SIDE, 0, GRID_SIDE);
   
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, GRID_SIDE - 1, i, 1);
   do_move(g, DOWN);
-  // des 2 sur toute la 1ere ligne et des 0 partout ailleur
+  // On met des 1 sur la première ligne, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
     if(get_tile(g, GRID_SIDE - 1, i) != 1)
       return false;
@@ -176,7 +181,7 @@ bool test_do_move_down(grid g){
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, 0, i, 1);
   do_move(g, DOWN);
-  // des 2 sur toute la 1ere ligne et des 0 partout ailleur
+  // On met des 2 sur la première ligne, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
     if(get_tile(g, GRID_SIDE - 1, i) != 2)
       return false;
@@ -185,7 +190,7 @@ bool test_do_move_down(grid g){
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, 0, i, 1);
   do_move(g, DOWN);
-  // des 4 sur toute la 1ere ligne et 2 sur la deuxieme ligne et des 0 partout ailleur
+  // On met des 2 sur la première ligne, des 1 sur la deuxième ligne et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
     if(get_tile(g, GRID_SIDE - 1, i) != 2)
       return false;
@@ -197,7 +202,7 @@ bool test_do_move_down(grid g){
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, 0, i, 1);
   do_move(g, DOWN);
-  // des 4 sur toute la 1ere ligne et 4 sur la deuxieme ligne et des 0 partout ailleur
+  // On met des 2 sur les deux premières lignes, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
     if(get_tile(g, GRID_SIDE - 1, i) != 2)
       return false;
@@ -221,22 +226,22 @@ bool test_do_move_left(grid g){
     for(int j = 0; j < GRID_SIDE; j++)
       set_tile(g, i, j, 0);
   do_move(g, LEFT);
-  //cas mouvement de la grille vide
+  // Cas mouvement de la grille vide
   resultat = check_case_empty(g, 0, GRID_SIDE, 0, GRID_SIDE);
   
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, i, 0, 1);
   do_move(g, LEFT);
-  // des 2 sur toute la 1ere ligne et des 0 partout ailleur
+  // On met des 1 sur la première ligne, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
     if(get_tile(g, i, 0) != 1)
       return false;
   resultat = check_case_empty(g, 0, GRID_SIDE, 1, GRID_SIDE);
    
   for(int i = 0; i < GRID_SIDE; i++)
-    set_tile(g, i, GRID_SIDE - 1,1);
+    set_tile(g, i, GRID_SIDE - 1, 1);
   do_move(g, LEFT);
-  // des 2 sur toute la 1ere ligne et des 0 partout ailleur
+  // On met des 2 sur la première ligne, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
     if(get_tile(g, i, 0) != 2)
       return false;
@@ -245,7 +250,7 @@ bool test_do_move_left(grid g){
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, i, GRID_SIDE - 1, 1);
   do_move(g, LEFT);
-  // des 4 sur toute la 1ere ligne et 2 sur la deuxieme ligne et des 0 partout ailleur
+  // On met des 2 sur la première ligne, des 1 sur la deuxième ligne et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
     if(get_tile(g, i, 0) != 2)
       return false;
@@ -257,7 +262,7 @@ bool test_do_move_left(grid g){
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, i, GRID_SIDE - 1, 1);
   do_move(g, LEFT);
-  // des 4 sur toute la 1ere ligne et 4 sur la deuxieme ligne et des 0 partout ailleur
+  // On met des 2 sur les deux premières lignes, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
     if(get_tile(g, i, 0) != 2)
       return false;
@@ -281,13 +286,13 @@ bool test_do_move_right(grid g){
     for(int j = 0; j < GRID_SIDE; j++)
       set_tile(g, i, j, 0);
   do_move(g, RIGHT);
-  //cas mouvement de la grille vide
+  // Cas mouvement de la grille vide
   resultat = check_case_empty(g, 0, GRID_SIDE, 0, GRID_SIDE);
   
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, i, GRID_SIDE - 1, 1);
   do_move(g, RIGHT);
-  // des 2 sur toute la 1ere ligne et des 0 partout ailleur
+  // On met des 1 sur la première ligne, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
     if(get_tile(g, i, GRID_SIDE - 1) != 1)
       return false;
@@ -296,7 +301,7 @@ bool test_do_move_right(grid g){
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, i, 0, 1);
   do_move(g, RIGHT);
-  // des 2 sur toute la 1ere ligne et des 0 partout ailleur
+  // On met des 2 sur la première ligne, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
     if(get_tile(g, i, GRID_SIDE - 1) != 2)
       return false;
@@ -305,7 +310,7 @@ bool test_do_move_right(grid g){
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, i, 0, 1);
   do_move(g, RIGHT);
-  // des 4 sur toute la 1ere ligne et 2 sur la deuxieme ligne et des 0 partout ailleur
+  // On met des 2 sur la première ligne, des 1 sur la deuxième ligne et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
     if(get_tile(g, i, GRID_SIDE - 1) != 2)
       return false;
@@ -317,7 +322,7 @@ bool test_do_move_right(grid g){
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, i, 0, 1);
   do_move(g, RIGHT);
-  // des 4 sur toute la 1ere ligne et 2 sur la deuxieme ligne et des 0 partout ailleur
+  // On met des 2 sur les deux premières lignes, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
     if(get_tile(g, i, GRID_SIDE - 1) != 2)
       return false;
@@ -339,7 +344,7 @@ bool test_do_move_all(grid g){
   bool resultat = true;
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
-      set_tile(g, i, j, 2); // on initialise tout à 2
+      set_tile(g, i, j, 2); // On initialise toute la grille à 2
   do_move(g, UP);
   for(int i = 0; i < GRID_SIDE - 2; i++)
     for(int j = 0; j < GRID_SIDE; j++)
@@ -379,7 +384,7 @@ bool test_do_move_all(grid g){
 bool test_can_move(grid g){
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
-      set_tile(g, i, j, 0); // on initialise tout à 0
+      set_tile(g, i, j, 0); // On initialise toute la grille à 0
   if(can_move(g, UP) || can_move(g, DOWN) || can_move(g, RIGHT) || can_move(g, LEFT) )
     return false;
  
@@ -430,7 +435,7 @@ bool test_can_move(grid g){
 
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
-      set_tile(g, i, j, 0); // on initialise tout à 0
+      set_tile(g, i, j, 0); // On initialise toute la grille à 0
   if(can_move(g, UP) || can_move(g, DOWN) || can_move(g, RIGHT) || can_move(g, LEFT))
     return false;
   for(int i = 0; i < GRID_SIDE - 1; i++)
@@ -452,7 +457,7 @@ bool test_add_tile(grid g){
   int rand4 = 0;
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
-      set_tile(g, i, j, 0); // on initialise tout à 0
+      set_tile(g, i, j, 0); // On initialise toute la grille à 0
   for(int k = 16; k > 0; k--)
     add_tile(g);
   for(int i = 0; i <  GRID_SIDE; i++)
