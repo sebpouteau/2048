@@ -109,13 +109,7 @@ bool test_do_move_up(grid g){
   
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, i, 0, 1);
-  do_move(g, UP);
-  // On met des 1 sur la première ligne, et le reste de la grille est initialisé à 0
-  for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, i, 0) != 1)
-      return false;
-  resultat = check_case_empty(g, 1, GRID_SIDE, 0, GRID_SIDE);
-  
+   
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, i, GRID_SIDE - 1, 1);
   do_move(g, UP);
@@ -167,13 +161,7 @@ bool test_do_move_down(grid g){
   
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, i, GRID_SIDE - 1, 1);
-  do_move(g, DOWN);
-  // On met des 1 sur la première ligne, et le reste de la grille est initialisé à 0
-  for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, i, GRID_SIDE - 1) != 1)
-      return false;
-  resultat = check_case_empty(g, 0, GRID_SIDE - 1, 0, GRID_SIDE);
-  
+    
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, i, 0, 1);
   do_move(g, DOWN);
@@ -226,13 +214,7 @@ bool test_do_move_left(grid g){
   
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, 0, i, 1);
-  do_move(g, LEFT);
-  // On met des 1 sur la première ligne, et le reste de la grille est initialisé à 0
-  for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, 0, i) != 1)
-      return false;
-  resultat = check_case_empty(g, 0, GRID_SIDE, 1, GRID_SIDE);
-   
+     
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, GRID_SIDE - 1, i, 1);
   do_move(g, LEFT);
@@ -281,18 +263,10 @@ bool test_do_move_right(grid g){
     for(int j = 0; j < GRID_SIDE; j++)
       set_tile(g, i, j, 0);
   
-  // Cas mouvement de la grille vide
-  resultat = check_case_empty(g, 0, GRID_SIDE, 0, GRID_SIDE);
-  
+   
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, GRID_SIDE - 1, i, 1);
-  do_move(g, RIGHT);
-  // On met des 1 sur la première ligne, et le reste de la grille est initialisé à 0
-  for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, GRID_SIDE - 1, i) != 1)
-      return false;
-  resultat = check_case_empty(g, 0, GRID_SIDE, 0, GRID_SIDE - 1); 
-  
+   
   for(int i = 0; i < GRID_SIDE; i++)
     set_tile(g, 0, i, 1);
   do_move(g, RIGHT);

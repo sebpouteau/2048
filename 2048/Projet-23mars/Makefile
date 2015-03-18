@@ -10,7 +10,6 @@ all: install
 
 install:
 	$(MAKE) -C src;\
-	$(MAKE) -C sdl;\
 	if [ ! -d "lib" ];then mkdir lib; fi
 	if [ ! -f "lib/libgrid.a" ];then ar -cr ./lib/libgrid.a ./src/grid.o; fi
 
