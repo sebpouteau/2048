@@ -17,7 +17,7 @@ install:
 
 
 
-check: 
+check: all
 	$(MAKE) -C test-fonction check
 
 

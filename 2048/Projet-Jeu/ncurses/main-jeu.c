@@ -104,8 +104,8 @@ static void display_grid(grid g){
   for(int i = 0; i < GRID_SIDE; i++){
     y = 5;
     for(int j = 0; j < GRID_SIDE; j++){
-      if(get_tile(g, i, j) != 0){
-	attron(COLOR_PAIR(t[(get_tile(g, i, j) - 1) % 7]));
+      if(get_tile(g, j, i) != 0){
+	attron(COLOR_PAIR(t[(get_tile(g, j, i) - 1) % 7]));
 	// Récupération d'un nombre et de la coloration
 	char buff[5];
 	sprintf(buff, "%d", (unsigned int)pow(2, get_tile(g, j, i)));
