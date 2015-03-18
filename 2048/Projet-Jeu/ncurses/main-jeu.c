@@ -28,16 +28,20 @@ int main(int argc, char *argv[]){
       ch=getch();
       switch(ch){
       case KEY_UP:
-	play(g, UP);
+	if (can_move(g, UP))
+	  play(g, UP);
 	break;
       case KEY_DOWN:
-	play(g, DOWN);
+	if (can_move(g, DOWN))
+	  play(g, DOWN);
 	break;
       case KEY_RIGHT:
-	play(g, RIGHT);
+	if (can_move(g, RIGHT))
+	  play(g, RIGHT);
 	break;
       case KEY_LEFT:
-	play(g, LEFT);
+	if (can_move(g, LEFT))
+	  play(g, LEFT);
 	break;
       case 113: // "q" pour quitter
 	continuer = false;
@@ -104,7 +108,7 @@ static void display_grid(grid g){
 	attron(COLOR_PAIR(t[(get_tile(g, i, j) - 1) % 7]));
 	// Récupération d'un nombre et de la coloration
 	char buff[5];
-	sprintf(buff, "%d", (unsigned int)pow(2, get_tile(g, i, j)));
+	sprintf(buff, "%d", (unsigned int)pow(2, get_tile(g, j, i)));
 	mvprintw(x, y, buff);
 	attroff(COLOR_PAIR(1));
       }

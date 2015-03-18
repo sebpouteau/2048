@@ -3,8 +3,15 @@
 #include <stdbool.h>
 #include "fonction-test.h"
 
+/**
+ * \file main-fonction-test.c
+ * \brief main des fonctions de test
+ **/
+
+
 static int nbrTest = 1;
 static void display_test(char *t, bool valide);
+
 
 int main(int argc, char *argv[]){
   grid g = new_grid();
@@ -23,7 +30,6 @@ int main(int argc, char *argv[]){
   display_test("test_add_tile", test_add_tile(g));
   delete_grid(g);
 }
-
 
 
 static void display_test(char *t, bool valide){
