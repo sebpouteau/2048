@@ -7,7 +7,7 @@
 #ifndef STRATEGY_H_
 #define STRATEGY_H_
 
-#include "grid.h"
+#include "../Projet-Jeu/src/grid.h"
 
 
 

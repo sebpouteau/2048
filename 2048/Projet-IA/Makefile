@@ -3,7 +3,7 @@ CFLAGS =-std=c99 -g -Wall
 LDLIBS = -lgrid -lm -L ../Projet-Jeu/lib/
 CPPFLAGS= 
 
-all: verif-libgrid test-IAYordan deplacement #test-IA1  test-IAJimmy test-IAJimmy-1 test-IAJimmy-2 test-IAJimmy-3-TRICHE 
+all: verif-libgrid test-IA deplacement # test-IAYorda test-IAJimmy test-IAJimmy-1 test-IAJimmy-2 test-IAJimmy-3-TRICHE 
 
 verif-libgrid:
 	if [ ! -f "../Projet-Jeu/lib/libgrid.a" ];then $(MAKE) -C ../Projet-Jeu; fi
@@ -11,8 +11,8 @@ verif-libgrid:
 deplacement:
 	if [ ! -d "bin" ];then mkdir bin; fi
 	mv test* bin/
-test-IA1: main-IA1.o 
-	$(CC) -o test-IA1 main-IA1.o   $(LDLIBS)
+test-IA: main-IA.o 
+	$(CC) -o test-IA main-IA.o   $(LDLIBS)
 
 test-IAYordan: main-IAYordan.o  
 	$(CC) -o test-IAYordan main-IAYordan.o  $(LDLIBS)
