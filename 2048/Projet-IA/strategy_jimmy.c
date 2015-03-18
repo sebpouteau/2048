@@ -10,24 +10,26 @@ void free_memless_strat (strategy strat)
   free(strat);
 }
 
-stractegy initStructure(){
+static dir strategy_jimmy(grid g);
+/*
+strategy initStructure(){
   strategy strat = malloc(sizeof(*strat));
   strat->mem = NULL;
   strat->name = "Jimmy";
-  strat->play_move = strategy_jimmy_1;
+  strat->play_move = strategy_jimmy;
   strat->free_strategy = free_memless_strat;
 }
-
+*/
 
 
 /* ====================
    === STRATEGIE IA ===
    ==================== */
 
-
 static unsigned long int poids_fusion(grid g, dir d);
+static bool possible_lc(grid g, int i, int j, int a,int b);
 
-dir strategy_jimmy_1(grid g){
+static dir strategy_jimmy(grid g){
   int cpt_up = poids_fusion(g,UP);
   int cpt_down = poids_fusion(g,DOWN);
   int cpt_left = poids_fusion(g,LEFT);
@@ -83,7 +85,7 @@ static long maximum_tile(grid g);
 
 int main(int argc,char **argv){
 
-  int n = 100;
+  int n = 1000;
   int nb_lance = n;
   int cpt_16 = 0;
   int cpt_32 = 0;
@@ -100,29 +102,26 @@ int main(int argc,char **argv){
     grid g= new_grid();
     add_tile(g);
     add_tile(g);
-
-    int cpt_up;
-    int cpt_down;
-    int cpt_left;
-    int cpt_right;
     
     while(!game_over(g)){
-      strategy_jimmy_1(g)
+      play(g,strategy_jimmy(g));
     }
-    if(maximum_tile(g) == 16)
-      cpt_16 += 1;    if(maximum_tile(g) == 32)
+    
+    if(maximum_tile(g) == 4)
+      cpt_16 += 1;
+    if(maximum_tile(g) == 5)
       cpt_32 += 1;
-    if(maximum_tile(g) == 64)
+    if(maximum_tile(g) == 6)
       cpt_64 += 1;
-    if(maximum_tile(g) == 128)
+    if(maximum_tile(g) == 7)
       cpt_128 += 1;
-    if(maximum_tile(g) == 256)
+    if(maximum_tile(g) == 8)
       cpt_256 += 1;
-    if(maximum_tile(g) == 512)
+    if(maximum_tile(g) == 9)
       cpt_512 += 1;
-    if(maximum_tile(g) == 1024)
+    if(maximum_tile(g) == 10)
       cpt_1024 += 1;
-    if(maximum_tile(g) == 2048)
+    if(maximum_tile(g) == 11)
       cpt_1024 += 1;
     delete_grid(g);
     n -=1;
@@ -152,3 +151,13 @@ static long maximum_tile(grid g){
 }
 
 
+static bool possible_lc(grid g, int i, int j, int a,int b){
+  while(i<4-a && i>=0-a && j<4-b && j>=0-b){
+    if ((get_tile(g,i,j)==get_tile(g,i+a,j+b)&&get_tile(g,i,j)!=0)||(get_tile(g,i,j)==0 && get_tile(g,i+a,j+b))){
+      return true;
+    }
+    i+=a;
+    j+=b;
+  }
+  return false;
+}
