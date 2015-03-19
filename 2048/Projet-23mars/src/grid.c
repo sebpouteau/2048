@@ -33,9 +33,9 @@ static bool possible(grid g, int i, int j, int a, int b);
 static void set_grid_score(grid g, unsigned long int add_score);
 
 
-/* ======================================
-    IMPLEMENTATION DE L'INTERFACE GRID.H
-   ====================================== */
+/* ==========================================
+   == IMPLEMENTATION DE L'INTERFACE GRID.H ==
+   ========================================== */
 
 grid new_grid(){
   grid g = malloc(sizeof(struct grid_s));
@@ -175,9 +175,9 @@ void play(grid g, dir d){
 }
 
 
-/* =====================================
-    IMPLEMENTATION DES FONCTIONS STATIC
-   ===================================== */
+/* =========================================
+   == IMPLEMENTATION DES FONCTIONS STATIC ==
+   ========================================= */
 
 /**
  * \brief Fusionne deux cases dans toute la grille et met la deuxième case à 0
