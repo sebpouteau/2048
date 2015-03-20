@@ -83,16 +83,20 @@ void game_sdl(){
     else if(event.type == SDL_KEYDOWN){
       switch(event.key.keysym.sym){
       case SDLK_UP:
-	play(g,UP);
+	if(can_move(g, UP))
+	  play(g,UP);
 	break;
       case SDLK_DOWN:
-	play(g,DOWN);
+	if(can_move(g, DOWN))
+	  play(g,DOWN);
 	break;
       case SDLK_LEFT:
-	play(g,LEFT);
+	if(can_move(g, LEFT))
+	  play(g,LEFT);
 	break;
       case SDLK_RIGHT:
-	play(g,RIGHT);
+	if(can_move(g, RIGHT))
+	  play(g,RIGHT);
 	break;
       // Rejouer
       case SDLK_RETURN:
@@ -135,8 +139,8 @@ static void display_grid(grid g, SDL_Surface *surface_screen, SDL_Surface *surfa
   SDL_Rect position_tile;
   for(int i=0; i<GRID_SIDE; i++){
     for(int j=0; j<GRID_SIDE; j++){
-      position_tile.x = 50 + j*100;
-      position_tile.y = 50 + i*100;
+      position_tile.x = 50 + i*100;
+      position_tile.y = 50 + j*100;
       if(get_tile(g,i,j) == 0)
 	sprintf(name_tile, "../sdl/tiles/tile0.bmp");
       else
