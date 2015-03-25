@@ -3,7 +3,10 @@ CFLAGS =-std=c99 -g -Wall
 LDLIBS = -lgrid -lm -lncurses -L ../Projet-Jeu/lib/
 CPPFLAGS= 
 
-all: verif-libgrid niko test-seb test-jimmy test-yordan test-ysa  deplacement niko
+
+all: verif-libgrid test-yordan test-seb test-jimmy test-ysa deplacement 
+
+
 
 verif-libgrid:
 	if [ ! -f "../Projet-Jeu/lib/libgrid.a" ];then $(MAKE) -C ../Projet-Jeu; fi
@@ -14,8 +17,6 @@ deplacement:
 
 test-seb: strategy_seb.o
 	$(CC) -o test-seb strategy_seb.o   $(LDLIBS)
-niko: niko.o
-	$(CC) -o $@ $^   $(LDLIBS)
 
 test-jimmy: strategy_jimmy.o
 	$(CC) -o test-jimmy strategy_jimmy.o   $(LDLIBS)

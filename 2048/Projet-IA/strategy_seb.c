@@ -6,7 +6,7 @@
 #include <math.h>
 
 #include <assert.h>
-#include "grid.h"
+//#include "grid.h"
 #include <ncurses.h>
 #include <curses.h>
 

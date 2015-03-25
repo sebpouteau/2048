@@ -2,24 +2,27 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
-#include "../Projet-Jeu/src/grid.h"
+//#include "../Projet-Jeu/src/grid.h"
 #include <time.h>
+#include "strategy.h"
 
-struct tabBestM{
-float score;
-dir best; 
+typedef struct tabBestm* tabBestM;
+struct tabBestm{
+  float score;
+  dir best; 
 };
 
-#define MONO_WEIGHT 3
+
+#define MONO_WEIGHT 15
 #define MONO_POW 4
-#define SMOOTH_WEIGHT 7
-#define EMPTY_WEIGHT 4
+#define SMOOTH_WEIGHT 20
+#define EMPTY_WEIGHT 10
 #define SCORE_WEIGHT 0.1
 
 
 //static void display_grid(grid g);
 static long maximum_tile(grid g);
-static struct tabBestM new_tabBestM();
+static tabBestM new_tabBestM();
 static dir best_move(grid g);
 static int empty_tiles(grid g);
 static int monotonicity(grid g);
@@ -31,32 +34,73 @@ static float eval_tabG(grid g,grid* tab);
 
 
 int main(int argc,char **argv){
+  
+  int cpt_8 = 0;
+  int cpt_16 = 0;
+  int cpt_32 = 0;
+  int cpt_64 = 0;
+  int cpt_128 = 0;
+  int cpt_256 = 0;
+  int cpt_512 = 0;
+  int cpt_1024 = 0;
+  int cpt_2048 = 0;
+  int cpt_4096 = 0;
+  
   srand(time(NULL));
-  for (int j=0; j< 10;j++){
+  for (int j=0; j < 400;j++){
     grid g= new_grid();
     add_tile(g);
     add_tile(g);
     while(!game_over(g)){
-      play(g,best_move(g));
+      if(can_move(g,best_move(g)))
+	play(g,best_move(g));
     }
-      
-    printf("Tile max = %ld \n", maximum_tile(g));
-    //delete_grid(g);
-  
+    if(maximum_tile(g) == 3)
+      cpt_8 += 1;
+    if(maximum_tile(g) == 4)
+      cpt_16 += 1;
+    if(maximum_tile(g) == 5)
+      cpt_32 += 1;
+    if(maximum_tile(g) == 6)
+      cpt_64 += 1;
+    if(maximum_tile(g) == 7)
+      cpt_128 += 1;
+    if(maximum_tile(g) == 8)
+      cpt_256 += 1;
+    if(maximum_tile(g) == 9)
+      cpt_512 += 1;
+    if(maximum_tile(g) == 10)
+      cpt_1024 += 1;
+    if(maximum_tile(g) == 11)
+      cpt_2048 += 1;
+    if(maximum_tile(g) == 12)
+      cpt_4096 += 1;
+    
+    delete_grid(g);
   }
+  printf("\n --------------- \n");
+  printf("Nombre de fois 8 : %d\n", cpt_8);
+  printf("Nombre de fois 16 : %d\n", cpt_16);
+  printf("Nombre de fois 32 : %d\n", cpt_32);
+  printf("Nombre de fois 64 : %d\n", cpt_64);
+  printf("Nombre de fois 128 : %d\n", cpt_128);
+  printf("Nombre de fois 256 : %d\n", cpt_256);
+  printf("Nombre de fois 512 : %d\n", cpt_512);
+  printf("Nombre de fois 1024 : %d\n", cpt_1024);
+  printf("Nombre de fois 2048 : %d\n", cpt_2048);
+  printf("Nombre de fois 4096 : %d\n", cpt_4096);
 }
 
-
-/* static void display_grid(grid g){ */
-/*   for (int i=0;i<GRID_SIDE;i++){ */
-/*     for (int j=0;j<GRID_SIDE;j++){ */
-/*       printf("%d ",get_tile(g,i,j)); */
-/*     } */
-/*     printf("\n"); */
-/*   } */
-/*   printf("\n"); */
-/* } */
-
+  /* static void display_grid(grid g){ */
+  /*   for (int i=0;i<GRID_SIDE;i++){ */
+  /*     for (int j=0;j<GRID_SIDE;j++){ */
+  /*       printf("%d ",get_tile(g,i,j)); */
+  /*     } */
+  /*     printf("\n"); */
+  /*   } */
+  /*   printf("\n"); */
+  /* } */
+  
 
 static long maximum_tile(grid g){
   long max_tile = 2;
@@ -72,11 +116,11 @@ static long maximum_tile(grid g){
 
 
 
-static struct tabBestM new_tabBestM(){
-  struct tabBestM tab;
-  //assert(tab);
-  tab.score = 0;
-  tab.best = 0;
+static tabBestM new_tabBestM(){
+  tabBestM tab = malloc(sizeof(struct tabBestm));
+  assert(tab);
+  tab->score = 0;
+  tab->best = 0;
   return tab;
 }
 
@@ -84,23 +128,24 @@ static struct tabBestM new_tabBestM(){
 
 static dir best_move(grid g){
   grid test = new_grid();
-  struct tabBestM tab = new_tabBestM();
+  tabBestM tab = new_tabBestM();
   for(dir i=UP;i<=RIGHT;i++){
-    copy_grid(g,test);
-    if(!can_move(test,i))
+    if(!can_move(g,i))
       continue;
+    copy_grid(g,test);
     do_move(test,i);
     grid* tabG = malloc((2*empty_tiles(test))*sizeof(grid*));
     fill_tabG(test,tabG);
     float score_tabG = eval_tabG(test,tabG);
-    if(tab.score < score_tabG){
-      tab.score = score_tabG;
-      tab.best = i;
+    if(tab->score < score_tabG){
+      tab->score = score_tabG;
+      tab->best = i;
     }
   }
-  dir b = tab.best;
-  //free(tab);
+  dir b = tab->best;
+  free(tab);
   delete_grid(test);
+  //trqbva da iztriq vs gridove ot tabloto s gridove !!!! 
   return b;
 }
 
@@ -117,23 +162,23 @@ static dir best_move(grid g){
 /* } */
 
 static void fill_tabG(grid g,grid* tab){
-  grid copy = new_grid();
-  for(int i = 0;i<empty_tiles(g);i++){
+  int i = 0;
+  int n = empty_tiles(g)*2-1;
+  while(i < n){
+    grid copy = new_grid();
     copy_grid(g,copy);
-    for(int j=0;j<4;j++)
-      for(int k = 0;k<4;k++){
-	if(get_tile(copy,j,k) == 0){
-	  set_tile(copy,j,k,2);
-	  tab[i]=copy;
+    for(int j = 0; j < 4; j++){
+      for(int k = 0; k < 4; k++){
+	if(get_tile(copy, j, k) == 0){  // da naucha ezika Latex za pisane vmesto word/writer ..
+	  set_tile(copy, j, k, 2);
+	  tab[i] = copy;
+	  set_tile(copy, j, k, 4);
+	  tab[n] = copy;
+	  i++;
+	  n--;
 	}
       }
-    for(int j=0;j<4;j++)
-      for(int k = 0;k<4;k++){
-	if(get_tile(copy,j,k) == 0){
-	  set_tile(copy,j,k,4);
-	  tab[i]=copy;
-	}
-      }
+    }
   }
 }
 
@@ -142,9 +187,9 @@ static void fill_tabG(grid g,grid* tab){
 float eval_branch(grid g){
   float mono;
   if(max_in_corner(g))
-    mono = log(monotonicity(g)+1/MONO_WEIGHT);
+    mono = monotonicity(g)+1/(MONO_WEIGHT*MONO_POW);
   else
-    mono = monotonicity(g)*MONO_WEIGHT;
+    mono = monotonicity(g)/MONO_WEIGHT;
   float smooth = smoothness(g)*SMOOTH_WEIGHT;
   float empty = empty_tiles(g)*EMPTY_WEIGHT;
   float score = grid_score(g) * SCORE_WEIGHT;
@@ -213,7 +258,7 @@ static int smoothness(grid g){
 }
 
 bool max_in_corner(grid g){
-  tile max_tile = maximum_tile(g);
+  long max_tile = maximum_tile(g);
   return get_tile(g, 0, 0) == max_tile || get_tile(g, 3, 0) == max_tile || get_tile(g, 0, 3) == max_tile || get_tile(g, 3, 3) == max_tile;
 }
 
