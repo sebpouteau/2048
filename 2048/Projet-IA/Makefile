@@ -4,7 +4,7 @@ LDLIBS = -lgrid -lm -lncurses -L ../Projet-Jeu/lib/
 CPPFLAGS= 
 
 
-all: verif-libgrid test-yordan test-seb test-jimmy test-ysa deplacement 
+all: verif-libgrid test-yordan test-seb test-jimmy deplacement 
 
 
 

@@ -26,32 +26,7 @@ void free_memless_strat (strategy strat)
   free (strat);
 }
 
-
-/* if (can_move(g,UP)){return UP;} */
-  /* else if (can_move(g,LEFT)){return LEFT;} */
-  /* else if (can_move(g,DOWN)){return DOWN;} */
-  /* else if (can_move(g,RIGHT)){return RIGHT;} */
-  /* return UP; */
 dir strategy_seb(strategy str, grid g){
-  /* grid g1 = new_grid(); */
-  /* long int up; */
-  /* long int down; */
-  /* long int left; */
-  /* long int right; */
-
-  /* copy_grid(g,g1); */
-  /* up = note_grid(g1,UP); */
-
-  /* copy_grid(g,g1); */
-  /* down = note_grid(g1,DOWN); */
-  
-  /* copy_grid(g,g1); */
-  /* right = note_grid(g1,RIGHT); */
-  
-  /* copy_grid(g,g1); */
-  /* left = note_grid(g1,LEFT); */
-  
-  //delete_grid(g1);
   return meilleur_direction(g,meilleur_direction(g,UP,DOWN),meilleur_direction(g,LEFT,RIGHT));
 }
 
@@ -60,10 +35,11 @@ long int note_grid (grid g, dir t){
     return 0;
   grid g_copy = new_grid();
   copy_grid(g,g_copy);
-  
   do_move(g_copy,t);
-  int cpt = 0;
+  
+  long int cpt = 0;
   int cpt_case_empty = 0;
+  
   for(int y = 0; y < GRID_SIDE; y++){
     for(int x = 0; x < GRID_SIDE; x++){
       cpt += get_tile(g_copy,x,y);
@@ -71,13 +47,25 @@ long int note_grid (grid g, dir t){
 	cpt_case_empty++;
     }
   }
-  int max = (int)maximum_tile(g_copy);
-  if( get_tile(g_copy, 0, 0) == max || get_tile(g_copy, GRID_SIDE -1 , 0) == max || get_tile(g_copy, 0, GRID_SIDE-1) == max || get_tile(g_copy, GRID_SIDE - 1, GRID_SIDE - 1) == max )
-    cpt += 100;
 
+  int max = (int)maximum_tile(g_copy);
+ if( get_tile(g_copy, 0, 0) == max || get_tile(g_copy, GRID_SIDE -1 , 0) == max || get_tile(g_copy, 0, GRID_SIDE-1) == max || get_tile(g_copy, GRID_SIDE - 1, GRID_SIDE - 1) == max ) 
+     cpt += 300; 
+  if (get_tile(g_copy,0,0) == max)
+    cpt+=100;
+  if (get_tile(g_copy,1,0)  > get_tile(g_copy, 2,0) )
+    cpt+=200;
+  int cpt_changement_sign = 0; 
+  for(int y = 0; y < GRID_SIDE; y++)
+    for(int x = 0; x < GRID_SIDE-1; x++)
+      if(get_tile(g_copy,x,y) < get_tile(g_copy,x+1,y))
+	cpt_changement_sign++;
+      
+  cpt -= 10*cpt_changement_sign;
   cpt += 2*grid_score(g_copy);
   delete_grid(g_copy);
-  cpt += 10*cpt_case_empty;
+  cpt += 100*cpt_case_empty;
+
   return cpt;
 }
   
@@ -101,62 +89,63 @@ static long maximum_tile(grid g){
   }
   return max_tile;
  }
-/* int main (int argc, char **argv){ */
 
-/*   int n = 1000; */
-/*   int nb_lance = n; */
-/*   int cpt_16 = 0; */
-/*   int cpt_32 = 0; */
-/*   int cpt_64 = 0; */
-/*   int cpt_128 = 0; */
-/*   int cpt_256 = 0; */
-/*   int cpt_512 = 0; */
-/*   int cpt_1024 = 0; */
-/*   int cpt_2048 = 0; */
+int main (int argc, char **argv){
+
+  int n = 1000;
+  int nb_lance = n;
+  int cpt_16 = 0;
+  int cpt_32 = 0;
+  int cpt_64 = 0;
+  int cpt_128 = 0;
+  int cpt_256 = 0;
+  int cpt_512 = 0;
+  int cpt_1024 = 0;
+  int cpt_2048 = 0;
 	
-/*   srand(time(NULL)); */
-/*   strategy seb = init_Structure(); */
-/*   while(n > 0){ */
-/*     grid g = new_grid(); */
-/*     add_tile(g); */
-/*     add_tile(g); */
+  srand(time(NULL));
+  strategy seb = init_Structure();
+  while(n > 0){
+    grid g = new_grid();
+    add_tile(g);
+    add_tile(g);
     
-/*     while(!game_over(g)){ */
-/*       play(g, strategy_seb(seb,g)); */
-/*     } */
+    while(!game_over(g)){
+      play(g, strategy_seb(seb,g));
+    }
     
-/*     if(maximum_tile(g) == 4) */
-/*       cpt_16 += 1; */
-/*     if(maximum_tile(g) == 5) */
-/*       cpt_32 += 1; */
-/*     if(maximum_tile(g) == 6) */
-/*       cpt_64 += 1; */
-/*     if(maximum_tile(g) == 7) */
-/*       cpt_128 += 1; */
-/*     if(maximum_tile(g) == 8) */
-/*       cpt_256 += 1; */
-/*     if(maximum_tile(g) == 9) */
-/*       cpt_512 += 1; */
-/*     if(maximum_tile(g) == 10) */
-/*       cpt_1024 += 1; */
-/*     if(maximum_tile(g) == 11) */
-/*       cpt_1024 += 1; */
-/*     delete_grid(g); */
-/*     n -= 1; */
-/*   } */
-/*   printf("\n --------------- \n"); */
-/*   printf("Sur %d lancés : \n\n", nb_lance); */
-/*   printf("Nombre de fois 16 : %d\n", cpt_16); */
-/*   printf("Nombre de fois 32 : %d\n", cpt_32); */
-/*   printf("Nombre de fois 64 : %d\n", cpt_64); */
-/*   printf("Nombre de fois 128 : %d\n", cpt_128); */
-/*   printf("Nombre de fois 256 : %d\n", cpt_256); */
-/*   printf("Nombre de fois 512 : %d\n", cpt_512); */
-/*   printf("Nombre de fois 1024 : %d\n", cpt_1024); */
-/*   printf("Nombre de fois 2048 : %d\n", cpt_2048); */
-/* } */
+    if(maximum_tile(g) == 4)
+      cpt_16 += 1;
+    if(maximum_tile(g) == 5)
+      cpt_32 += 1;
+    if(maximum_tile(g) == 6)
+      cpt_64 += 1;
+    if(maximum_tile(g) == 7)
+      cpt_128 += 1;
+    if(maximum_tile(g) == 8)
+      cpt_256 += 1;
+    if(maximum_tile(g) == 9)
+      cpt_512 += 1;
+    if(maximum_tile(g) == 10)
+      cpt_1024 += 1;
+    if(maximum_tile(g) == 11)
+      cpt_1024 += 1;
+    delete_grid(g);
+    n -= 1;
+  }
+  printf("\n --------------- \n");
+  printf("Sur %d lancés : \n\n", nb_lance);
+  printf("Nombre de fois 16 : %d\n", cpt_16);
+  printf("Nombre de fois 32 : %d\n", cpt_32);
+  printf("Nombre de fois 64 : %d\n", cpt_64);
+  printf("Nombre de fois 128 : %d\n", cpt_128);
+  printf("Nombre de fois 256 : %d\n", cpt_256);
+  printf("Nombre de fois 512 : %d\n", cpt_512);
+  printf("Nombre de fois 1024 : %d\n", cpt_1024);
+  printf("Nombre de fois 2048 : %d\n", cpt_2048);
+}
 
-
+/*
 static void display_grid(grid g);
 static void display_gameOver(bool *continuer, int *reponse_valide);
 
@@ -225,7 +214,7 @@ static void display_grid(grid g){
   int x = 3;
   int y = 2;
   for(int i = 0; i < 5; i++){
-    mvhline(x, 3, ACS_HLINE, 31);
+  mvhline(x, 3, ACS_HLINE, 31);
     x += 4;
   }
   for(int i = 0; i < 5; i++){
@@ -260,3 +249,5 @@ static void display_grid(grid g){
   refresh();
 }
 
+
+*/
