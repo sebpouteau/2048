@@ -18,11 +18,11 @@ static void display_score(grid g, SDL_Surface *surface_screen);
 // Affiche le game over
 static void display_gameover(grid g, SDL_Surface *surface_screen, bool *try_again);
 
-// Affiche du texte celon les paramètres passés
+// Affiche du texte selon les paramètres passés
 static void display_text(SDL_Surface *surface_screen, char *char_text, int position_height, TTF_Font *police_text, SDL_Color color_text, SDL_Color color_background, bool transparence);
 
 // Récupère le pseudo saisi et l'écrit dans char_nickname
-static void enter_nickname(grid g, SDL_Surface *surface_screen, char *char_nickname, char *char_highscore, bool *end, bool *try_again);
+static void enter_nickname(grid g, SDL_Surface *surface_screen, char *char_highscore, bool *end, bool *try_again);
 
 // Lit une ligne dans un fichier
 static void read_line(FILE *fichier, char *char_nickname, char *char_highscore);
@@ -77,19 +77,19 @@ void game_sdl(){
       switch(event.key.keysym.sym){
       case SDLK_UP:
 	if(can_move(g, UP))
-	  play(g,UP);
+	  play(g, UP);
 	break;
       case SDLK_DOWN:
 	if(can_move(g, DOWN))
-	  play(g,DOWN);
+	  play(g, DOWN);
 	break;
       case SDLK_LEFT:
 	if(can_move(g, LEFT))
-	  play(g,LEFT);
+	  play(g, LEFT);
 	break;
       case SDLK_RIGHT:
 	if(can_move(g, RIGHT))
-	  play(g,RIGHT);
+	  play(g, RIGHT);
 	break;
       // Rejouer
       case SDLK_RETURN:
@@ -133,8 +133,8 @@ static void display_grid(grid g, SDL_Surface *surface_screen){
   SDL_Surface *surface_tile = NULL;
   SDL_Rect position_tile;
   char name_tile[30];
-  for(int i=0; i<GRID_SIDE; i++){
-    for(int j=0; j<GRID_SIDE; j++){
+  for(int i = 0; i < GRID_SIDE; i++){
+    for(int j = 0; j < GRID_SIDE; j++){
       position_tile.x = 50 + i*100;
       position_tile.y = 50 + j*100;
       if(get_tile(g,i,j) == 0)
@@ -153,7 +153,8 @@ static void display_grid(grid g, SDL_Surface *surface_screen){
 static void display_score(grid g, SDL_Surface *surface_screen){
   // Paramètres affichage score
   TTF_Font *police_text = TTF_OpenFont("../sdl/arial.ttf", 30);  
-  SDL_Color color_text = {255, 0, 0}, color_background = {255,255,255};  
+  SDL_Color color_text = {255, 0, 0}; // Couleur rouge
+  SDL_Color color_background = {255,255,255}; // Couleur blanche
   char char_score[100];
 
   // Ouverture (et si besoin création) du fichier contenant l'highscore
@@ -168,7 +169,7 @@ static void display_score(grid g, SDL_Surface *surface_screen){
   unsigned long int highscore = strtoul(char_highscore, NULL, 10); // Convertit une chaine de caractère en unsigned long int
 
   // Affiche le score
-  sprintf(char_score, "Score : %lu ", grid_score(g));
+  sprintf(char_score, " Score : %lu ", grid_score(g));
   display_text(surface_screen,char_score, 5, police_text, color_text, color_background, false);
 
   // Affiche l'highscore
@@ -178,17 +179,17 @@ static void display_score(grid g, SDL_Surface *surface_screen){
     sprintf(char_score, "           New Highscore : %s !!           ", char_highscore);
     display_text(surface_screen, char_score, 470, police_text, color_text, color_background, false);
   }else{
-    sprintf(char_score, "Highscore :%s - %s", char_highscore, char_nickname);
+    sprintf(char_score, " Highscore :%s - %s ", char_highscore, char_nickname);
     display_text(surface_screen, char_score, 470, police_text, color_text, color_background, false);
   }
 
   // Affiche "Try Again"
   TTF_Font *police_menu = TTF_OpenFont("../sdl/arial.ttf", 25);
-  char char_recommencer[30] = "Press ENTER to TRY AGAIN";
+  char char_recommencer[30] = " Press ENTER to TRY AGAIN ";
   display_text(surface_screen, char_recommencer, 520, police_menu, color_text, color_background, false);
 
   // Affiche "Give Up"
-  char char_giveup[30] = "or ESC to GIVE UP";
+  char char_giveup[30] = " or ESC to GIVE UP ";
   display_text(surface_screen, char_giveup, 550, police_menu, color_text, color_background, false);
 
   // Libère la mémoire allouée et ferme le fichier de Highscore
@@ -201,7 +202,8 @@ static void display_score(grid g, SDL_Surface *surface_screen){
 
 static void display_gameover(grid g, SDL_Surface *surface_screen, bool *try_again){
   // Paramètres couleur texte
-  SDL_Color color_text = {255, 255, 255}, color_background = {0, 0, 0};
+  SDL_Color color_text = {255, 255, 255}; // Couleur blanche
+  SDL_Color color_background = {0, 0, 0}; // Couleur noire
 
   // Paramètres Game Over
   char *char_gameover = " GAME OVER ";
@@ -230,15 +232,11 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, bool *try_agai
   SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
   SDL_Flip(surface_screen);
 
-  // Réécriture de l'Highscore si nouveau highscore
-  if(grid_score(g) == highscore){
-    char char_tmp_nickname[10]="";
-    enter_nickname(g, surface_screen, char_tmp_nickname, char_highscore, &end, try_again);
-  }
-  else{
-    // Affiche "Game Over"
-    display_text(surface_screen, char_gameover, 220, police_gameover, color_text, color_background, true);
-  }
+  // Réécriture de l'Highscore si new highscore
+  if(grid_score(g) == highscore)
+    enter_nickname(g, surface_screen, char_highscore, &end, try_again);
+  else
+    display_text(surface_screen, char_gameover, 220, police_gameover, color_text, color_background, true); // Affiche "Game Over"
 
   SDL_Flip(surface_screen);
   
@@ -252,8 +250,8 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, bool *try_agai
     else if(event.type == SDL_KEYDOWN){
       switch(event.key.keysym.sym){
       // Rejouer
-      case SDLK_RETURN: 
-	game_sdl();
+      case SDLK_RETURN:
+	*try_again = true;
 	end = false;
 	break;
       // Give Up
@@ -294,7 +292,7 @@ static void display_text(SDL_Surface *surface_screen, char *char_text, int posit
 
 
 
-static void enter_nickname(grid g, SDL_Surface *surface_screen, char *char_nickname, char *char_highscore, bool *end, bool *try_again){
+static void enter_nickname(grid g, SDL_Surface *surface_screen, char *char_highscore, bool *end, bool *try_again){
   // Paramètres transparent bleu
   SDL_Surface *surface_background_grid = NULL;
   surface_background_grid = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_DOUBLEBUF, 420, 420, 32, 0, 0, 0, 0);
@@ -309,6 +307,7 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, char *char_nickn
   TTF_Font *police_gameover = TTF_OpenFont("../sdl/arial.ttf", 55);
   SDL_Color color_text = {255, 255, 255}, color_background = {0, 0, 0};
   FILE* highscore_txt = fopen("../sdl/highscore_sdl.txt", "r+");
+  char char_nickname[10]="";
   char *char_gameover = " GAME OVER ";
   char char_display[60] = "";
   char char_tmp[8] = "********" ;
@@ -320,9 +319,9 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, char *char_nickn
   display_text(surface_screen, char_display, 355, police_text, color_text, color_background, true);
 
   // Affiche complément du game over
-  sprintf(char_newHighscore, "New Highscore : %s !!", char_highscore);
+  sprintf(char_newHighscore, " New Highscore : %s !! ", char_highscore);
   display_text(surface_screen, char_newHighscore, 210, police_text, color_text, color_background, true);
-  display_text(surface_screen, "Enter your nickname :", 310, police_text, color_text, color_background, true);
+  display_text(surface_screen, " Enter your nickname : ", 310, police_text, color_text, color_background, true);
 
   // Permet de mettre comme pseudo par défaut "Anyone"
   write_line(highscore_txt, char_nickname, char_highscore);
@@ -340,24 +339,24 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, char *char_nickn
   while(num_char >= cpt){
     SDL_WaitEvent(&event);
     if(event.type == SDL_QUIT){
-      cpt = num_char+1;
+      cpt = num_char + 1;
       *end = false;
     }
     else if(event.type == SDL_KEYDOWN){
       switch(event.key.keysym.sym){
       // Give Up
       case SDLK_ESCAPE:
-	cpt = num_char+1;
+	cpt = num_char + 1;
 	*end = false;
 	break;
       case SDLK_RETURN: // Touche "entrée"
-	cpt = num_char+1;
+	cpt = num_char + 1;
 	*end = false;
 	*try_again = true;
 	break;
       case SDLK_BACKSPACE: // Touche "supprimer"
-	if(cpt>0){
-	  char_nickname[strlen(char_nickname)-1] = '\0';
+	if(cpt > 0){
+	  char_nickname[strlen(char_nickname) - 1] = '\0';
 	  char_tmp[num_char - cpt] = '*';
 	  if(cpt == 1)
 	    sprintf(char_display, "%s - ********", char_highscore);
@@ -370,7 +369,7 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, char *char_nickn
 	break;
       default:
 	// Si la touche est une lettre, un chiffre, ou un symbole
-	if(event.key.keysym.unicode>=32 && event.key.keysym.unicode<=126){
+	if(event.key.keysym.unicode >= 32 && event.key.keysym.unicode <= 126){
 	  if(num_char > cpt){
 	    sprintf(char_nickname, "%s%c", char_nickname, (char)event.key.keysym.unicode);
 	    char_tmp[num_char - cpt - 1] = '\0';
@@ -388,14 +387,14 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, char *char_nickn
 	// Affiche la grille
 	display_grid(g, surface_screen);
 	
-	// Ajout d'un transparent sur la grille
+	// Ajout d'un transparent bleu sur la grille
 	SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
 	
 	// Affiche score
 	display_text(surface_screen, char_gameover, 115, police_gameover, color_text, color_background, true);
-	sprintf(char_newHighscore, "New Highscore : %s !!", char_highscore);
+	sprintf(char_newHighscore, " New Highscore : %s !! ", char_highscore);
 	display_text(surface_screen, char_newHighscore, 210, police_text, color_text, color_background, true);
-	display_text(surface_screen, "Enter your nickname :", 310, police_text, color_text, color_background, true);
+	display_text(surface_screen, " Enter your nickname : ", 310, police_text, color_text, color_background, true);
 
 	// Affiche pseudo saisi
 	display_text(surface_screen, char_display, 355, police_text, color_text, color_background, true);
@@ -428,13 +427,13 @@ static void read_line(FILE *fichier, char *char_nickname, char *char_highscore){
   if(!feof(fichier)){
     fgets(char_nickname, 10, fichier);
     fgets(char_highscore, 10, fichier);
-    for(int i=9; i>0; i--){
+    for(int i = 9; i > 0; i--){
       if(char_nickname[i-1] == ' ')
 	char_nickname[i-1] = '\0';
       else
 	break;
     }
-    for(int i=9; i>0; i--){
+    for(int i = 9; i > 0; i--){
       if(char_highscore[i-1] == ' ')
 	char_highscore[i-1] = '\0';
       else
@@ -454,5 +453,6 @@ static void write_line(FILE *fichier, char *char_nickname, char *char_highscore)
   if(strlen(char_nickname) == 0){
     char_nickname = "Anyone";
   }
+
   fprintf(fichier, "%-10s%-10s", char_nickname, char_highscore);
 }
