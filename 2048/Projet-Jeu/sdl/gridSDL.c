@@ -9,7 +9,6 @@
 #include "gridSDL.h"
 
 
-
 // Affiche la grille
 static void display_grid(grid g, SDL_Surface *surface_screen);
 
@@ -302,6 +301,8 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, char *char_nickn
   SDL_Rect position_background_grid;
   position_background_grid.x = 40;
   position_background_grid.y = 40;
+  SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 0, 255));
+  SDL_SetAlpha(surface_background_grid, SDL_SRCALPHA, 125);
 
   // Paramètres d'affichage du Game Over et du texte
   TTF_Font *police_text = TTF_OpenFont("../sdl/arial.ttf", 30);
