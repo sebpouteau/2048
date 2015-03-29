@@ -41,8 +41,8 @@ void game_sdl(){
   SDL_WM_SetCaption("Game 2048 - by Emery, Gouraud, Kirov & Pouteau", NULL);
   SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 255, 255, 255));
 
-  // Initialisation du fond bleu foncé autour de la grille
-  SDL_Surface *surface_background_grid = NULL;
+  // Initialisation du contour bleu foncé autour de la grille
+  SDL_Surface *surface_background_grid = NULL; 
   surface_background_grid = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_DOUBLEBUF, 420, 420, 32, 0, 0, 0, 0);
   SDL_Rect position_background_grid;
   position_background_grid.x = 40;
@@ -56,8 +56,8 @@ void game_sdl(){
   add_tile(g);
   
   // Paramètres boucle du jeu
-  bool play_continue = true;
-  bool try_again = false;
+  bool play_continue = true; // Booléan de la boucle du jeu
+  bool try_again = false; // Booléan permettant de relancer un nouveau jeu
   SDL_Event event;
 
   // Affiche grille et score
@@ -212,9 +212,9 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, bool *try_agai
   TTF_Font *police_gameover = TTF_OpenFont("../sdl/arial.ttf", 55); 
 
   // Paramètres Highscore
-  bool end_game = true;
-  char char_highscore[10];
-  char char_nickname[10];
+  bool end_game = true; // Booléan de la boucle de fin du jeu
+  char char_highscore[10]; // Chaine de caractère contenant le highscore
+  char char_nickname[10]; // Chaine de caractère contenant le pseudo
   FILE* highscore_txt = fopen("../sdl/highscore_sdl.txt", "r+"); 
   read_line(highscore_txt, char_nickname, char_highscore);
   fclose(highscore_txt);
@@ -310,11 +310,11 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, char *char_highs
   TTF_Font *police_gameover = TTF_OpenFont("../sdl/arial.ttf", 55);
   SDL_Color color_text = {255, 255, 255}; // Couleur blanche
   SDL_Color color_background = {0, 0, 0}; // Couleur noire
-  char char_nickname[10]="";
+  char char_nickname[10]= ""; // Chaine de caractère qui contiendra le nouveau pseudo
   char *char_gameover = "GAME OVER";
-  char char_display[60] = "";
-  char char_tmp[8] = "********";
-  char char_newHighscore[30] = "";
+  char char_display[60] = ""; // Chaine de caractère qui contiendra "char_highscore - char_nickname" 
+  char char_tmp[8] = "********"; // Chaine de caractère permettant au joueur de visualiser le nombre de caractère restant pour écrire le pseudo
+  char char_newHighscore[30] = ""; // Chaine de caractère qui contiendra "New Highscore - char_highscore"
 
   // Affiche Game Over
   sprintf(char_display, "%s - %s", char_highscore, char_tmp);
@@ -333,10 +333,10 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, char *char_highs
 
   // Paramètre boucle while
   SDL_Event event;
-  int cpt_char = 0;
-  int num_char = 8;
-  bool re_display = false;
-  bool enter_new_nickname = true;
+  int cpt_char = 0; // Nombre de caractère saisi par l'utilisateur
+  int num_max_char = 8; // Nombre maximum de caractère pour le pseudo
+  bool re_display = false; // Booléan de réaffichage de l'écran
+  bool enter_new_nickname = true; // Booléan de la boucle de saisi du nouveau pseudo
   SDL_EnableUNICODE(1); // active l'unicode
 
   // Boucle while permettant de récupérer et de sauvegarder le pseudo saisi dans le fichier hghscore_sdl.txt
@@ -361,17 +361,17 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, char *char_highs
       case SDLK_BACKSPACE: // Touche "supprimer"
 	if(cpt_char > 0){
 	  char_nickname[strlen(char_nickname) - 1] = '\0';
-	  char_tmp[num_char - cpt_char] = '*';
+	  char_tmp[num_max_char - cpt_char] = '*';
 	  re_display = true;
 	  cpt_char -= 1;
 	}
 	break;
       default:
-	if(num_char > cpt_char){
+	if(num_max_char > cpt_char){
 	  // Si la touche est une lettre, un chiffre, ou un symbole
 	  if(event.key.keysym.unicode >= 32 && event.key.keysym.unicode <= 126){
 	    sprintf(char_nickname, "%s%c", char_nickname, (char)event.key.keysym.unicode);
-	    char_tmp[num_char - cpt_char - 1] = '\0';
+	    char_tmp[num_max_char - cpt_char - 1] = '\0';
 	    re_display = true;
 	    cpt_char += 1;
 	  }
