@@ -309,7 +309,6 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, char *char_highs
   SDL_Color color_text = {255, 255, 255}; // Couleur blanche
   SDL_Color color_background = {0, 0, 0}; // Couleur noire
   char char_nickname[10]="";
-  char char_nickname[10]="";
   char *char_gameover = " GAME OVER ";
   char char_display[60] = "";
   char char_tmp[8] = "********" ;
