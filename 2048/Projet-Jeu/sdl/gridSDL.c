@@ -24,10 +24,10 @@ static void display_text(SDL_Surface *surface_screen, char *char_text, int posit
 // Récupère le pseudo saisi et l'écrit dans char_nickname
 static void enter_nickname(grid g, SDL_Surface *surface_screen, char *char_highscore, bool *end, bool *try_again);
 
-// Lit une ligne dans un fichier
+// Lit la première ligne dans un fichier
 static void read_line(FILE *fichier, char *char_nickname, char *char_highscore);
 
-// Ecrit une ligne dans un fichier
+// Ecrit la première ligne dans un fichier
 static void write_line(FILE *fichier, char *char_nickname, char *char_highscore);
 
 
@@ -41,7 +41,7 @@ void game_sdl(){
   SDL_WM_SetCaption("Jeu 2048", NULL);
   SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 255, 255, 255));
 
-  // Initialisation du fond autour de la grille
+  // Initialisation du fond bleu foncé autour de la grille
   SDL_Surface *surface_background_grid = NULL;
   surface_background_grid = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_DOUBLEBUF, 420, 420, 32, 0, 0, 0, 0);
   SDL_Rect position_background_grid;
@@ -137,10 +137,10 @@ static void display_grid(grid g, SDL_Surface *surface_screen){
     for(int j = 0; j < GRID_SIDE; j++){
       position_tile.x = 50 + i*100;
       position_tile.y = 50 + j*100;
-      if(get_tile(g,i,j) == 0)
+      if(get_tile(g, i, j) == 0)
 	sprintf(name_tile, "../sdl/tiles/tile0.bmp");
       else
-	sprintf(name_tile, "../sdl/tiles/tile%d.bmp", (int)pow(2,get_tile(g,i,j)));
+	sprintf(name_tile, "../sdl/tiles/tile%d.bmp", (int)pow(2, get_tile(g, i, j)));
       surface_tile = SDL_LoadBMP(name_tile);
       SDL_BlitSurface(surface_tile, NULL, surface_screen, &position_tile);
       SDL_FreeSurface(surface_tile);
@@ -154,7 +154,7 @@ static void display_score(grid g, SDL_Surface *surface_screen){
   // Paramètres affichage score
   TTF_Font *police_text = TTF_OpenFont("../sdl/arial.ttf", 30);  
   SDL_Color color_text = {255, 0, 0}; // Couleur rouge
-  SDL_Color color_background = {255,255,255}; // Couleur blanche
+  SDL_Color color_background = {255, 255, 255}; // Couleur blanche
   char char_score[100];
 
   // Ouverture (et si besoin création) du fichier contenant l'highscore
@@ -162,7 +162,7 @@ static void display_score(grid g, SDL_Surface *surface_screen){
   if(highscore_txt == NULL)
     highscore_txt = fopen("../sdl/highscore_sdl.txt", "w");
 
-  // Récupère le pseudo et le highscore sauvegardé précédemment
+  // Récupère le pseudo et le highscore sauvegardés précédemment
   char char_highscore[10] = "";
   char char_nickname[10] = "";
   read_line(highscore_txt, char_nickname, char_highscore);
@@ -193,9 +193,9 @@ static void display_score(grid g, SDL_Surface *surface_screen){
   display_text(surface_screen, char_giveup, 550, police_menu, color_text, color_background, false);
 
   // Libère la mémoire allouée et ferme le fichier de Highscore
-  fclose(highscore_txt);
   TTF_CloseFont(police_text);
   TTF_CloseFont(police_menu);
+  fclose(highscore_txt);
 }
 
 
@@ -303,10 +303,12 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, char *char_highs
   SDL_SetAlpha(surface_background_grid, SDL_SRCALPHA, 125);
 
   // Paramètres d'affichage du Game Over et du texte
+  FILE* highscore_txt = fopen("../sdl/highscore_sdl.txt", "r+"); // Ouvre le fichier highscore_sdl.txt
   TTF_Font *police_text = TTF_OpenFont("../sdl/arial.ttf", 30);
   TTF_Font *police_gameover = TTF_OpenFont("../sdl/arial.ttf", 55);
-  SDL_Color color_text = {255, 255, 255}, color_background = {0, 0, 0};
-  FILE* highscore_txt = fopen("../sdl/highscore_sdl.txt", "r+");
+  SDL_Color color_text = {255, 255, 255}; // Couleur blanche
+  SDL_Color color_background = {0, 0, 0}; // Couleur noire
+  char char_nickname[10]="";
   char char_nickname[10]="";
   char *char_gameover = " GAME OVER ";
   char char_display[60] = "";
@@ -335,7 +337,7 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, char *char_highs
   bool re_display = false;
   SDL_EnableUNICODE(1); // active l'unicode
 
-  // Boucle while permettant de récupérer et de sauvegarder le pseudo saisi
+  // Boucle while permettant de récupérer et de sauvegarder le pseudo saisi dans le fichier hghscore_sdl.txt
   while(num_char >= cpt){
     SDL_WaitEvent(&event);
     if(event.type == SDL_QUIT){
@@ -382,7 +384,7 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, char *char_highs
 	break;
       }
 
-      // Re-affiche tous les éléments liés au Game Over
+      // Re-affiche tous les éléments liés au Game Over, ainsi que le nouveau pseudo saisi
       if(re_display){
 	// Affiche la grille
 	display_grid(g, surface_screen);
@@ -449,7 +451,7 @@ static void write_line(FILE *fichier, char *char_nickname, char *char_highscore)
   // Revient au début du fichier
   rewind(fichier);
 
-  // Si la chaine passée en paramètre est vide, on met "Anyone" par défaut dans le pseudo
+  // Si la chaine passée en paramètre est vide, on écrit "Anyone" par défaut dans le pseudo
   if(strlen(char_nickname) == 0){
     char_nickname = "Anyone";
   }
