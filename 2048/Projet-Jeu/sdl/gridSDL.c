@@ -302,35 +302,43 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *sur
   char char_tmp[8] = "********"; // Chaine de caractère permettant au joueur de visualiser le nombre de caractère restant pour écrire le pseudo
   char char_newHighscore[30] = ""; // Chaine de caractère qui contiendra "New Highscore - char_highscore"
 
-  // Ajout d'un transparent bleu sur la grille
-  SDL_SetAlpha(surface_background_grid, SDL_SRCALPHA, 125);
-  SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
-
-  // Affiche Game Over
-  sprintf(char_display, "%s - %s", char_highscore, char_tmp);
-  display_text(surface_screen, char_gameover, 115, police_gameover, color_text, color_background, true);
-  display_text(surface_screen, char_display, 355, police_text, color_text, color_background, true);
-
-  // Affiche complément du game over
-  sprintf(char_newHighscore, "New Highscore : %s !!", char_highscore);
-  display_text(surface_screen, char_newHighscore, 210, police_text, color_text, color_background, true);
-  display_text(surface_screen, "Enter your nickname :", 310, police_text, color_text, color_background, true);
-
-  // Permet de mettre comme pseudo par défaut "Anyone"
-  write_line(highscore_txt, char_nickname, char_highscore);
-
-  SDL_Flip(surface_screen);
-
   // Paramètre boucle while
   SDL_Event event;
   int cpt_char = 0; // Nombre de caractère saisi par l'utilisateur
   int num_max_char = 8; // Nombre maximum de caractère pour le pseudo
-  bool re_display = false; // Booléan de réaffichage de l'écran
+  bool re_display = true; // Booléan de réaffichage de l'écran
   bool enter_new_nickname = true; // Booléan de la boucle de saisi du nouveau pseudo
   SDL_EnableUNICODE(1); // active l'unicode
 
   // Boucle while permettant de récupérer et de sauvegarder le pseudo saisi dans le fichier hghscore_sdl.txt
-  while(enter_new_nickname){
+  do{
+    // Affiche tous les éléments liés au Game Over, ainsi que le nouveau pseudo saisi
+    if(re_display){
+      // Modifie l'affichage du nouveau pseudo et écrit le nouveau pseudo dans highscore_txt
+      sprintf(char_display, "%s - %s%s", char_highscore, char_nickname, char_tmp);
+      write_line(highscore_txt, char_nickname, char_highscore);
+
+      // Affiche la grille
+      display_grid(g, surface_screen);
+	
+      // Ajout d'un transparent bleu sur la grille
+      SDL_SetAlpha(surface_background_grid, SDL_SRCALPHA, 125);
+      SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
+	
+      // Affiche score
+      display_text(surface_screen, char_gameover, 115, police_gameover, color_text, color_background, true);
+      sprintf(char_newHighscore, "New Highscore : %s !!", char_highscore);
+      display_text(surface_screen, char_newHighscore, 210, police_text, color_text, color_background, true);
+      display_text(surface_screen, "Enter your nickname :", 310, police_text, color_text, color_background, true);
+
+      // Affiche pseudo saisi
+      display_text(surface_screen, char_display, 355, police_text, color_text, color_background, true);
+
+      SDL_Flip(surface_screen);
+      re_display = false;
+    }
+
+    // Gestion des événements du clavier
     SDL_WaitEvent(&event);
     if(event.type == SDL_QUIT){
       enter_new_nickname = false;
@@ -368,37 +376,12 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *sur
 	}
 	break;
       }
-
-      // Réaffiche tous les éléments liés au Game Over, ainsi que le nouveau pseudo saisi
-      if(re_display){
-	// Modifie l'affichage du nouveau pseudo et écrit le nouveau pseudo dans highscore_txt
-	sprintf(char_display, "%s - %s%s", char_highscore, char_nickname, char_tmp);
-	write_line(highscore_txt, char_nickname, char_highscore);
-
-	// Affiche la grille
-	display_grid(g, surface_screen);
-	
-	// Ajout d'un transparent bleu sur la grille
-	SDL_SetAlpha(surface_background_grid, SDL_SRCALPHA, 125);
-	SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
-	
-	// Affiche score
-	display_text(surface_screen, char_gameover, 115, police_gameover, color_text, color_background, true);
-	sprintf(char_newHighscore, "New Highscore : %s !!", char_highscore);
-	display_text(surface_screen, char_newHighscore, 210, police_text, color_text, color_background, true);
-	display_text(surface_screen, "Enter your nickname :", 310, police_text, color_text, color_background, true);
-
-	// Affiche pseudo saisi
-	display_text(surface_screen, char_display, 355, police_text, color_text, color_background, true);
-
-	SDL_Flip(surface_screen);
-	re_display = false;
-      }
     }
     // S'il y a des déplacements de souris, les ignorer
     else if(event.type == SDL_MOUSEMOTION)
       continue;
   }
+  while(enter_new_nickname);
 
   SDL_EnableUNICODE(0); // désactive l'unicode
 
