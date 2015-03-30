@@ -5,6 +5,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
+#include <SDL/SDL_getenv.h>
 #include "../src/grid.h"
 #include "gridSDL.h"
 
@@ -38,6 +39,7 @@ static void write_line(FILE *fichier, char *char_nickname, char *char_highscore)
 
 void game_sdl(){
   // Initialisation de la fenetre du jeu
+  putenv("SDL_VIDEO_WINDOW_POS=center"); // Permet de centrer la fenetre du jeu
   SDL_Surface *surface_screen = NULL;
   surface_screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
   SDL_WM_SetCaption("Game 2048 - by Emery, Gouraud, Kirov & Pouteau", NULL);
