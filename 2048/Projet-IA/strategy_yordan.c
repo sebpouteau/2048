@@ -19,6 +19,8 @@ struct tabBestm{
 #define SMOOTH_WEIGHT 20
 #define EMPTY_WEIGHT 10
 #define SCORE_WEIGHT 0.1
+#define MERGES_WEIGHT 70
+
 
 
 //static void display_grid(grid g);
