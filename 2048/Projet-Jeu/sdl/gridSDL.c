@@ -10,8 +10,12 @@
 #include "../src/grid.h"
 #include "gridSDL.h"
 
-#define SCREEN_HEIGHT 100 * (GRID_SIDE + 2)
-#define SCREEN_WIDTH 100 * (GRID_SIDE + 1)
+#define NEW_GRID_SIDE GRID_SIDE < 4 ? 4 : GRID_SIDE
+#define TILE_SIDE 100
+#define SCREEN_HEIGHT (NEW_GRID_SIDE + 2) * TILE_SIDE
+#define SCREEN_WIDTH (NEW_GRID_SIDE + 1) * TILE_SIDE
+#define POSITION_TILE_X (SCREEN_WIDTH - GRID_SIDE * TILE_SIDE)/2
+#define POSITION_TILE_Y 60
 
 // Affiche la grille
 static void display_grid(grid g, SDL_Surface *surface_screen);
@@ -38,8 +42,12 @@ static void write_line(FILE *fichier, char *char_nickname, char *char_highscore)
 // ====== FONCTIONS ========
 
 void game_sdl(){
+  printf("new_grid_side : %d\n", NEW_GRID_SIDE);
+  printf("grid_side : %d\n", GRID_SIDE);
+  printf("screen_height : %d\n", SCREEN_HEIGHT);
+  printf("screen_width : %d\n", SCREEN_WIDTH);
+
   // Initialisation de la fenetre du jeu
-  putenv("SDL_VIDEO_WINDOW_POS=center"); // Permet de centrer la fenetre du jeu
   SDL_Surface *surface_screen = NULL;
   putenv("SDL_VIDEO_WINDOW_POS=center"); // Permet de centrer la fenetre du jeu
   surface_screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
@@ -48,10 +56,10 @@ void game_sdl(){
 
   // Initialisation du contour bleu foncé autour de la grille
   SDL_Surface *surface_background_grid = NULL; 
-  surface_background_grid = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_DOUBLEBUF, 20 + 100 * GRID_SIDE, 20 + 100 * GRID_SIDE, 32, 0, 0, 0, 0);
+  surface_background_grid = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_DOUBLEBUF, 20 + TILE_SIDE * GRID_SIDE, 20 + TILE_SIDE * GRID_SIDE, 32, 0, 0, 0, 0);
   SDL_Rect position_background_grid;
-  position_background_grid.x = 40;
-  position_background_grid.y = 50;
+  position_background_grid.x = POSITION_TILE_X - 10;
+  position_background_grid.y = POSITION_TILE_Y - 10;
   SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 0, 255));
   SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
 
@@ -142,8 +150,8 @@ static void display_grid(grid g, SDL_Surface *surface_screen){
   char name_tile[30];
   for(int i = 0; i < GRID_SIDE; i++){
     for(int j = 0; j < GRID_SIDE; j++){
-      position_tile.x = 50 + i*100;
-      position_tile.y = 60 + j*100;
+      position_tile.x = POSITION_TILE_X + i*TILE_SIDE;
+      position_tile.y = POSITION_TILE_Y + j*TILE_SIDE;
       if(get_tile(g, i, j) == 0)
 	sprintf(name_tile, "../sdl/tiles/tile0.bmp");
       else
@@ -237,7 +245,7 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
   if(grid_score(g) == highscore)
     enter_nickname(g, surface_screen, surface_background_grid, position_background_grid, char_highscore, &end_game, try_again);
   else
-    display_text(surface_screen, char_gameover, 30 + (100 * GRID_SIDE)/2, police_gameover, color_text, color_background, true); // Affiche "Game Over"
+    display_text(surface_screen, char_gameover, 30 + (100 * NEW_GRID_SIDE)/2, police_gameover, color_text, color_background, true); // Affiche "Game Over"
 
   SDL_Flip(surface_screen);
   
