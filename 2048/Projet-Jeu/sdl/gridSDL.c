@@ -10,14 +10,10 @@
 #include "../src/grid.h"
 #include "gridSDL.h"
 
-#define NEW_GRID_SIDE GRID_SIDE < 3 ? 3 : GRID_SIDE
+#define NEW_GRID_SIDE (GRID_SIDE < 3 ? 3 : GRID_SIDE)
 #define TILE_SIDE 100
 #define SCREEN_HEIGHT (GRID_SIDE + 2) * TILE_SIDE
-#define SCREEN_WIDTH ((NEW_GRID_SIDE) + 1) * TILE_SIDE
-/* On doit obligatoirement mettre NEW_GRID_SIDE entre parenthèse
- * car sinon le calcul (NEW_GRID_SIDE + 1) se traduit par :
- * (GRID_SIDE < 3 ? 3 : GRID_SIDE + 1)
- */
+#define SCREEN_WIDTH (NEW_GRID_SIDE + 1) * TILE_SIDE
 #define POSITION_TILE_X (SCREEN_WIDTH - GRID_SIDE * TILE_SIDE)/2
 #define POSITION_TILE_Y 60
 
@@ -46,11 +42,6 @@ static void write_line(FILE *fichier, char *char_nickname, char *char_highscore)
 // ====== FONCTIONS ========
 
 void game_sdl(){
-  printf("new_grid_side : %d\n", NEW_GRID_SIDE);
-  printf("grid_side : %d\n", GRID_SIDE);
-  printf("screen_height : %d\n", SCREEN_HEIGHT);
-  printf("screen_width : %d\n", SCREEN_WIDTH);
-
   // Initialisation de la fenetre du jeu
   SDL_Surface *surface_screen = NULL;
   putenv("SDL_VIDEO_WINDOW_POS=center"); // Permet de centrer la fenetre du jeu
