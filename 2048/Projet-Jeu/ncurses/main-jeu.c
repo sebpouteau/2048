@@ -7,24 +7,37 @@
 #include <curses.h>
 #include <time.h>
 
+#define MARGIN_LEFT 3
+#define MARGIN_TOP 3
+#define HEIGHT_CASE 4
+#define WIDTH_CASE 8
+#define NUMBER_COLOR 8
+#define BELOW_CASE 8
+#define RIGHT_CASE 4
+
+#define KEY_Y 110
+#define KEY_Q 113
+#define KEY_N 121
+#define KEY_R 114
+
 static void display_grid(grid g);
-static void display_gameOver(bool *continuer, int *reponse_valide);
+static void display_gameOver(bool *continue_game, int *valid_answer);
 static unsigned long int read_highscore();
 static void write_highscore(unsigned long int score);
 
 
 int main(int argc, char *argv[]){
   keypad(stdscr, TRUE);
-  bool continuer = true;
+  bool continue_game = true;
   srand(time(NULL));
-  while(continuer){
+  while(continue_game){
     grid g = new_grid();
     add_tile(g);
     add_tile(g);
     int ch = 0;
     display_grid(g);
-    int reponse_valide = 0;
-    while(!game_over(g) && reponse_valide == 0){
+    int valid_answer = 0;
+    while(!game_over(g) && valid_answer == 0){
       ch=getch();
       switch(ch){
       case KEY_UP:
@@ -43,38 +56,41 @@ int main(int argc, char *argv[]){
 	if (can_move(g, LEFT))
 	  play(g, LEFT);
 	break;
-      case 113: // "q" pour quitter
-	continuer = false;
-	reponse_valide = 1;
+      case KEY_Q: // "q" pour quitter
+	continue_game = false;
+	valid_answer = 1;
 	break;
-      case 114: // "r" pour rejouer
-	reponse_valide = 1;
+      case KEY_R: // "r" pour rejouer
+	valid_answer = 1;
 	break;
       }
       display_grid(g);
     }
-    while(reponse_valide == 0 && continuer == true)
-      display_gameOver(&continuer, &reponse_valide);
+    while(valid_answer == 0 && continue_game == true)
+      display_gameOver(&continue_game, &valid_answer);
+    delete_grid(g);
     endwin();    
   }
   return EXIT_SUCCESS;
 }
 
 
-static void display_gameOver(bool *continuer, int *reponse_valide){
+static void display_gameOver(bool *continue_game, int *valid_answer){
   keypad(stdscr, TRUE);
-  int ch = 0;  
-  mvprintw(9, 45, "GAME OVER");
-  mvprintw(11, 36, "Voulez-vous rejouer? y or n ? ");
+  int ch = 0;
+  mvprintw(9, 11*GRID_SIDE+1, "GAME OVER");
+  mvprintw(11, 9*GRID_SIDE+1, "Voulez-vous rejouer? y or n ? ");
   refresh(); 
   cbreak();   
   ch = getch();
-  if(ch == 110){
-    *continuer = false; // Arrete le programme et sort de la boucle
-    *reponse_valide = 1;
+  // 110 correspond à "y"
+  if(ch == KEY_Y){
+    *continue_game = false; // Arrete le programme et sort de la boucle
+    *valid_answer = 1;
   }
-  if(ch == 121)
-    *reponse_valide = 1; // Relance le programme du début 
+  // 121 correspond à "n"
+  if(ch == KEY_N)
+    *valid_answer = 1; // Relance le programme du début 
   endwin();    
 }  
 
@@ -83,47 +99,51 @@ static void display_grid(grid g){
   clear();
   keypad(stdscr, TRUE);
   // Mise en forme de la grille
-  int x = 3;
-  int y = 2;
-  for(int i = 0; i < 5; i++){
-    mvhline(x, 3, ACS_HLINE, 31);
-    x += 4;
+  int x = MARGIN_TOP;
+  int y = MARGIN_LEFT-1;
+  for(int i = 0; i < GRID_SIDE+1; i++){
+    // tracer des lignes horizontales
+    mvhline(x, MARGIN_LEFT, ACS_HLINE, 8*GRID_SIDE-1);
+    x += HEIGHT_CASE;
   }
-  for(int i = 0; i < 5; i++){
-    mvvline(4, y, ACS_VLINE, 15);
-    y += 8;
+  for(int i = 0; i < GRID_SIDE+1; i++){
+    //tracer des lignes verticales
+    mvvline(MARGIN_TOP+1, y, ACS_VLINE, 4*GRID_SIDE-1);
+    y += WIDTH_CASE;
   }
   start_color();
   // Définition des couleurs (rouge, vert, jaune, bleu foncé, violet, bleu turquoise, blanc)
-  for(int i = 1; i < 8; i++){
+  for(int i = 1; i < NUMBER_COLOR; i++){
     init_pair(i, i, 0);
   }
   // Mise des valeurs dans la grille
   x = 5; 
-  int t[] = {1,3,2,6,4,5,7};
+  int t[] = {COLOR_RED, COLOR_YELLOW, COLOR_GREEN, COLOR_CYAN, COLOR_BLUE, COLOR_MAGENTA, COLOR_WHITE};
   for(int i = 0; i < GRID_SIDE; i++){
     y = 5;
     for(int j = 0; j < GRID_SIDE; j++){
       if(get_tile(g, j, i) != 0){
-	attron(COLOR_PAIR(t[(get_tile(g, j, i) - 1) % 7]));
+	// coloration activé
+	attron(COLOR_PAIR(t[(get_tile(g, j, i) - 1) % (NUMBER_COLOR-1)]));
 	// Récupération d'un nombre et de la coloration
 	char buff[5];
 	sprintf(buff, "%d", (unsigned int)pow(2, get_tile(g, j, i)));
 	mvprintw(x, y, buff);
+	// coloration desactivé
 	attroff(COLOR_PAIR(1));
       }
-      y += 8;
+      y += BELOW_CASE;
     }
-    x += 4;
+    x += RIGHT_CASE;
   }
-  mvprintw(1, 15, "2048");
-  mvprintw(5, 36, "Score: %lu ", grid_score(g));
+  mvprintw(1, 4*GRID_SIDE-1 , "2048");
+  mvprintw(5, 9*GRID_SIDE+1, "Score: %lu ", grid_score(g));
   unsigned long int read_highscore();
   if(grid_score(g) > read_highscore()){
     write_highscore(grid_score(g));
   }
-  mvprintw(6, 36, "High Score: %lu ", read_highscore());
-  mvprintw(21, 3, "Recommencer Partie / Quitter Partie (r / q)");
+  mvprintw(6, 9*GRID_SIDE+1, "High Score: %lu ", read_highscore());
+  mvprintw(4*GRID_SIDE+5, MARGIN_LEFT, "Recommencer Partie / Quitter Partie (r / q)");
   refresh();
 }
 
