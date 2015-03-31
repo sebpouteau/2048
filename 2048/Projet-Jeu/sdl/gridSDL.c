@@ -13,7 +13,11 @@
 #define NEW_GRID_SIDE GRID_SIDE < 3 ? 3 : GRID_SIDE
 #define TILE_SIDE 100
 #define SCREEN_HEIGHT (GRID_SIDE + 2) * TILE_SIDE
-#define SCREEN_WIDTH ((NEW_GRID_SIDE) + 1) * TILE_SIDE // On doit obligatoirement mettre "NEW_GRID_SIDE" entre parenthèse
+#define SCREEN_WIDTH ((NEW_GRID_SIDE) + 1) * TILE_SIDE
+/* On doit obligatoirement mettre NEW_GRID_SIDE entre parenthèse
+ * car sinon le calcul (NEW_GRID_SIDE + 1) se traduit par :
+ * (GRID_SIDE < 3 ? 3 : GRID_SIDE + 1)
+ */
 #define POSITION_TILE_X (SCREEN_WIDTH - GRID_SIDE * TILE_SIDE)/2
 #define POSITION_TILE_Y 60
 
