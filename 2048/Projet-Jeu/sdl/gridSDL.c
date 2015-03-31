@@ -10,10 +10,10 @@
 #include "../src/grid.h"
 #include "gridSDL.h"
 
-#define NEW_GRID_SIDE GRID_SIDE < 4 ? 4 : GRID_SIDE
+#define NEW_GRID_SIDE GRID_SIDE < 3 ? 3 : GRID_SIDE
 #define TILE_SIDE 100
-#define SCREEN_HEIGHT (NEW_GRID_SIDE + 2) * TILE_SIDE
-#define SCREEN_WIDTH (NEW_GRID_SIDE + 1) * TILE_SIDE
+#define SCREEN_HEIGHT (GRID_SIDE + 2) * TILE_SIDE
+#define SCREEN_WIDTH ((NEW_GRID_SIDE) + 1) * TILE_SIDE // On doit obligatoirement mettre "NEW_GRID_SIDE" entre parenthèse
 #define POSITION_TILE_X (SCREEN_WIDTH - GRID_SIDE * TILE_SIDE)/2
 #define POSITION_TILE_Y 60
 
