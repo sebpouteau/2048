@@ -20,17 +20,33 @@
 //static bool objectif_atteint(grid g);
 static long maximum_tile(grid g);
 long int note_grid (grid g);
-static long int repetition_grid(grid g, int nombre);
+long int generation_case_empty(grid g, int nombre);
+long int move_every_dir(grid g, int nombre);
 static int empty_tiles(grid g);
 static int monotonicity(grid g);
 static int smoothness(grid g);
 static bool max_in_corner(grid g);
 
+long int max(long int t,long int s){
+  if (t>s)
+    return t;
+  return s;
+}
 dir meilleur_direction(grid g,dir d,dir d1,int nombre){
-  long int noteD = repetition_grid(g, nombre);
-  long int noteD1 = repetition_grid(g, nombre);
   if (!can_move(g,d1))
     return d;
+  if (!can_move(g,d))
+    return d1;
+  grid g_copy = new_grid();
+  copy_grid(g,g_copy);
+  grid g_copy1 = new_grid();
+  copy_grid(g,g_copy1);
+  do_move(g_copy,d);
+  do_move(g_copy1,d1);
+  long int noteD = generation_case_empty(g_copy, nombre);
+  long int noteD1 = generation_case_empty(g_copy1, nombre);
+  delete_grid(g_copy);
+  delete_grid(g_copy1);
   if (noteD>noteD1)
     return d;
   return d1;
@@ -42,85 +58,93 @@ void free_memless_strat (strategy strat)
 }
 
 dir strategy_seb(strategy str, grid g){
-  int nombre = 2;
+  int nombre = 4;
   return meilleur_direction(g,meilleur_direction(g,UP,DOWN,nombre),meilleur_direction(g,LEFT,RIGHT,nombre),nombre);
 }
 
-
-
-static long int repetition_grid(grid g, int nombre){
-  if (game_over(g)){
-    return 0;
-  }
-  if (nombre == 0){
-    long int note_fin = 0;
-    note_fin += note_grid(g)*9;
-    note_fin += note_grid(g)*9;
-    note_fin += note_grid(g)*9;
-    note_fin += note_grid(g)*9;
-    return (long int) (note_fin / 4);
-  }
-  grid g_copy = new_grid();
-  copy_grid(g,g_copy);
-  
-
-  long int note = 0;
+long int generation_case_empty(grid g, int nombre){
+  if (nombre == 0)
+    return note_grid(g);
   int cpt = 0;
-  note += note_grid(g)*9;
-  note += note_grid(g)*9;
-  note += note_grid(g)*9;
-  note += note_grid(g)*9;
-  note = (long int) (note / 4);
+  long int note = 0;
   for(int y = 0; y < GRID_SIDE; y++)
     for(int x = 0; x < GRID_SIDE; x++)
-      if(get_tile(g_copy,x,y) == 0){
-	set_tile(g_copy,x,y,1);
-	note +=(long int) 9*repetition_grid(g_copy,nombre-1);
-	set_tile(g_copy,x,y,2);
-	note +=(long int) repetition_grid(g_copy,nombre-1);
-	set_tile(g_copy,x,y,0);
-	cpt +=1;    
+      if(get_tile(g,x,y) == 0){
+	set_tile(g,x,y,1);
+	note +=(long int) 9*move_every_dir(g,nombre-1);
+	set_tile(g,x,y,2);
+	note +=(long int) move_every_dir(g,nombre-1);
+	set_tile(g,x,y,0);
+	cpt+=10;
       }
-  
-  delete_grid(g_copy);
   if (cpt == 0)
-    return note;
-  return (long) note/(cpt+4);
+    return 0;
+  return (long int) (note /cpt);
 }
-  
 
-/* long int note_grid (grid g, dir t){   */
+long int move_every_dir(grid g, int nombre){
+  if (nombre == 0){
+    grid g_copy = new_grid();
+    long int note =0;
+    for (int i = UP; i<=RIGHT ; i++){
+
+      copy_grid(g,g_copy);
+      if (can_move(g,i)){
+	do_move(g,i);
+	note +=note_grid(g);
+      }
+      delete_grid(g_copy);
+      return (long int)note/4;
+    }
+  }
+   
+  grid g_copy = new_grid();
+  long int *tab = malloc(4*sizeof(long int));
+  int indice = 0;
+  long int note = 0;
+  for (int i = UP; i<=RIGHT ; i++){
+    copy_grid(g,g_copy);
+    if (can_move(g,i)){
+      do_move(g,i);
+      note = generation_case_empty(g,nombre-1);
+      indice ++;
+    }
+  }
+  long int maxi =  max(max(tab[0],tab[1]),max(tab[2],tab[3]));
+  free(tab);
+  delete_grid(g_copy);
+  return note;
+}
+    
+/* long int note_grid (grid g){   */
 /*   long int cpt = 0; */
 /*   int cpt_case_empty = 0; */
-/*   if (!can_move(g,t)) */
-/*     return 0; */
-/*   grid g_copy = new_grid(); */
-/*   copy_grid(g,g_copy); */
-/*   do_move(g,t); */
+
+/*   // ajoute cpt la somme de toute les cases et compte le nombre de case vide */
 /*   for(int y = 0; y < GRID_SIDE; y++){ */
 /*     for(int x = 0; x < GRID_SIDE; x++){ */
-/*       cpt += get_tile(g_copy,x,y); */
-/*       if(get_tile(g_copy,x,y) == 0){ */
+/*       cpt += get_tile(g,x,y); */
+/*       if(get_tile(g,x,y) == 0){ */
 /* 	cpt_case_empty++; */
 /*       } */
 /*     } */
 /*   } */
 
-/*   int max = (int)maximum_tile(g_copy); */
-/*   if( get_tile(g_copy, 0, 0) == max || get_tile(g_copy, GRID_SIDE -1 , 0) == max || get_tile(g_copy, 0, GRID_SIDE-1) == max || get_tile(g_copy, GRID_SIDE - 1, GRID_SIDE - 1) == max )     cpt += 500;  */
-/*   if (get_tile(g_copy,0,0) == max) */
+/*   int max = (int)maximum_tile(g); */
+
+/*   if( get_tile(g, 0, 0) == max || get_tile(g, GRID_SIDE -1 , 0) == max || get_tile(g, 0, GRID_SIDE-1) == max || get_tile(g, GRID_SIDE - 1, GRID_SIDE - 1) == max )     cpt += 500;  */
+/*   if (get_tile(g,0,0) == max) */
 /*     cpt+=1000; */
-/*   if (get_tile(g_copy,1,0)  > get_tile(g_copy, 2,0) ) */
+/*   if (get_tile(g,1,0)  > get_tile(g, 2,0) ) */
 /*     cpt+=10; */
 /*   int cpt_changement_sign = 0;  */
 /*   for(int y = 0; y < GRID_SIDE; y++) */
 /*     for(int x = 0; x < GRID_SIDE-1; x++) */
-/*       if(get_tile(g_copy,x,y) < get_tile(g_copy,x+1,y)) */
+/*       if(get_tile(g,x,y) < get_tile(g,x+1,y)) */
 /* 	cpt_changement_sign++; */
       
 /*   cpt -= 100*cpt_changement_sign; */
-/*   cpt += 10*grid_score(g_copy); */
-/*   delete_grid(g_copy); */
+/*   cpt += 10*grid_score(g); */
 /*   cpt += 1000*cpt_case_empty; */
 /*   return cpt; */
 /* } */
@@ -128,11 +152,10 @@ static long int repetition_grid(grid g, int nombre){
 
 long int note_grid(grid g){
   long int mono;
-  
   if(max_in_corner(g))
-    mono = 700;
+    mono =(long int) monotonicity(g)+1/(MONO_WEIGHT*MONO_POW);
   else
-    mono = -500;
+    mono = (long int)monotonicity(g)/MONO_WEIGHT;
   long int smooth =(long int) smoothness(g)*SMOOTH_WEIGHT;
   long int empty = (long int)empty_tiles(g)*EMPTY_WEIGHT;
   long int score = (long int) grid_score(g) * SCORE_WEIGHT;
@@ -248,7 +271,9 @@ int main (int argc, char **argv){
     add_tile(g);
     
     while(!game_over(g)){
-      play(g, strategy_seb(seb,g));
+      dir d = strategy_seb(seb,g);
+      if(can_move(g,d))
+	 play(g, d);
     }
     printf("max %lu",maximum_tile(g));
     if(maximum_tile(g) == 4)
