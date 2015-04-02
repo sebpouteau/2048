@@ -187,35 +187,18 @@ SDL_ttf et SDL_getenv), nous avons créer l'interface graphique du 2048 sur
 une fenêtre indépendante. Cette fenêtre s'ouvre centré à l'écran, et s'adapte
 à la taille de la grille (=GRID_SIDE=) définit dans le grid.h.
 Le texte apparait parfaitement centré et est inhérent à =GRID_SIDE=. La police
-du texte est aussi en adéquation avec la taille de la grille.
+du texte est aussi en adéquation avec la taille de la grille.//
 L'interface graphique propose aussi de recommencer la partie (touche "Entrée"),
 mais aussi d'abandonner (touche "Echap" ou la croix en haut à droite) et ferme 
-le programme.
+le programme.//
 Lorsque la partie se termine (c'est-à-dire lorsqu'aucun déplacement n'est possible),
 le joueur (s'il a obtenu un nouvel Highscore), a la possibilité de mémoriser son 
 pseudo. S'il n'entre pas son pseudo (en relançant la partie ou en quittant le programme),
-le pseudo par défaut sera "Anyone"
-
-
+le pseudo qui sera mis par défaut sera "Anyone".//
 Le code est commenté de façon à être compréhensible, et les noms des variables
-est en anglais.
-
+est en anglais.//
 Aucune fuite de mémoire n'est à déplorer, mise à part celle de base liée à la
-SDL et référencée.
-
-
-
-L'executable permet de créer une fenètre indépendante qui s'adapte a la
-taille de la grille ( selon =GRID_SIDE= ). Cette fenètre est centé à
-l'écran. \\
-Le programme affiche le score ainsi que les possibilités de relancer
-la partie ou de quitter. De plus nous avons intégré un highscore avec
-la sauvegarde d'un pseudo du joueur. Par défault le pseudo est
-"anyone" si l'utilisateur quitte la partie sans sauvegarder.\\
-L'écriture est inhérente à la taille de la grille. C'est à dire que
-quelque soit la valeur de GRID_SIDE (supperieur à 2). L'affichage
-texte sera toujours centré et proportionnel par rapport à la grille, le "game over"
-s'adapte également.
+SDL et référencée.//
 
 \newpage
 * Architecture du Projet
