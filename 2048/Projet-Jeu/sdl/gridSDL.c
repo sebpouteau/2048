@@ -10,14 +10,14 @@
 #include "../src/grid.h"
 #include "gridSDL.h"
 
-#define NEW_GRID_SIDE (GRID_SIDE < 3 ? 3 : GRID_SIDE)
-#define TILE_SIDE 100
-#define SCREEN_HEIGHT (GRID_SIDE + 2) * TILE_SIDE
-#define SCREEN_WIDTH (NEW_GRID_SIDE + 1) * TILE_SIDE
-#define POSITION_TILE_X (SCREEN_WIDTH - GRID_SIDE * TILE_SIDE)/2
-#define POSITION_TILE_Y 60
-#define POSITION_BACKGROUND_X (POSITION_TILE_X - 10)
-#define POSITION_BACKGROUND_Y (POSITION_TILE_Y - 10)
+#define NEW_GRID_SIDE (GRID_SIDE == 2 ? 3 : GRID_SIDE) // Permet d'avoir une taille de fenêtre par défaut
+#define TILE_SIDE 100 // Taille de la tuile
+#define WINDOW_WIDTH (NEW_GRID_SIDE + 1) * TILE_SIDE // Largeur de la fenêtre
+#define WINDOW_HEIGHT (GRID_SIDE + 2) * TILE_SIDE // Hauteur de la fenêtre
+#define POSITION_TILE_X (WINDOW_WIDTH - GRID_SIDE * TILE_SIDE)/2 // Position abscisse de la grille
+#define POSITION_TILE_Y ((WINDOW_HEIGHT - (1 + GRID_SIDE) * TILE_SIDE)/2 + 10)// Position ordonnée de la grille 
+#define POSITION_BACKGROUND_X (POSITION_TILE_X - 10) // Position abscisse du background bleu
+#define POSITION_BACKGROUND_Y (POSITION_TILE_Y - 10) // Position ordonnée du background bleu
 
 
 // Affiche la grille
@@ -48,7 +48,7 @@ void game_sdl(){
   // Initialisation de la fenetre du jeu
   SDL_Surface *surface_screen = NULL;
   putenv("SDL_VIDEO_WINDOW_POS=center"); // Permet de centrer la fenetre du jeu
-  surface_screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+  surface_screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
   SDL_WM_SetCaption("Game 2048 - by Emery, Gouraud, Kirov & Pouteau", NULL);
   SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 255, 255, 255));
 
@@ -200,11 +200,11 @@ static void display_score(grid g, SDL_Surface *surface_screen){
   // Affiche "Try Again"
   TTF_Font *police_menu = TTF_OpenFont("../sdl/arial.ttf", 25);
   char char_recommencer[30] = "Press ENTER to TRY AGAIN";
-  display_text(surface_screen, char_recommencer, SCREEN_HEIGHT - 2 * (SCREEN_HEIGHT - position_text_y)/3 + 5, police_menu, color_text, color_background, false);
+  display_text(surface_screen, char_recommencer, WINDOW_HEIGHT - 2 * (WINDOW_HEIGHT - position_text_y)/3 + 5, police_menu, color_text, color_background, false);
 
   // Affiche "Give Up"
   char char_giveup[30] = "or ESC to GIVE UP";
-  display_text(surface_screen, char_giveup,  SCREEN_HEIGHT - (SCREEN_HEIGHT - position_text_y)/3 + 5, police_menu, color_text, color_background, false);
+  display_text(surface_screen, char_giveup,  WINDOW_HEIGHT - (WINDOW_HEIGHT - position_text_y)/3 + 5, police_menu, color_text, color_background, false);
 
   // Libère la mémoire allouée et ferme le fichier de Highscore
   TTF_CloseFont(police_text);
@@ -221,7 +221,7 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
 
   // Paramètres Game Over
   char *char_gameover = "GAME OVER";
-  TTF_Font *police_gameover = TTF_OpenFont("../sdl/arial.ttf", 55); 
+  TTF_Font *police_gameover = TTF_OpenFont("../sdl/arial.ttf", (GRID_SIDE == 2 ? 30 : 53)); 
 
   // Paramètres Highscore
   bool end_game = true; // Booléan de la boucle de fin du jeu
@@ -302,8 +302,8 @@ static void display_text(SDL_Surface *surface_screen, char *char_text, int posit
 static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, SDL_Rect position_background_grid, char *char_highscore, bool *end_game, bool *try_again){
   // Paramètres d'affichage du Game Over et du texte
   FILE* highscore_txt = fopen("../sdl/highscore_sdl.txt", "r+"); // Ouvre le fichier highscore_sdl.txt
-  TTF_Font *police_text = TTF_OpenFont("../sdl/arial.ttf", 30);
-  TTF_Font *police_gameover = TTF_OpenFont("../sdl/arial.ttf", 55);
+  TTF_Font *police_text = TTF_OpenFont("../sdl/arial.ttf", (GRID_SIDE == 2 ? 20 : 30));
+  TTF_Font *police_gameover = TTF_OpenFont("../sdl/arial.ttf", (GRID_SIDE == 2 ? 30 : 53));
   SDL_Color color_text = {255, 255, 255}; // Couleur blanche
   SDL_Color color_background = {0, 0, 0}; // Couleur noire
   char char_nickname[10]= ""; // Chaine de caractère qui contiendra le nouveau pseudo
@@ -312,13 +312,9 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *sur
   char char_tmp[8] = "********"; // Chaine de caractère permettant au joueur de visualiser le nombre de caractère restant pour écrire le pseudo
   char char_newHighscore[30] = ""; // Chaine de caractère qui contiendra "New Highscore - char_highscore"
 
-  // Position texte
-  int position_adjusted = (3 * TILE_SIDE)/8;
-  int position_y_text = POSITION_TILE_Y + (GRID_SIDE * TILE_SIDE)/2 - position_adjusted * 4;
-  if(GRID_SIDE < 3){
-    position_y_text = POSITION_TILE_Y;
-    position_adjusted = (GRID_SIDE * TILE_SIDE)/8;
-  }
+  // Position du texte (inhérent à GRID_SIDE)
+  int position_adjusted = ((GRID_SIDE == 2 ? 2 : 3) * TILE_SIDE)/5;
+  int position_y_text = POSITION_TILE_Y + (GRID_SIDE * TILE_SIDE)/2 - position_adjusted * 5/2;
 
   // Paramètre boucle while
   SDL_Event event;
@@ -345,13 +341,13 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *sur
 	
       // Affiche "Game Over", "New Highscore" et "Enter your nickname"
       // int position_x = POSITION_TILE_Y - (GRID_SIDE * TILE)/2 - char_gameover->w/2
-      display_text(surface_screen, char_gameover, position_y_text + 1 * position_adjusted, police_gameover, color_text, color_background, true);
+      display_text(surface_screen, char_gameover, position_y_text + position_adjusted, police_gameover, color_text, color_background, true);
       sprintf(char_newHighscore, "New Highscore : %s !!", char_highscore);
-      display_text(surface_screen, char_newHighscore, position_y_text + 3 * position_adjusted, police_text, color_text, color_background, true);
-      display_text(surface_screen, "Enter your nickname :", position_y_text + 5 * position_adjusted, police_text, color_text, color_background, true);
+      display_text(surface_screen, char_newHighscore, position_y_text + 2 * position_adjusted, police_text, color_text, color_background, true);
+      display_text(surface_screen, "Enter your nickname :", position_y_text + 3 * position_adjusted, police_text, color_text, color_background, true);
 
       // Affiche pseudo saisi
-      display_text(surface_screen, char_display, position_y_text + 7 * position_adjusted, police_text, color_text, color_background, true);
+      display_text(surface_screen, char_display, position_y_text + 4 * position_adjusted, police_text, color_text, color_background, true);
 
       SDL_Flip(surface_screen);
       re_display = false;
