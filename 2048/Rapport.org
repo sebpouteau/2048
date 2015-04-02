@@ -1,0 +1,200 @@
+
+#+LATEX_HEADER: \usepackage{color}
+#+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \usepackage{indentfirst}
+#+LATEX_HEADER: \usepackage[top=4cm,bottom=4cm,right=4cm,left=4cm]{geometry}
+#+latex_class: article
+#+latex_class_options: [a4paper]
+
+
+
+#+title: *RAPPORT PROJET 2048*
+#+author: Emery, Gouraud, Kirov, Pouteau
+#+startup: indent
+\newpage
+* Introduction
+
+Dans le cadre de l'UE Environnement et Développement et Projet de
+Programmation 1, nous avons été amené à créer un jeu 2048.\\
+*Ce jeu consiste* à obtenir une tuile de valeur 2048 en fusionnant des
+tuiles de même valeur de manière à en obtenir une deux fois plus
+grande. Le jeu commence avec deux tuiles de valeur 2 ou 4. Il se joue
+sur une grille de 4x4, avec quatre déplacements possibles
+(Haut, Bas, Droite, Gauche). A chaque déplacement un 2 ou un quatre
+apparaît aléatoirement sur la grille.\\
+C'est une application Mobile sortie en mars 2014, programmé par
+Gabriele Circulli, un web-designer italien. Il s'est inspiré du jeu
+1024 dont le principe est identique sauf que le but est
+d'atteindre 1024. Ce jeu 1024 est lui même basé sur threes un jeu du
+même style.\\
+
+\noindent
+Lien pour tester les différents jeux: 
+
+ [[http://gabrielecirulli.github.io/2048/][- lien 2048]]
+
+ [[http://1024game.org][- lien 1024]]
+
+ [[http://threesjs.com][- lien Threes]]
+\newpage
+
+* Description Projet
+
+Le projet a été séparé en deux parties différentes.
+- Réalisation de l'implémentation du 2048 et création d'une interface
+  graphique sur le terminal.
+- Réalisation d'une interface graphique independante et conception de
+  deux IA resolvant le 2048.
+
+
+** Implémentation du 2048
+*** Fonction de Base
+Implementation des fonctions décrite dans l'interface fournis
+/grid.h/.
+
+#+BEGIN_SRC c
+/* Cree une nouvelle grille */
+grid new_grid ();
+
+/* Supprime une grille */
+void delete_grid (grid g); 
+
+/* Copie une grille src dans une grille dst */
+void copy_grid (grid src, grid dst);
+
+/* Renvoie le score actuel du jeu */
+unsigned long int grid_score (grid g);
+
+/* Renvoie la valeur d'une tuile */ 
+tile get_tile (grid g, int x, int y); 
+
+/* Met la valeur t dans une tuile  */
+void set_tile (grid g, int x, int y, tile t);
+
+/* Verifie que la direction d est valide */ 
+bool can_move (grid g, dir d); 
+
+/* Renvoie game_over si plus de deplacement possible  */
+bool game_over (grid g);
+
+/* Effectue le mouvement selon la direction d */
+void do_move (grid g, dir d);
+
+/* Ajoute une tuile aleatoirement de valeur 2 ou 4 sur la grille. */
+void add_tile (grid g); 
+
+/* Effectue le mouvement et ajoute une tuile */
+void play (grid g, dir d);
+#+END_SRC
+
+\vspace{0.5cm}
+Ces fonctions permettent le bon fonctionnement du jeu.  
+Nous avons essayé de simplifier toutes ces fonctions de bases. Pour
+cela et pour éviter de faire de la duplication de code, notament dans
+=can_move= et =do_move=, nous avons fait appel à des fonctions static.
+ 
+\newpage
+*** Fonction static
+\noindent
+_Déclaration des fonctions statics de grid.c_:
+#+BEGIN_SRC c 
+/* Permet d'incrémenter deux variables ayant des incrémentations différentes. */
+static void 
+incrementation(int *i1, int *i2, int incrementationI1, int incrementationI2)
+
+/*
+ * Déplace l'ensemble de la grille dans la direction voulue 
+ * Les directions prérequis :   UP    -> (grid, 0, 0, 0, 1)
+ *                              DOWN  -> (grid, 0, GRID_SIDE - 1, 0, -1)
+ *                              LEFT  -> (grid, 0, 0, 1, 0)
+ *                              RIGHT -> (grid, GRID_SIDE - 1, 0, -1, 0)
+ */
+static void move(grid g, int i, int j, int a, int b);
+
+/*
+ * Teste sur l'ensemble de la grille si le deplacement dans la direction 
+ * voulue est faisable (en fonction des paramètres) 
+ * Les directions prérequis :   UP    -> (grid, 0, 0, 0, 1)
+ *                              DOWN  -> (grid, 0, GRID_SIDE - 1, 0, -1)
+ *                              LEFT  -> (grid, 0, 0, 1, 0)
+ *                              RIGHT -> (grid, GRID_SIDE - 1, 0, -1, 0)
+ */
+static bool possible(grid g, int i, int j, int a, int b);
+
+/* Fusionne deux cases dans toute la grille et met la deuxième case à 0 */
+static void fusion(grid g, int i, int j, int a, int b);
+
+/* Ajoute un score au score de la grid */
+static void set_grid_score(grid g, unsigned long int add_score);
+#+END_SRC
+\bigskip
+_Description de l'utilisation des fonctions static_: 
+- move :
+  Elle permet de simplifier la fonction =do_move=, car elle permet de
+  faire tous les déplacements en fonction des paremettre fournis. Par
+  consequend =do_move= est reduit a appelé simplement =move= avec les
+  bons paramètre.
+- fusion :
+  Elle est utilisée pour faire les fusions dans la fonction =move=.
+- incrementation :
+  Elle permet d'évité la repétition de code due a l'incrementation des
+  variable dans =move= et =possible=.
+- possible : 
+  Elle permet de simplifier la fonction =can_move=, car en lui passant
+  certain paramètre elle verifie la possibilité de faire un
+  mouvement. Ce qui reduit la focntion =can_move= à appeler la
+  fonction =possible= avec les bon paramètre.
+\newpage
+*** Interface Graphique sur terminal
+Nous avons choisie d'utilisé la bibliothèque Ncurses pour pouvoir
+générer notre grille dans le terminal.\\
+Le jeu se joue avec les flèches directionnelles. Nous avons intégré
+des couleurs afin d'égayer l'affichage de notre jeu.\\
+Nous proposons également des options supplémentaire:
+- q: permet de quitter le jeu
+- r: permet de recommencer le jeu
+De plus, si vous perdez, on vous offre la possibilité de sois rejouer,
+sois quitter le jeu.\\
+Nous avons intégré également par esprit de challenge un Highscore. \\
+L'affichage graphique s'adapte à la taille de la grille. Mais ne
+modifie pas la taille du terminal d'ou il est lancé.
+
+
+*** Réalisation de test
+
+Les tests sont déclanché par la commande *make check*.
+\bigskip\\
+Nous avons utilisé gcov , cela nous permet de savoir que notre
+programme de test vérifie 94.96% de notre fichier grid.c.
+Les 5% qui manque est du au faite que l'on ne test pas la focntion
+play car elle utilise simplement deux autres fonctions testées.
+ 
+#+BEGIN_EXAMPLE
+File 'grid.c'
+Ligne exécutées: 94.96% de 139
+Creating 'grid.c.gcov'
+#+END_EXAMPLE
+\noindent
+Nous avons testé indépendamment chaque déplacement, pour savoir
+précisement quel déplacement pourrait provoquer une erreur. 
+
+
+** Interface Graphique et Intelligence Artificielle
+
+*** Interface Graphique SDL
+
+L'exectuble permet de créer une fenètre indépendante qui s'adapte a la
+taille de la grille ( selon =GRID_SIDE= ). Cette fenètre est centé à
+l'écran. \\
+Le programme affiche le score ainsi que les possibilités de relancer
+la partie ou de quitter. De plus nous avons intégré un highscore avec
+la sauvegarde d'un pseudo du joueur. Par défault le pseudo est
+"anyone" si l'utilisateur quitte la partie sans sauvegarder.\\
+L'écriture est inhérente à la taille de la grille. C'est à dire que
+quelque soit la valeur de GRID_SIDE (supperieur à 2). L'affichage
+texte sera toujours centré et proportionnel par rapport à la grille, le "game over"
+s'adapte également.
+
+\newpage
+* Architecture du Projet
+

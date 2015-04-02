@@ -63,8 +63,21 @@ dir strategy_seb(strategy str, grid g){
 }
 
 long int generation_case_empty(grid g, int nombre){
-  if (nombre == 0)
-    return note_grid(g);
+  if (nombre == 0){
+    long int note = 0;
+    int cpt = 0;
+    for(int y = 0; y < GRID_SIDE; y++)
+      for(int x = 0; x < GRID_SIDE; x++)
+	if(get_tile(g,x,y) == 0){
+	  set_tile(g,x,y,1);
+	  note +=(long int) 9*note_grid(g);
+	  set_tile(g,x,y,2);
+	  note +=(long int) note_grid(g);
+	  set_tile(g,x,y,0);
+	  cpt+=10;
+      }
+    return (long int)note/cpt;
+  }
   int cpt = 0;
   long int note = 0;
   for(int y = 0; y < GRID_SIDE; y++)
@@ -116,117 +129,39 @@ long int move_every_dir(grid g, int nombre){
   return note;
 }
     
-/* long int note_grid (grid g){   */
-/*   long int cpt = 0; */
-/*   int cpt_case_empty = 0; */
+long int note_grid (grid g){
+  long int cpt = 0;
+  int cpt_case_empty = 0;
 
-/*   // ajoute cpt la somme de toute les cases et compte le nombre de case vide */
-/*   for(int y = 0; y < GRID_SIDE; y++){ */
-/*     for(int x = 0; x < GRID_SIDE; x++){ */
-/*       cpt += get_tile(g,x,y); */
-/*       if(get_tile(g,x,y) == 0){ */
-/* 	cpt_case_empty++; */
-/*       } */
-/*     } */
-/*   } */
+  // ajoute cpt la somme de toute les cases et compte le nombre de case vide
+  for(int y = 0; y < GRID_SIDE; y++){
+    for(int x = 0; x < GRID_SIDE; x++){
+      cpt += get_tile(g,x,y);
+      if(get_tile(g,x,y) == 0){
+	cpt_case_empty++;
+      }
+    }
+  }
 
-/*   int max = (int)maximum_tile(g); */
+  int max = (int)maximum_tile(g);
 
-/*   if( get_tile(g, 0, 0) == max || get_tile(g, GRID_SIDE -1 , 0) == max || get_tile(g, 0, GRID_SIDE-1) == max || get_tile(g, GRID_SIDE - 1, GRID_SIDE - 1) == max )     cpt += 500;  */
-/*   if (get_tile(g,0,0) == max) */
-/*     cpt+=1000; */
-/*   if (get_tile(g,1,0)  > get_tile(g, 2,0) ) */
-/*     cpt+=10; */
-/*   int cpt_changement_sign = 0;  */
-/*   for(int y = 0; y < GRID_SIDE; y++) */
-/*     for(int x = 0; x < GRID_SIDE-1; x++) */
-/*       if(get_tile(g,x,y) < get_tile(g,x+1,y)) */
-/* 	cpt_changement_sign++; */
+  if( get_tile(g, 0, 0) == max || get_tile(g, GRID_SIDE -1 , 0) == max || get_tile(g, 0, GRID_SIDE-1) == max || get_tile(g, GRID_SIDE - 1, GRID_SIDE - 1) == max )     cpt += 500;
+  if (get_tile(g,0,0) == max)
+    cpt+=1000;
+  if (get_tile(g,1,0)  > get_tile(g, 2,0) )
+    cpt+=10;
+  int cpt_changement_sign = 0;
+  for(int y = 0; y < GRID_SIDE; y++)
+    for(int x = 0; x < GRID_SIDE-1; x++)
+      if(get_tile(g,x,y) < get_tile(g,x+1,y))
+	cpt_changement_sign++;
       
-/*   cpt -= 100*cpt_changement_sign; */
-/*   cpt += 10*grid_score(g); */
-/*   cpt += 1000*cpt_case_empty; */
-/*   return cpt; */
-/* } */
+  cpt -= 100*cpt_changement_sign;
+  cpt += 10*grid_score(g);
+  cpt += 1000*cpt_case_empty;
+  return cpt;
+}
   
-
-long int note_grid(grid g){
-  long int mono;
-  if(max_in_corner(g))
-    mono =(long int) monotonicity(g)+1/(MONO_WEIGHT*MONO_POW);
-  else
-    mono = (long int)monotonicity(g)/MONO_WEIGHT;
-  long int smooth =(long int) smoothness(g)*SMOOTH_WEIGHT;
-  long int empty = (long int)empty_tiles(g)*EMPTY_WEIGHT;
-  long int score = (long int) grid_score(g) * SCORE_WEIGHT;
-  return (long int) mono + smooth + empty + score;
-}
-
-
-static int empty_tiles(grid g){
-  int nb = 0;
-  for(int i = 0; i<4;i++){
-    for(int j = 0;j<4;j++){
-      if(get_tile(g,i,j) == 0)
-	nb += 1;
-    }
-  }
-  return nb;
-}
-
-
-
-static int monotonicity(grid g){
-  int variation_sign;
-  int compteur = 0;
-  if(get_tile(g,0,0)>get_tile(g,0,1))
-    variation_sign = 1;
-  else
-    variation_sign = 0;
-  for(int i = 0; i < 3; i++){
-    for(int j = 0; j < 3; j++){
-      if(get_tile(g, i, j) < get_tile(g, i, j+1) && variation_sign == 1){
-	variation_sign = 0;
-	compteur += 1;
-      }
-      if(get_tile(g, i, j) > get_tile(g, i, j+1) && variation_sign == 0){
-	variation_sign = 1;
-	compteur += 1;
-      }
-      if(get_tile(g, j, i) < get_tile(g, j+1, i) && variation_sign == 1){
-	variation_sign = 0;
-	compteur += 1;
-      }
-      if(get_tile(g, j, i) > get_tile(g, j+1, i) && variation_sign == 0){
-	variation_sign = 1;
-	compteur += 1;
-      }
-    }
-  }  
-  return compteur*(-1);
-}
-
-static int smoothness(grid g){
-  int sum = 0;
-  for(int i = 0;i<3;i++){
-    for(int j = 0;j<3;j++){
-      if(get_tile(g,i,j)>=get_tile(g,i,j))
-	sum+=(int)get_tile(g,i,j)-(int)(get_tile(g,i,j+1));
-      else
-	sum+=(int)get_tile(g,i,j+1)-(int)(get_tile(g,i,j));
-      if(get_tile(g,j,i)>=get_tile(g,j+1,i))
-	sum+=(int)get_tile(g,j,i)-(int)(get_tile(g,j+1,i));
-      else
-	sum+=(int)get_tile(g,j+1,i)-(int)(get_tile(g,j,i));
-    }
-  }
-  return sum;
-}
-
-bool max_in_corner(grid g){
-  long max_tile = maximum_tile(g);
-  return get_tile(g, 0, 0) == max_tile || get_tile(g, 3, 0) == max_tile || get_tile(g, 0, 3) == max_tile || get_tile(g, 3, 3) == max_tile;
-}
 
 strategy init_Structure (){
   strategy str = malloc (sizeof(struct strategy_s));
@@ -250,7 +185,7 @@ static long maximum_tile(grid g){
 
 int main (int argc, char **argv){
 
-  int n = 10;
+  int n = 1;
   int nb_lance = n;
   int cpt_16 = 0;
   int cpt_32 = 0;
@@ -271,9 +206,7 @@ int main (int argc, char **argv){
     add_tile(g);
     
     while(!game_over(g)){
-      dir d = strategy_seb(seb,g);
-      if(can_move(g,d))
-	 play(g, d);
+      play(g, strategy_seb(seb,g));
     }
     printf("max %lu",maximum_tile(g));
     if(maximum_tile(g) == 4)
@@ -312,8 +245,8 @@ int main (int argc, char **argv){
   printf("Nombre de fois 4096 : %d\n", cpt_4096);
   printf("Nombre de fois 8192 : %d\n", cpt_8192);
 }
-
 /*
+
 static void display_grid(grid g);
 static void display_gameOver(bool *continuer, int *reponse_valide);
 
@@ -335,7 +268,7 @@ int main(int argc, char *argv[]){
       ch=getch();
       switch(ch){
       case KEY_UP:
-	direction = strategy_seb(seb,g,1);
+	direction = strategy_seb(seb,g);
 	if ( can_move(g,direction))
 	  play(g,direction);
 	break;
@@ -416,6 +349,7 @@ static void display_grid(grid g){
   mvprintw(21, 3, "Recommencer Partie / Quitter Partie (r / q)");
   refresh();
 }
+
 
 
 */

@@ -189,7 +189,7 @@ static float poids_fusion (grid g, dir d, int n){
     for(int j = 0; j < GRID_SIDE; j++){
       if(get_tile(g_copy, i, j) == 0)
 	nb_case_empty += 1;
-    }
+   }
   }
   poids += nb_case_empty;
   //----------
