@@ -306,10 +306,10 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *sur
   TTF_Font *police_gameover = TTF_OpenFont("../sdl/arial.ttf", (GRID_SIDE == 2 ? 30 : 53));
   SDL_Color color_text = {255, 255, 255}; // Couleur blanche
   SDL_Color color_background = {0, 0, 0}; // Couleur noire
-  char char_nickname[10]= ""; // Chaine de caractère qui contiendra le nouveau pseudo
+  char char_nickname[10] = ""; // Chaine de caractère qui contiendra le nouveau pseudo
   char *char_gameover = "GAME OVER";
   char char_display[60] = ""; // Chaine de caractère qui contiendra "char_highscore - char_nickname" 
-  char char_tmp[8] = "********"; // Chaine de caractère permettant au joueur de visualiser le nombre de caractère restant pour écrire le pseudo
+  char char_tmp[9] = "********"; // Chaine de caractère permettant au joueur de visualiser le nombre de caractère restant pour écrire le pseudo
   char char_newHighscore[30] = ""; // Chaine de caractère qui contiendra "New Highscore - char_highscore"
 
   // Position du texte (inhérent à GRID_SIDE)
@@ -328,8 +328,9 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *sur
   do{
     // Affiche tous les éléments liés au Game Over, ainsi que le nouveau pseudo saisi
     if(re_display){
-      // Modifie l'affichage du nouveau pseudo et écrit le nouveau pseudo dans highscore_txt
+      // Modifie l'affichage du nouveau pseudo
       sprintf(char_display, "%s - %s%s", char_highscore, char_nickname, char_tmp);
+      // Ecrit le nouveau pseudo dans highscore_txt
       write_line(highscore_txt, char_nickname, char_highscore);
 
       // Affiche la grille
