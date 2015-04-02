@@ -16,9 +16,9 @@ struct tabBestm{
 
 #define MONO_WEIGHT 15
 #define MONO_POW 4
-#define SMOOTH_WEIGHT 20
-#define EMPTY_WEIGHT 10
-#define SCORE_WEIGHT 0.1
+#define SMOOTH_WEIGHT 40
+#define EMPTY_WEIGHT 50
+#define SCORE_WEIGHT 1
 #define MERGES_WEIGHT 70
 
 
@@ -129,27 +129,41 @@ static tabBestM new_tabBestM(){
 
 
 
-static dir best_move(grid g){
+static dir best_move(grid g, int depth, tabBestM tab,dir d){
+  if(depth == 0)
+    return tab;
+  if(!can_move(g,d))
+    return best_move(g,depth,tab,d++);
   grid test = new_grid();
-  tabBestM tab = new_tabBestM();
-  for(dir i=UP;i<=RIGHT;i++){
-    if(!can_move(g,i))
-      continue;
-    copy_grid(g,test);
-    do_move(test,i);
-    grid* tabG = malloc((2*empty_tiles(test))*sizeof(grid*));
-    fill_tabG(test,tabG);
-    float score_tabG = eval_tabG(test,tabG);
-    if(tab->score < score_tabG){
-      tab->score = score_tabG;
-      tab->best = i;
-    }
+  copy_grid(g,test);
+  float s = eval_branch(test);
+  if(s > tab->score){
+    tab->score += s; 
+    tab->best = d;
   }
-  dir b = tab->best;
-  free(tab);
+  do_move(test,d);
+  tabBestM left = new_tabBestM();
+  tabBestM right = new_tabBestM();
+  tabBestM up = new_tabBestM();
+  tabBestM down = new_tabBestM();
+  do_move(test,i);
+  grid* tabG = malloc((2*empty_tiles(test))*sizeof(grid*));
+  fill_tabG(test,tabG);
+  //float score_tabG = eval_tabG(test,tabG);
+  for(int j = 0;j<empty_tiles(test)*2;j+){
+    left = best_move(tabG[j],depth-1,tab,LEFT);
+    right = best_move(tabG[j],depth-1,tab,RIGHT);
+    up = best_move(tabG[j],depth-1,tab,UP);
+    down = best_move(tab[j],depth-1,tab,DOWN);
+  }
+  //dir b = tab->best;
   delete_grid(test);
   //trqbva da iztriq vs gridove ot tabloto s gridove !!!! 
-  return b;
+  free(left);
+  free(right);
+  free(up);
+  free(down);
+  return tab;
 }
 
 /* static dir best_move2(grid g, int depth,){ */
@@ -188,15 +202,18 @@ static void fill_tabG(grid g,grid* tab){
 
 
 float eval_branch(grid g){
+  int over = 0;
+  if(game_over(g))
+    over = 20000;
   float mono;
   if(max_in_corner(g))
-    mono = monotonicity(g)+1/(MONO_WEIGHT*MONO_POW);
+    mono = 200000;
   else
-    mono = monotonicity(g)/MONO_WEIGHT;
+    mono = 0;
   float smooth = smoothness(g)*SMOOTH_WEIGHT;
   float empty = empty_tiles(g)*EMPTY_WEIGHT;
   float score = grid_score(g) * SCORE_WEIGHT;
-  return mono + smooth + empty + score;
+  return mono + smooth + empty + score - over;
 }
 
 
