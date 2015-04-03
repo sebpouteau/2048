@@ -131,10 +131,10 @@ strategy init_Structure (char *str_choose){
   str->name = "strategy_seb";
   str->mem = malloc(4*sizeof(long int));
   str->free_strategy = free_memless_strat;
-  str->play_move = (dir) *(str_choose);
+  str->play_move = strategy_seb;
   return str;
 }
- dir (*play_move) (strategy, grid)
+ 
 void free_memless_strat (strategy strat)
 {
   free (strat);
