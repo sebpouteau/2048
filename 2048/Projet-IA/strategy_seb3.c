@@ -126,7 +126,7 @@ long int note_grid (grid g){
   
 
 
-strategy init_Structure (char *str_choose){
+strategy init_Structure (){
   strategy str = malloc (sizeof(struct strategy_s));
   str->name = "strategy_seb";
   str->mem = malloc(4*sizeof(long int));
@@ -150,10 +150,11 @@ static long maximum_tile(grid g){
   }
   return max_tile;
 }
-/*
+
 int main (int argc, char **argv){
 
   int n = NOMBRE_TEST;
+  int nb_lance = n;
   int cpt_16 = 0;
   int cpt_32 = 0;
   int cpt_64 = 0;
@@ -214,8 +215,8 @@ int main (int argc, char **argv){
   printf("Nombre de fois 4096 : %d\n", cpt_4096);
   printf("Nombre de fois 8192 : %d\n", cpt_8192);
 }
-*/
 
+/*
 static void display_grid(grid g);
 static void display_gameOver(bool *continuer, int *reponse_valide);
 
@@ -232,7 +233,7 @@ int main(int argc, char *argv[]){
     display_grid(g);
     int reponse_valide = 0;
     while(!game_over(g) && reponse_valide == 0){
-      strategy str = init_Structure(argv[1]);
+      strategy str = init_Structure();
       dir direction;
       ch=getch();
       switch(ch){
@@ -320,3 +321,4 @@ static void display_grid(grid g){
 }
 
 
+*/
