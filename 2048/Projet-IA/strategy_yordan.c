@@ -13,9 +13,8 @@ struct tabBestm{
   dir best; 
 };
 
-
-#define MONO_WEIGHT 4
-#define MONO_POW 47
+#define MONO_WEIGHT 47
+#define MONO_POW 4
 #define SMOOTH_WEIGHT 40
 #define EMPTY_WEIGHT 270
 #define MERGES_WEIGHT 700
@@ -26,7 +25,7 @@ struct tabBestm{
 
 
 //static void display_grid(grid g);
-static long maximum_tile(grid g);
+static long int maximum_tile(grid g);
 static tabBestM new_tabBestM();
 static dir best_move(grid g);
 static int empty_tiles(grid g);
@@ -133,9 +132,10 @@ static tabBestM new_tabBestM(){
 
 
 static dir best_move(grid g){
-  tabBestM tab = new_tabBestM();
   grid test = new_grid();
-  int empty;
+  int empty = 0;
+  tabBestM tab;
+  tab  = new_tabBestM();
   for(dir i = UP; i<=RIGHT; i++){
     if(!can_move(g,i))
        continue;
@@ -228,13 +228,13 @@ static long int smoothness(grid g){
   for(int i = 0;i<3;i++){
     for(int j = 0;j<3;j++){
       if(get_tile(g,i,j)>=get_tile(g,i,j))
-	sum+=(long int)get_tile(g,i,j)-(int)(get_tile(g,i,j+1));
+	sum+=(long int)get_tile(g,i,j)-(long int)(get_tile(g,i,j+1));
       else
-	sum+=(long int)get_tile(g,i,j+1)-(int)(get_tile(g,i,j));
+	sum+=(long int)get_tile(g,i,j+1)-(long int)(get_tile(g,i,j));
       if(get_tile(g,j,i)>=get_tile(g,j+1,i))
-	sum+=(long int)get_tile(g,j,i)-(int)(get_tile(g,j+1,i));
+	sum+=(long int)get_tile(g,j,i)-(long int)(get_tile(g,j+1,i));
       else
-	sum+=(long int)get_tile(g,j+1,i)-(int)(get_tile(g,j,i));
+	sum+=(long int)get_tile(g,j+1,i)-(long int)(get_tile(g,j,i));
     }
   }
   return sum;
