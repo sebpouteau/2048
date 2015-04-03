@@ -10,28 +10,28 @@
 #include <ncurses.h>
 #include <curses.h>
 
-#define PROFONDEUR 3
+
+#define PROFONDEUR 2
 #define NOMBRE_TEST 1
 
-//static bool objectif_atteint(grid g);
-static long maximum_tile(grid g);
-long int note_grid (grid g);
-static long int repetition_grid(grid g, int nombre, dir *d);
-long int maximum(long int l,long int l1,dir d, dir d1, dir *d2);
 
-dir meilleur_direction(grid g){
+static long int repetition_grid(grid g, int nombre, dir *d);
+static long maximum_tile(grid g);
+long int maximum(long int l,long int l1,dir d, dir d1, dir *d2);
+static long int note_grid (grid g);
+
+
+static dir meilleur_direction(grid g){
   int nombre = PROFONDEUR;
   dir d = UP;
   repetition_grid(g,nombre,&d);
   return d;
  }
 
-dir strategy_seb(strategy str, grid g){
+dir strategy_fast(strategy str, grid g){
   return meilleur_direction(g);
   
 }
-
-
 
 static long int repetition_grid(grid g, int nombre,dir *d){
   if (game_over(g)){
@@ -55,19 +55,19 @@ static long int repetition_grid(grid g, int nombre,dir *d){
 	  if(get_tile(g_copy,x,y) == 0){
 	    set_tile(g_copy,x,y,1);
 	    note +=(long int) 9*repetition_grid(g_copy,nombre-1, d);
-	       set_tile(g_copy,x,y,2);
-	       note +=(long int) repetition_grid(g_copy,nombre-1, d);
-	       set_tile(g_copy,x,y,0);
-	       cpt +=10;    
+	    set_tile(g_copy,x,y,2);
+	    note +=(long int) repetition_grid(g_copy,nombre-1, d);
+	    set_tile(g_copy,x,y,0);
+	    cpt +=10;    
 	  }
-   
-    if (cpt == 0)
-      tab[indice_tab]=-99999999;
-    else
-      tab[indice_tab]=(long int)note/cpt;
+      
+      if (cpt == 0)
+	tab[indice_tab]=-99999999;
+      else
+	tab[indice_tab]=(long int)note/cpt;
     }  
     else {
-      tab[indice_tab] = -99999999999;
+      tab[indice_tab] = -999999999;
     }
   }    
   delete_grid(g_copy);
@@ -126,15 +126,6 @@ long int note_grid (grid g){
   
 
 
-strategy init_Structure (){
-  strategy str = malloc (sizeof(struct strategy_s));
-  str->name = "strategy_seb";
-  str->mem = malloc(4*sizeof(long int));
-  str->free_strategy = free_memless_strat;
-  str->play_move = strategy_seb;
-  return str;
-}
- 
 void free_memless_strat (strategy strat)
 {
   free (strat);
@@ -151,6 +142,7 @@ static long maximum_tile(grid g){
   return max_tile;
 }
 
+/*
 int main (int argc, char **argv){
 
   int n = NOMBRE_TEST;
@@ -174,7 +166,7 @@ int main (int argc, char **argv){
     add_tile(g);
     
     while(!game_over(g)){
-      dir d = strategy_seb(seb,g);
+      dir d = strategy_fast(seb,g);
       if (can_move(g,d))
 	play(g, d);
     }
@@ -216,7 +208,7 @@ int main (int argc, char **argv){
   printf("Nombre de fois 8192 : %d\n", cpt_8192);
 }
 
-/*
+
 static void display_grid(grid g);
 static void display_gameOver(bool *continuer, int *reponse_valide);
 

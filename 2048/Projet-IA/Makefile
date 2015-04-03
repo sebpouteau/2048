@@ -1,11 +1,11 @@
 CC = gcc
-CFLAGS =-std=c99 -g -Wall 
-LDLIBS = -lgrid -lm -lncurses -L ../Projet-Jeu/lib/
+CFLAGS =-std=c99 -g -Wall -fPIC
+LDLIBS = -lstrat -lgrid  -lm -lncurses  -L ../Projet-Jeu/lib/ -L.
 CPPFLAGS= 
 
 
 
-all: verif-libgrid  test-seb3 test-jimmy deplacement 
+all: verif-libgrid  test-graphique-fast test-repetition-fast #deplacement 
 
 
 
@@ -20,21 +20,17 @@ deplacement:
 #test-seb: strategy_seb.o
 #	$(CC) -o test-seb strategy_seb.o   $(LDLIBS)
 
-test-seb3: strategy_seb3.o
-	$(CC) -o test-seb3 strategy_seb3.o   $(LDLIBS)
+test-graphique-fast: main-graphique.o 
+	$(CC) -o test-graphique-fast main-graphique.o   $(LDLIBS)
 
-test-jimmy: strategy_jimmy.o
-	$(CC) -o test-jimmy strategy_jimmy.o   $(LDLIBS)
+test-repetition-fast: main-graphique.o 
+	$(CC) -o test-repetition-fast main-graphique.o   $(LDLIBS)
 
-test-yordan: strategy_yordan.o
-	$(CC) -o test-yordan strategy_yordan.o   $(LDLIBS)
+test-graphique-low: main-graphique.o 
+	$(CC) -o test-graphique-low main-graphique.o    $(LDLIBS)
 
-test-yordan2: strategy_yordan2.o
-	$(CC) -o test-yordan2 strategy_yordan2.o   $(LDLIBS)
-
-
-test-ysa: strategy_ysa.o
-	$(CC) -o test-ysa strategy_ysa.o   $(LDLIBS)
+test-repetition-low: main-graphique.o
+	$(CC) -o test-repetition-low  main-graphique.o   $(LDLIBS)
 
 
 include dep
