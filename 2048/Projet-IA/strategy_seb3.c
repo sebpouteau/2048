@@ -10,8 +10,8 @@
 #include <ncurses.h>
 #include <curses.h>
 
-#define PROFONDEUR 1
-#define NOMBRE_TEST 10
+#define PROFONDEUR 3
+#define NOMBRE_TEST 1
 
 //static bool objectif_atteint(grid g);
 static long maximum_tile(grid g);
@@ -21,7 +21,7 @@ long int maximum(long int l,long int l1,dir d, dir d1, dir *d2);
 
 dir meilleur_direction(grid g){
   int nombre = PROFONDEUR;
-  dir d;
+  dir d = UP;
   repetition_grid(g,nombre,&d);
   return d;
  }
@@ -48,32 +48,36 @@ static long int repetition_grid(grid g, int nombre,dir *d){
     int cpt = 0;
     indice_tab++;
     copy_grid(g,g_copy);
-    if ( !can_move(g_copy,i)){
-      tab[indice_tab]=0;
-      continue;
-    }
-    do_move(g_copy,i);
-    for(int y = 0; y < GRID_SIDE; y++)
-      for(int x = 0; x < GRID_SIDE; x++)
-	if(get_tile(g_copy,x,y) == 0){
-	  set_tile(g_copy,x,y,1);
-	  note +=(long int) 9*repetition_grid(g_copy,nombre-1, d);
-	  set_tile(g_copy,x,y,2);
-	  note +=(long int) repetition_grid(g_copy,nombre-1, d);
-	  set_tile(g_copy,x,y,0);
-	  cpt +=10;    
-	}
+    if ( can_move(g_copy,i)){
+      do_move(g_copy,i);
+      for(int y = 0; y < GRID_SIDE; y++)
+	for(int x = 0; x < GRID_SIDE; x++)
+	  if(get_tile(g_copy,x,y) == 0){
+	    set_tile(g_copy,x,y,1);
+	    note +=(long int) 9*repetition_grid(g_copy,nombre-1, d);
+	       set_tile(g_copy,x,y,2);
+	       note +=(long int) repetition_grid(g_copy,nombre-1, d);
+	       set_tile(g_copy,x,y,0);
+	       cpt +=10;    
+	  }
+   
     if (cpt == 0)
-      tab[indice_tab]=0;
+      tab[indice_tab]=-99999999;
     else
       tab[indice_tab]=(long int)note/cpt;
-  }
-    
+    }  
+    else {
+      tab[indice_tab] = -99999999999;
+    }
+  }    
   delete_grid(g_copy);
-  dir mdU_D;
-  dir mdL_R;
-  return maximum(maximum(tab[0],tab[1],UP,DOWN,&mdU_D),maximum(tab[2],tab[3],LEFT,RIGHT,&mdL_R),mdU_D,mdL_R,d);  
+  dir mdU_L;
+  dir mdD_R;
+  long int max_UD = maximum(tab[0],tab[1],UP,LEFT,&mdU_L);
+  long int max_LR = maximum(tab[2],tab[3],DOWN,RIGHT,&mdD_R);
+  return maximum(max_UD,max_LR,mdU_L,mdD_R,d);  
 }
+
 
 long int maximum(long int l,long int l1,dir d, dir d1, dir *d2){
   if ( l >=l1){
@@ -99,18 +103,21 @@ long int note_grid (grid g){
   }
 
   int max = (int)maximum_tile(g);
-  if( get_tile(g, 0, 0) == max || get_tile(g, GRID_SIDE -1 , 0) == max || get_tile(g, 0, GRID_SIDE-1) == max || get_tile(g, GRID_SIDE - 1, GRID_SIDE - 1) == max )     cpt += 500;
+  if( get_tile(g, 0, 0) == max || get_tile(g, GRID_SIDE -1 , 0) == max || get_tile(g, 0, GRID_SIDE-1) == max || get_tile(g, GRID_SIDE - 1, GRID_SIDE - 1) == max )
+    cpt += 1000*max;
   if (get_tile(g,0,0) == max)
-    cpt+=1000;
-  if (get_tile(g,1,0)  > get_tile(g, 2,0) )
-    cpt+=10;
+    cpt+=800*max;
   int cpt_changement_sign = 0;
   for(int y = 0; y < GRID_SIDE; y++)
     for(int x = 0; x < GRID_SIDE-1; x++)
       if(get_tile(g,x,y) < get_tile(g,x+1,y))
 	cpt_changement_sign++;
-      
-  cpt -= 10*cpt_changement_sign;
+  for(int x = 0; x < GRID_SIDE; x++)
+    for(int y = 0; y < GRID_SIDE-1; y++)
+      if(get_tile(g,x,y) < get_tile(g,x,y+1))
+  	cpt_changement_sign++;
+  cpt += 500*max;    
+  cpt -= 3000*cpt_changement_sign;
   cpt += 10*grid_score(g);
   
   cpt += 1000*cpt_case_empty;
@@ -119,22 +126,22 @@ long int note_grid (grid g){
   
 
 
-strategy init_Structure (){
+strategy init_Structure (char *str_choose){
   strategy str = malloc (sizeof(struct strategy_s));
   str->name = "strategy_seb";
   str->mem = malloc(4*sizeof(long int));
   str->free_strategy = free_memless_strat;
-  str->play_move = strategy_seb;
+  str->play_move = (dir) *(str_choose);
   return str;
 }
-
+ dir (*play_move) (strategy, grid)
 void free_memless_strat (strategy strat)
 {
   free (strat);
 }
  
 static long maximum_tile(grid g){
-  long max_tile = 2;
+  long max_tile = 1;
   for(int i = 0; i<GRID_SIDE; i++){
     for(int j = 0; j< GRID_SIDE; j++){
       if(get_tile(g, i, j)>max_tile)
@@ -142,12 +149,11 @@ static long maximum_tile(grid g){
     }
   }
   return max_tile;
- }
-
+}
+/*
 int main (int argc, char **argv){
 
-  int n = 10;
-  int nb_lance = n;
+  int n = NOMBRE_TEST;
   int cpt_16 = 0;
   int cpt_32 = 0;
   int cpt_64 = 0;
@@ -171,7 +177,7 @@ int main (int argc, char **argv){
       if (can_move(g,d))
 	play(g, d);
     }
-    printf("max %lu",maximum_tile(g));
+    printf("max %lu\n",(long int)pow(2,maximum_tile(g)));
     if(maximum_tile(g) == 4)
       cpt_16 += 1;
     if(maximum_tile(g) == 5)
@@ -188,9 +194,9 @@ int main (int argc, char **argv){
       cpt_1024 += 1;
     if(maximum_tile(g) == 11)
       cpt_2048 += 1;
-    if(maximum_tile(g) == 11)
+    if(maximum_tile(g) == 12)
       cpt_4096 += 1;
-    if(maximum_tile(g) == 11)
+    if(maximum_tile(g) == 13)
       cpt_8192 += 1;
     delete_grid(g);
     n -= 1;
@@ -208,8 +214,8 @@ int main (int argc, char **argv){
   printf("Nombre de fois 4096 : %d\n", cpt_4096);
   printf("Nombre de fois 8192 : %d\n", cpt_8192);
 }
+*/
 
-/*
 static void display_grid(grid g);
 static void display_gameOver(bool *continuer, int *reponse_valide);
 
@@ -226,12 +232,12 @@ int main(int argc, char *argv[]){
     display_grid(g);
     int reponse_valide = 0;
     while(!game_over(g) && reponse_valide == 0){
-      strategy seb = init_Structure();
+      strategy str = init_Structure(argv[1]);
       dir direction;
       ch=getch();
       switch(ch){
       case KEY_UP:
-	direction = strategy_seb(seb,g);
+	direction = str->play_move(str,g);
 	if ( can_move(g,direction))
 	  play(g,direction);
 	break;
@@ -313,7 +319,4 @@ static void display_grid(grid g){
   refresh();
 }
 
-
-
-*/
 

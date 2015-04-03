@@ -224,7 +224,7 @@ static long maximum_tile(grid g){
   }
   return max_tile;
  }
-
+/*
 int main (int argc, char **argv){
 
   int n = 10;
@@ -287,7 +287,7 @@ int main (int argc, char **argv){
   printf("Nombre de fois 4096 : %d\n", cpt_4096);
   printf("Nombre de fois 8192 : %d\n", cpt_8192);
 }
-
+*/
 /*
 static void display_grid(grid g);
 static void display_gameOver(bool *continuer, int *reponse_valide);

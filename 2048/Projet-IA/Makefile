@@ -4,7 +4,7 @@ LDLIBS = -lgrid -lm -lncurses -L ../Projet-Jeu/lib/
 CPPFLAGS= 
 
 
-all: verif-libgrid test-yordan test-seb2 test-jimmy deplacement 
+all: verif-libgrid  test-seb3 test-jimmy deplacement 
 
 
 
@@ -18,8 +18,8 @@ deplacement:
 #test-seb: strategy_seb.o
 #	$(CC) -o test-seb strategy_seb.o   $(LDLIBS)
 
-test-seb2: strategy_seb2.o
-	$(CC) -o test-seb2 strategy_seb2.o   $(LDLIBS)
+test-seb3: strategy_seb3.o
+	$(CC) -o test-seb3 strategy_seb3.o   $(LDLIBS)
 
 test-jimmy: strategy_jimmy.o
 	$(CC) -o test-jimmy strategy_jimmy.o   $(LDLIBS)
