@@ -1,4 +1,4 @@
-#define _XOPEN_SOURCE // permet d'utiliser la fonction putenv() qui centre la fenetre
+#define _XOPEN_SOURCE // permet d'utiliser la fonction putenv() qui centre la fenêtre
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -15,7 +15,7 @@
 #define WINDOW_WIDTH (NEW_GRID_SIDE + 1) * TILE_SIDE // Largeur de la fenêtre
 #define WINDOW_HEIGHT (GRID_SIDE + 2) * TILE_SIDE // Hauteur de la fenêtre
 #define POSITION_TILE_X (WINDOW_WIDTH - GRID_SIDE * TILE_SIDE)/2 // Position abscisse de la grille
-#define POSITION_TILE_Y ((WINDOW_HEIGHT - (1 + GRID_SIDE) * TILE_SIDE)/2 + 10)// Position ordonnée de la grille 
+#define POSITION_TILE_Y ((WINDOW_HEIGHT - (1 + GRID_SIDE) * TILE_SIDE)/2 + 10) // Position ordonnée de la grille 
 #define POSITION_BACKGROUND_X (POSITION_TILE_X - 10) // Position abscisse du background bleu
 #define POSITION_BACKGROUND_Y (POSITION_TILE_Y - 10) // Position ordonnée du background bleu
 
@@ -47,7 +47,7 @@ static void write_line(FILE *fichier, char *char_nickname, char *char_highscore)
 void game_sdl(){
   // Initialisation de la fenetre du jeu
   SDL_Surface *surface_screen = NULL;
-  putenv("SDL_VIDEO_WINDOW_POS=center"); // Permet de centrer la fenetre du jeu
+  putenv("SDL_VIDEO_WINDOW_POS=center"); // Permet de centrer la fenêtre du jeu
   surface_screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
   SDL_WM_SetCaption("Game 2048 - by Emery, Gouraud, Kirov & Pouteau", NULL);
   SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 255, 255, 255));
@@ -118,6 +118,7 @@ void game_sdl(){
     else if(event.type == SDL_MOUSEMOTION)
       continue;
 
+    // Re-affiche l'écran
     SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 255, 255, 255));
     SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
     display_grid(g, surface_screen);
@@ -206,7 +207,7 @@ static void display_score(grid g, SDL_Surface *surface_screen){
   char char_giveup[30] = "or ESC to GIVE UP";
   display_text(surface_screen, char_giveup,  WINDOW_HEIGHT - (WINDOW_HEIGHT - position_text_y)/3 + 5, police_menu, color_text, color_background, false);
 
-  // Libère la mémoire allouée et ferme le fichier de Highscore
+  // Libère la mémoire allouée et ferme le fichier contenant l'Highscore
   TTF_CloseFont(police_text);
   TTF_CloseFont(police_menu);
   fclose(highscore_txt);
@@ -230,7 +231,7 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
   FILE* highscore_txt = fopen("../sdl/highscore_sdl.txt", "r+"); 
   read_line(highscore_txt, char_nickname, char_highscore);
   fclose(highscore_txt);
-  unsigned long int highscore = strtoul(char_highscore, NULL, 10); // Convertit une chaine en unsigned long int
+  unsigned long int highscore = strtoul(char_highscore, NULL, 10); // Convertit une chaine de caractère en unsigned long int
 
   // Affiche la grille
   display_grid(g, surface_screen);
@@ -309,7 +310,7 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *sur
   char char_nickname[10] = ""; // Chaine de caractère qui contiendra le nouveau pseudo
   char *char_gameover = "GAME OVER";
   char char_display[60] = ""; // Chaine de caractère qui contiendra "char_highscore - char_nickname" 
-  char char_tmp[9] = "********"; // Chaine de caractère permettant au joueur de visualiser le nombre de caractère restant pour écrire le pseudo
+  char char_tmp[9] = "********"; // Chaine de caractère permettant au joueur de visualiser le nombre de caractère restant pour écrire son pseudo
   char char_newHighscore[30] = ""; // Chaine de caractère qui contiendra "New Highscore - char_highscore"
 
   // Position du texte (inhérent à GRID_SIDE)
@@ -325,7 +326,7 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *sur
   SDL_EnableUNICODE(1); // active l'unicode
 
   // Boucle while permettant de récupérer et de sauvegarder le pseudo saisi dans le fichier hghscore_sdl.txt
-  do{
+  while(enter_new_nickname){
     // Affiche tous les éléments liés au Game Over, ainsi que le nouveau pseudo saisi
     if(re_display){
       // Modifie l'affichage du nouveau pseudo
@@ -341,7 +342,6 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *sur
       SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
 	
       // Affiche "Game Over", "New Highscore" et "Enter your nickname"
-      // int position_x = POSITION_TILE_Y - (GRID_SIDE * TILE)/2 - char_gameover->w/2
       display_text(surface_screen, char_gameover, position_y_text + position_adjusted, police_gameover, color_text, color_background, true);
       sprintf(char_newHighscore, "New Highscore : %s !!", char_highscore);
       display_text(surface_screen, char_newHighscore, position_y_text + 2 * position_adjusted, police_text, color_text, color_background, true);
@@ -397,7 +397,6 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *sur
     else if(event.type == SDL_MOUSEMOTION)
       continue;
   }
-  while(enter_new_nickname);
 
   SDL_EnableUNICODE(0); // désactive l'unicode
 
