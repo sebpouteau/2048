@@ -72,7 +72,7 @@ int main (int argc, char **argv){
     n -= 1;
   }
   printf("\n --------------- \n");
-  printf("Sur %d lancÅÈs : \n\n", nb_lance);
+  printf("Sur %d lanc√©s : \n\n", nb_lance);
   printf("Nombre de fois 16 : %d\n", cpt_16);
   printf("Nombre de fois 32 : %d\n", cpt_32);
   printf("Nombre de fois 64 : %d\n", cpt_64);

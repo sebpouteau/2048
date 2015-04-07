@@ -4,8 +4,10 @@
 #include <assert.h>
 #include "../Projet-Jeu/src/grid.h"
 #include <stdlib.h>
+#include <stdio.h>
 
-#define PROFONDEUR 5
+#define NOMBRE_TEST 10
+#define PROFONDEUR 2
 #define CASE_UP 0
 #define CASE_LEFT 1
 #define CASE_DOWN 2
@@ -19,6 +21,15 @@ static long int repetition_grid(grid g, int nombre, dir *d);
 static long maximum_tile(grid g);
 static long int maximum(long int l,long int l1,dir d, dir d1, dir *d2);
 static long int note_grid (grid g);
+
+strategy A2_Emery_Gouraud_Kirov_Pouteau_fast (){
+  strategy str = malloc (sizeof(struct strategy_s));
+  str->name = "strateg";
+  str->mem = NULL;
+  str->free_strategy = free_memless_strat;
+  str->play_move = strategy_fast;
+  return str;
+}
 
 void free_memless_strat (strategy strat){
   free (strat);
@@ -127,14 +138,17 @@ long int note_grid (grid g){
   if (get_tile(g,0,0) == max)
     cpt+=800*max;
   int cpt_changement_sign = 0;
+
   for(int y = 0; y < GRID_SIDE; y++)
-    for(int x = 0; x < GRID_SIDE-1; x++)
-      if(get_tile(g,x,y) < get_tile(g,x+1,y))
-	cpt_changement_sign++;
-  for(int x = 0; x < GRID_SIDE; x++)
-    for(int y = 0; y < GRID_SIDE-1; y++)
-      if(get_tile(g,x,y) < get_tile(g,x,y+1))
-  	cpt_changement_sign++;
+    for(int x = 0; x < GRID_SIDE-1; x++){
+      if(x%2 == 0){
+	if(get_tile(g,x,y) < get_tile(g,x+1,y))
+	  cpt_changement_sign++;
+      }
+      else
+	if(get_tile(g,x,y) > get_tile(g,x+1,y))
+	  cpt_changement_sign++;
+    }
   cpt += 500*max;    
   cpt -= 3000*cpt_changement_sign;
   cpt += 10*grid_score(g);
@@ -153,3 +167,73 @@ static long maximum_tile(grid g){
   }
   return max_tile;
 }
+
+
+
+
+int main (int argc, char **argv){
+  
+  int n = NOMBRE_TEST;
+  int nb_lance = n;
+  int cpt_16 = 0;
+  int cpt_32 = 0;
+  int cpt_64 = 0;
+  int cpt_128 = 0;
+  int cpt_256 = 0;
+  int cpt_512 = 0;
+  int cpt_1024 = 0;
+  int cpt_2048 = 0;
+  int cpt_4096 = 0;
+  int cpt_8192= 0;
+	
+  srand(time(NULL));
+  strategy str = A2_Emery_Gouraud_Kirov_Pouteau_fast();
+  while(n > 0){
+    grid g = new_grid();
+    add_tile(g);
+    add_tile(g);
+    
+    while(!game_over(g)){
+      dir d = str->play_move(str,g);
+      if (can_move(g,d))
+	play(g, d);
+    }
+    printf("max %lu\n",(long int)pow(2,maximum_tile(g)));
+    if(maximum_tile(g) == 4)
+      cpt_16 += 1;
+    if(maximum_tile(g) == 5)
+      cpt_32 += 1;
+    if(maximum_tile(g) == 6)
+      cpt_64 += 1;
+    if(maximum_tile(g) == 7)
+      cpt_128 += 1;
+    if(maximum_tile(g) == 8)
+      cpt_256 += 1;
+    if(maximum_tile(g) == 9)
+      cpt_512 += 1;
+    if(maximum_tile(g) == 10)
+      cpt_1024 += 1;
+    if(maximum_tile(g) == 11)
+      cpt_2048 += 1;
+    if(maximum_tile(g) == 12)
+      cpt_4096 += 1;
+    if(maximum_tile(g) == 13)
+      cpt_8192 += 1;
+    delete_grid(g);
+    n -= 1;
+  }
+  printf("\n --------------- \n");
+  printf("Sur %d lancés : \n\n", nb_lance);
+  printf("Nombre de fois 16 : %d\n", cpt_16);
+  printf("Nombre de fois 32 : %d\n", cpt_32);
+  printf("Nombre de fois 64 : %d\n", cpt_64);
+  printf("Nombre de fois 128 : %d\n", cpt_128);
+  printf("Nombre de fois 256 : %d\n", cpt_256);
+  printf("Nombre de fois 512 : %d\n", cpt_512);
+  printf("Nombre de fois 1024 : %d\n", cpt_1024);
+  printf("Nombre de fois 2048 : %d\n", cpt_2048);
+  printf("Nombre de fois 4096 : %d\n", cpt_4096);
+  printf("Nombre de fois 8192 : %d\n", cpt_8192);
+}
+
+

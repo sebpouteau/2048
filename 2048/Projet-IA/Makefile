@@ -5,7 +5,7 @@ CPPFLAGS=
 
 
 
-all: verif-libgrid  test-graphique-fast test-repetition-fast deplacement 
+all: verif-libgrid  test-graphique-fast test-seb test-repetition-fast deplacement 
 
 
 
@@ -17,8 +17,8 @@ deplacement:
 	if [ ! -d "bin" ];then mkdir bin; fi
 	mv test* bin/
 
-#test-seb: strategy_seb.o
-#	$(CC) -o test-seb strategy_seb.o   $(LDLIBS)
+test-seb:  strategy_seb3.o
+	$(CC) -o test-seb strategy_seb3.o   $(LDLIBS)
 
 test-graphique-fast: main-graphique.o A2_Emery_Gouraud_Kirov_Pouteau_fast.o
 	$(CC) -o test-graphique-fast main-graphique.o A2_Emery_Gouraud_Kirov_Pouteau_fast.o  $(LDLIBS)
