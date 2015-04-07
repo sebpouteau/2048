@@ -71,6 +71,7 @@ int main (int argc, char **argv){
     delete_grid(g);
     n -= 1;
   }
+  str->free_strategy(str);
   printf("\n --------------- \n");
   printf("Sur %d lancés : \n\n", nb_lance);
   printf("Nombre de fois 16 : %d\n", cpt_16);

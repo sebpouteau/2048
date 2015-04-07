@@ -14,6 +14,7 @@ int main(int argc, char *argv[]){
   keypad(stdscr, TRUE);
   bool continuer = true;
   srand(time(NULL));
+  strategy str = A2_Emery_Gouraud_Kirov_Pouteau_fast();
   while(continuer){
     grid g = new_grid();
     add_tile(g);
@@ -22,7 +23,6 @@ int main(int argc, char *argv[]){
     display_grid(g);
     int reponse_valide = 0;
     while(!game_over(g) && reponse_valide == 0){
-      strategy str = A2_Emery_Gouraud_Kirov_Pouteau_fast();
       dir direction;
       ch=getch();
       switch(ch){
@@ -35,16 +35,19 @@ int main(int argc, char *argv[]){
 	continuer = false;
 	reponse_valide = 1;
 	break;
-      case 114: // "r" pour rejouer
+     case 114: // "r" pour rejouer
 	reponse_valide = 1;
 	break;
       }
       display_grid(g);
     }
+    delete_grid(g);
     while(reponse_valide == 0 && continuer == true)
       display_gameOver(&continuer, &reponse_valide);
     endwin();
+
   }
+  str->free_strategy(str);
   return EXIT_SUCCESS;
 }
 
