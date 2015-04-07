@@ -5,7 +5,18 @@
 #include "../src/grid.h"
 #include "fonction-test.h"
 #include <math.h>
-  
+
+#define BEGIN_GRID 0
+#define END_GRID GRID_SIDE-1
+#define HALF_GRID_SIDE (int)GRID_SIDE/2
+#define EMPTY_TILE 0
+#define TILE_2 1
+#define TILE_4 2
+#define TILE_8 3
+#define TILE_16 4
+#define TILE_32 5  
+
+
 /**
  * \file fonction-test.c
  * \brief Implémentation de fonction-test.h
@@ -24,7 +35,7 @@ bool test_new_grid(){
 bool test_get_tile(grid g){
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j<GRID_SIDE; j++)
-      if(get_tile(g, i, j) != 0)
+      if(get_tile(g, i, j) != EMPTY_TILE )
  	return false;
     return true;
 }
@@ -34,16 +45,16 @@ bool test_set_tile(grid g){
   // Passage de toutes les cases à 2
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
-      set_tile(g, i, j, 2);
+      set_tile(g, i, j, TILE_2);
   // Vérification que les cases sont à 2
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
-      if(get_tile(g, i, j) != 2)
+      if(get_tile(g, i, j) != TILE_2)
  	return false;
   // Reset de la grid à zéro
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
-      set_tile(g, i, j, 0);
+      set_tile(g, i, j, EMPTY_TILE);
   return true;
 }
 
@@ -68,6 +79,7 @@ bool test_get_score_grid(grid g){
 
 
 bool test_game_over(grid g){
+  // On remplis la grille de case differentes pour evite les possibilites de deplacements 
   int nbr = 1;
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++){
@@ -78,13 +90,13 @@ bool test_game_over(grid g){
     return false;
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
-      set_tile(g, i, j, 2);
+      set_tile(g, i, j, TILE_2);
   if(game_over(g))
     return false;
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
-      set_tile(g, i, j, 0);
-  set_tile(g, 0, 0, 2);
+      set_tile(g, i, j, EMPTY_TILE);
+  set_tile(g, 0, 0, TILE_2);
   if(game_over(g))
     return false;
   return true;
@@ -94,328 +106,424 @@ bool test_game_over(grid g){
 static bool check_case_empty(grid g,int debuti,int fini,int debutj,int finj){
   for(int i = debutj; i < finj; i++)
     for(int j = debuti; j < fini; j++)
-        if(get_tile(g, i, j) != 0)
+        if(get_tile(g, i, j) != EMPTY_TILE)
 	  return false;
   return true;
 }
 
 
 bool test_do_move_up(grid g){
-  bool resultat = true;
+  bool result = true;
   
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
-      set_tile(g, i, j, 0);
+      set_tile(g, i, j, EMPTY_TILE);
   
   for(int i = 0; i < GRID_SIDE; i++)
-    set_tile(g, i, 0, 1);
+    set_tile(g, i, 0, TILE_2);
    
   for(int i = 0; i < GRID_SIDE; i++)
-    set_tile(g, i, GRID_SIDE - 1, 1);
+    set_tile(g, i, GRID_SIDE - 1, TILE_2);
   do_move(g, UP);
   // On met des 2 sur la première ligne, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, i, 0) != 2)
+    if(get_tile(g, i, 0) != TILE_4)
       return false;
-  resultat = check_case_empty(g,1,GRID_SIDE,0,GRID_SIDE);
+  result = check_case_empty(g,1,GRID_SIDE,0,GRID_SIDE);
   
   for(int i = 0; i < GRID_SIDE; i++)
-    set_tile(g, i, GRID_SIDE - 1, 1);
+    set_tile(g, i, GRID_SIDE - 1, TILE_2);
   do_move(g, UP);
   // On met des 2 sur la première ligne, des 1 sur la deuxième ligne et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, i, 0) != 2)
+    if(get_tile(g, i, 0) != TILE_4)
       return false;
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, i, 1) != 1)
+    if(get_tile(g, i, 1) != TILE_2)
       return false;
-  resultat = check_case_empty(g, 2, GRID_SIDE, 0, GRID_SIDE);
+  result = check_case_empty(g, 2, GRID_SIDE, 0, GRID_SIDE);
   
   for(int i = 0; i < GRID_SIDE; i++)
-    set_tile(g, i, GRID_SIDE - 1, 1);
+    set_tile(g, i, GRID_SIDE - 1, TILE_2);
   do_move(g, UP);
   // On met des 2 sur les deux premières lignes, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, i, 0) != 2)
+    if(get_tile(g, i, 0) != TILE_4)
       return false;
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, i, 1) != 2)
+    if(get_tile(g, i, 1) != TILE_4)
       return false;
-  resultat = check_case_empty(g, 2, GRID_SIDE, 0, GRID_SIDE);
+  result = check_case_empty(g, 2, GRID_SIDE, 0, GRID_SIDE);
   
   do_move(g, UP);
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, i, 0) != 3)
+    if(get_tile(g, i, 0) != TILE_8)
       return false;
-  resultat = check_case_empty(g, 1, GRID_SIDE, 0, GRID_SIDE);
-  return resultat;
+  result = check_case_empty(g, 1, GRID_SIDE, 0, GRID_SIDE);
+  return result;
 }
 
 
 bool test_do_move_down(grid g){
-  bool resultat = true;
+  bool result = true;
   // remise a 0 de la grille
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
-      set_tile(g, i, j, 0);
+      set_tile(g, i, j, EMPTY_TILE);
   
   for(int i = 0; i < GRID_SIDE; i++)
-    set_tile(g, i, GRID_SIDE - 1, 1);
+    set_tile(g, i, GRID_SIDE - 1, TILE_2);
     
   for(int i = 0; i < GRID_SIDE; i++)
-    set_tile(g, i, 0, 1);
+    set_tile(g, i, 0, TILE_2);
   do_move(g, DOWN);
   // On met des 2 sur la première ligne, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, i, GRID_SIDE - 1) != 2)
+    if(get_tile(g, i, GRID_SIDE - 1) != TILE_4)
       return false;
-  resultat = check_case_empty(g, 0, GRID_SIDE - 1, 0, GRID_SIDE);
+  result = check_case_empty(g, 0, GRID_SIDE - 1, 0, GRID_SIDE);
   
   for(int i = 0; i < GRID_SIDE; i++)
-    set_tile(g, i, 0, 1);
+    set_tile(g, i, 0, TILE_2);
   do_move(g, DOWN);
   // On met des 2 sur la première ligne, des 1 sur la deuxième ligne et le reste de la grille est initialisé à 0
-  for(int i = 0; i <
-	GRID_SIDE; i++)
-    if(get_tile(g, i, GRID_SIDE - 1) != 2)
+  for(int i = 0; i < GRID_SIDE; i++)
+    if(get_tile(g, i, GRID_SIDE - 1) != TILE_4)
       return false;
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, i, GRID_SIDE - 2) != 1)
+    if(get_tile(g, i, GRID_SIDE - 2) != TILE_2)
       return false;
-  resultat = check_case_empty(g, 0, GRID_SIDE - 2, 0, GRID_SIDE);
+  result = check_case_empty(g, 0, GRID_SIDE - 2, 0, GRID_SIDE);
   
   for(int i = 0; i < GRID_SIDE; i++)
-    set_tile(g, i, 0, 1);
+    set_tile(g, i, 0, TILE_2);
   do_move(g, DOWN);
   // On met des 2 sur les deux premières lignes, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, i, GRID_SIDE - 1) != 2)
+    if(get_tile(g, i, GRID_SIDE - 1) != TILE_4)
       return false;
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, i, GRID_SIDE - 2) != 2)
+    if(get_tile(g, i, GRID_SIDE - 2) != TILE_4)
       return false;
-  resultat = check_case_empty(g, 0, GRID_SIDE - 2, 0, GRID_SIDE);
+  result = check_case_empty(g, 0, GRID_SIDE - 2, 0, GRID_SIDE);
  
   do_move(g, DOWN);
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, i, GRID_SIDE - 1) != 3)
+    if(get_tile(g, i, GRID_SIDE - 1) != TILE_8)
       return false;
-  resultat = check_case_empty(g, 0, GRID_SIDE - 1, 0, GRID_SIDE);
-  return resultat;
+  result = check_case_empty(g, 0, GRID_SIDE - 1, 0, GRID_SIDE);
+  return result;
 }
 
 
 bool test_do_move_left(grid g){
-  bool resultat = true;
+  bool result = true;
   // remise a 0 de la grille
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
-      set_tile(g, i, j, 0);
+      set_tile(g, i, j, EMPTY_TILE);
   
   for(int i = 0; i < GRID_SIDE; i++)
-    set_tile(g, 0, i, 1);
+    set_tile(g, 0, i, TILE_2);
      
   for(int i = 0; i < GRID_SIDE; i++)
-    set_tile(g, GRID_SIDE - 1, i, 1);
+    set_tile(g, GRID_SIDE - 1, i, TILE_2);
   do_move(g, LEFT);
   // On met des 2 sur la première ligne, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, 0, i) != 2)
+    if(get_tile(g, 0, i) != TILE_4)
       return false;
-  resultat = check_case_empty(g, 0, GRID_SIDE, 1, GRID_SIDE);
+  result = check_case_empty(g, 0, GRID_SIDE, 1, GRID_SIDE);
   
   for(int i = 0; i < GRID_SIDE; i++)
-    set_tile(g, GRID_SIDE - 1, i, 1);
+    set_tile(g, GRID_SIDE - 1, i, TILE_2);
   do_move(g, LEFT);
   // On met des 2 sur la première ligne, des 1 sur la deuxième ligne et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, 0, i) != 2)
+    if(get_tile(g, 0, i) != TILE_4)
       return false;
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, 1, i) != 1)
+    if(get_tile(g, 1, i) != TILE_2)
       return false;
-  resultat = check_case_empty(g, 0, GRID_SIDE, 2, GRID_SIDE);
+  result = check_case_empty(g, 0, GRID_SIDE, 2, GRID_SIDE);
   
   for(int i = 0; i < GRID_SIDE; i++)
-    set_tile(g, GRID_SIDE - 1, i, 1);
+    set_tile(g, GRID_SIDE - 1, i, TILE_2);
   do_move(g, LEFT);
   // On met des 2 sur les deux premières lignes, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, 0, i) != 2)
+    if(get_tile(g, 0, i) != TILE_4)
       return false;
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, 1, i) != 2)
+    if(get_tile(g, 1, i) != TILE_4)
       return false;
-  resultat = check_case_empty(g, 0, GRID_SIDE, 2, GRID_SIDE);
+  result = check_case_empty(g, 0, GRID_SIDE, 2, GRID_SIDE);
   
   do_move(g, LEFT);
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, 0, i) != 3)
+    if(get_tile(g, 0, i) != TILE_8)
       return false;
-  resultat = check_case_empty(g, 0, GRID_SIDE, 1, GRID_SIDE);
-  return resultat;
+  result = check_case_empty(g, 0, GRID_SIDE, 1, GRID_SIDE);
+  return result;
 }
 
 
 bool test_do_move_right(grid g){
-  bool resultat = true;
+  bool result = true;
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
-      set_tile(g, i, j, 0);
+      set_tile(g, i, j, EMPTY_TILE);
   
    
   for(int i = 0; i < GRID_SIDE; i++)
-    set_tile(g, GRID_SIDE - 1, i, 1);
+    set_tile(g, GRID_SIDE - 1, i, TILE_2);
    
   for(int i = 0; i < GRID_SIDE; i++)
-    set_tile(g, 0, i, 1);
+    set_tile(g, 0, i, TILE_2);
   do_move(g, RIGHT);
   // On met des 2 sur la première ligne, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, GRID_SIDE - 1, i) != 2)
+    if(get_tile(g, GRID_SIDE - 1, i) != TILE_4)
       return false;
-  resultat = check_case_empty(g, 0, GRID_SIDE, 0, GRID_SIDE - 1);
+  result = check_case_empty(g, 0, GRID_SIDE, 0, GRID_SIDE - 1);
   
   for(int i = 0; i < GRID_SIDE; i++)
-    set_tile(g, 0, i, 1);
+    set_tile(g, 0, i, TILE_2);
   do_move(g, RIGHT);
   // On met des 2 sur la première ligne, des 1 sur la deuxième ligne et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, GRID_SIDE - 1, i) != 2)
+    if(get_tile(g, GRID_SIDE - 1, i) != TILE_4)
       return false;
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, GRID_SIDE - 2, i) != 1)
+    if(get_tile(g, GRID_SIDE - 2, i) != TILE_2)
       return false;
-  resultat = check_case_empty(g, 0, GRID_SIDE, 0, GRID_SIDE - 2);
+  result = check_case_empty(g, 0, GRID_SIDE, 0, GRID_SIDE - 2);
   
   for(int i = 0; i < GRID_SIDE; i++)
-    set_tile(g, 0, i, 1);
+    set_tile(g, 0, i, TILE_2);
   do_move(g, RIGHT);
   // On met des 2 sur les deux premières lignes, et le reste de la grille est initialisé à 0
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, GRID_SIDE - 1, i) != 2)
+    if(get_tile(g, GRID_SIDE - 1, i) != TILE_4)
       return false;
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, GRID_SIDE - 2, i) != 2)
+    if(get_tile(g, GRID_SIDE - 2, i) != TILE_4)
       return false;
-  resultat = check_case_empty(g, 0, GRID_SIDE, 0, GRID_SIDE - 2);
+  result = check_case_empty(g, 0, GRID_SIDE, 0, HALF_GRID_SIDE);
  
   do_move(g, RIGHT);
   for(int i = 0; i < GRID_SIDE; i++)
-    if(get_tile(g, GRID_SIDE - 1, i) != 3)
+    if(get_tile(g, GRID_SIDE - 1, i) != TILE_8)
       return false;
-  resultat = check_case_empty(g, 0, GRID_SIDE, 0, GRID_SIDE - 1);
-  return resultat;
+  result = check_case_empty(g, 0, GRID_SIDE, 0, GRID_SIDE/4);
+  return result;
 }
+
 
 
 bool test_do_move_all(grid g){
-  bool resultat = true;
+  bool result = true;
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
-      set_tile(g, i, j, 2); // On initialise toute la grille à 2
+      set_tile(g, i, j, TILE_2); // On initialise toute la grille à 2
+  
   do_move(g, UP);
-  for(int i = 0; i < GRID_SIDE; i++)
-    for(int j = 0; j < GRID_SIDE - 2; j++)
-      if(get_tile(g, i, j) != 3)
+  
+  //cas d'une grille impaire
+  if(GRID_SIDE%2 == 1){
+    
+    for(int i = 0; i < GRID_SIDE; i++){
+      if(get_tile(g, i, GRID_SIDE/2) != TILE_2)
 	return false;
-  resultat = check_case_empty(g, 2, GRID_SIDE, 0, GRID_SIDE);
-  do_move(g, DOWN);
-  for(int j = 0; j < GRID_SIDE; j++)
-    if(get_tile(g, j, GRID_SIDE-1) != 4)
-      return false;
-  resultat = check_case_empty(g, 0, GRID_SIDE - 1, 0, GRID_SIDE);
-  do_move(g, LEFT);
-  for(int j = 0; j < GRID_SIDE - 1; j++){
-    if(j == 0 || j == 1){
-      if(get_tile(g, j, GRID_SIDE - 1) != 5)
-	return false;
+      for(int j = 0; j < GRID_SIDE/2; j++)
+	if(get_tile(g, i, j) != TILE_4)
+	  return false;
     }
-    else if(get_tile(g, j, GRID_SIDE - 1) != 0)
-      return false;
-  }
-  resultat = check_case_empty(g, 0, GRID_SIDE - 1, 0, GRID_SIDE);
+    
+     do_move(g, DOWN);
+     int nbLine8 = GRID_SIDE/4;
+     for(int i = 0; i < GRID_SIDE; i++){
+       if(get_tile(g, i, GRID_SIDE-1) != TILE_2)
+	 return false;
+       if((HALF_GRID_SIDE+1)%2 == 0){
+	 if(get_tile(g, i, GRID_SIDE-1 - nbLine8 - 1) != TILE_4)
+	   return false;
+       }
+       for(int j = nbLine8; j > 0; j--)
+	 if(get_tile(g, i, GRID_SIDE-1 - j) != TILE_8)
+	   return false;
+     }
 
-  do_move(g, RIGHT );
-    for(int j = 0; j < GRID_SIDE - 3; j++){
-      if( j == GRID_SIDE - 1){
-	if(get_tile(g, j, GRID_SIDE - 1) != 6)
+     do_move(g, RIGHT);
+     for(int i = HALF_GRID_SIDE+1; i < GRID_SIDE; i++){
+       if(get_tile(g, i, GRID_SIDE-1) != TILE_4)
+	 return false;
+       if((HALF_GRID_SIDE+1)%2 == 0)
+	 if(get_tile(g, i, GRID_SIDE-1 - nbLine8 - 1) != TILE_8)
+	   return false;
+       
+       for(int j = nbLine8; j > 0; j--){
+	 if((HALF_GRID_SIDE+1)%2 == 1)
+	   if(get_tile(g, HALF_GRID_SIDE, GRID_SIDE-1 - j) != TILE_8)
+	     return false; 
+	 if(get_tile(g, i, GRID_SIDE-1 - j) != TILE_16)
+	   return false;
+       }
+     }
+     if((HALF_GRID_SIDE+1)%2 == 0){
+       if(get_tile(g, HALF_GRID_SIDE, END_GRID) != TILE_2)
+	 return false;
+       if(get_tile(g, HALF_GRID_SIDE, END_GRID - nbLine8 - 1) != TILE_4)
+	 return false;
+     }
+
+     do_move(g, LEFT);
+     for(int i = 1; i <= nbLine8 ; i++){
+       if(get_tile(g, i, GRID_SIDE-1) != TILE_8)
+	 return false;
+       if((HALF_GRID_SIDE+1)%2 == 0)
+	 if(get_tile(g, i, GRID_SIDE-1 - nbLine8 - 1) != TILE_16)
+	   return false;
+       if(get_tile(g, i, GRID_SIDE-1 - i) != TILE_32)
+	 return false;
+       if(get_tile(g, BEGIN_GRID, END_GRID - i) != TILE_8)
+	 return false;
+     }
+     if(get_tile(g, BEGIN_GRID, END_GRID) != TILE_2)
+       return false;
+              
+     if((HALF_GRID_SIDE+1)%2 == 0){
+       if(get_tile(g, BEGIN_GRID, END_GRID - nbLine8 - 1) != TILE_4)
+	  return false; 
+       if(get_tile(g, BEGIN_GRID + nbLine8 + 1, END_GRID - nbLine8 - 1) != TILE_8)
+	 return false;
+       if(get_tile(g, BEGIN_GRID + nbLine8 + 1, END_GRID) != TILE_4)
+	 return false;
+       for(int i = 0; i < nbLine8; i++)
+	 if(get_tile(g, BEGIN_GRID + nbLine8 + 1, END_GRID - i - 1) != TILE_16)
+	   return false;
+     }
+  }
+  else{
+    for(int i = 0; i < GRID_SIDE; i++){
+      for(int j = 0; j < HALF_GRID_SIDE; j++)
+	if(get_tile(g, i, j) != TILE_4)
+	  return false;
+    }
+
+    do_move(g, DOWN);
+    for(int i = 0; i < GRID_SIDE; i++){
+      if((HALF_GRID_SIDE)%2 == 1)
+	if(get_tile(g, i, END_GRID - GRID_SIDE/4) != TILE_4)
+	  return false;
+	   
+      for(int j = 0; j < GRID_SIDE/4; j++){
+	if(get_tile(g, i, END_GRID - j) != TILE_8)
+	  return false;
+	
+      }
+    }
+
+    do_move(g, RIGHT);
+    for(int i = HALF_GRID_SIDE + 1; i < GRID_SIDE; i++){
+      if((HALF_GRID_SIDE)%2 == 1)
+	if(get_tile(g, i, END_GRID - GRID_SIDE/4) != TILE_8)
+	  return false;
+      for(int j = END_GRID; j > END_GRID - GRID_SIDE/4; j--)
+	if(get_tile(g, i, j) != TILE_16)
+	  return false;
+    }
+
+    do_move(g, LEFT);
+    for(int i = 0; i < GRID_SIDE/4; i++){
+      if((HALF_GRID_SIDE)%2 == 1)
+	if(get_tile(g, i, END_GRID - GRID_SIDE/4) != TILE_16)
+	  return false;
+      for(int j = END_GRID; j > END_GRID - GRID_SIDE/4; j--){
+	if((HALF_GRID_SIDE)%2 == 1)
+	  if(get_tile(g, GRID_SIDE/4, j) != TILE_16)
+	    return false;
+	if(get_tile(g, i, j) != TILE_32)
 	  return false;
       }
-      else if(get_tile(g, j, GRID_SIDE - 1) != 0)
+    }
+    if((HALF_GRID_SIDE)%2 == 1){
+      if(get_tile(g, GRID_SIDE/4, END_GRID - GRID_SIDE/4) != TILE_8)
 	return false;
     }
-    resultat = check_case_empty(g, 0, GRID_SIDE - 1, 0, GRID_SIDE);
-  return resultat;
-}
-
+  }
+  return result;
+}       
 
 bool test_can_move(grid g){
+  // On initialise toute la grille à 0
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
-      set_tile(g, i, j, 0); // On initialise toute la grille à 0
+      set_tile(g, i, j, EMPTY_TILE); 
   if(can_move(g, UP) || can_move(g, DOWN) || can_move(g, RIGHT) || can_move(g, LEFT) )
     return false;
- 
-  set_tile(g, 2, 2, 2);
+
+  // On place une tuile en plein milieu de la grille
+  set_tile(g, HALF_GRID_SIDE, HALF_GRID_SIDE, TILE_2);
   if( !can_move(g, UP) || !can_move(g, DOWN) || !can_move(g, RIGHT) || !can_move(g, LEFT))
      return false;
-  set_tile(g, 2, 2, 0);
+  set_tile(g, HALF_GRID_SIDE, HALF_GRID_SIDE, EMPTY_TILE);
 
-  set_tile(g, 0, 3, 2); 
-  set_tile(g, 1, 3, 2);
+  // On rempli la ligne du  bas de fusion possible, avec un compteur qui creera des tuiles de valeurs croissantes
+  for(int i = 0; i < GRID_SIDE; i++)
+    set_tile(g, i, GRID_SIDE-1, TILE_2);
   if(!can_move(g, UP) || can_move(g, DOWN) || !can_move(g,RIGHT) || !can_move(g, LEFT))
     return false;
-  set_tile(g, 1, 3, 4);
-  set_tile(g, 2, 3, 2);
-  set_tile(g, 3, 3, 4);
+  
+  // On interdit les fusion
+  int tile = 1;
+  for(int i = 0; i < GRID_SIDE; i++)
+    set_tile(g, i, GRID_SIDE-1, tile++);
   if(!can_move(g, UP) || can_move(g, DOWN) || can_move(g,RIGHT) || can_move(g, LEFT))
     return false;
-  set_tile(g, 2, 3, 4);
-  if(!can_move(g, UP) || can_move(g, DOWN) || !can_move(g,RIGHT) || !can_move(g, LEFT))
-    return false;
-  set_tile(g, 0, 3, 0);
-  set_tile(g, 1, 3, 0);
-  set_tile(g, 2, 3, 0);
-  set_tile(g, 3, 3, 0);
-
-  set_tile(g, 0, 0, 2);
-  set_tile(g, 1, 0, 2);
+  
+  for(int i = 0; i < GRID_SIDE; i++)
+    set_tile(g, i, GRID_SIDE-1, EMPTY_TILE);
+  
+  // On place deux tuiles en haut à gauche de la grille
+  set_tile(g, 0, 0, TILE_2);
+  set_tile(g, 1, 0, TILE_2);
   if(can_move(g, UP) || !can_move(g, DOWN) || !can_move(g, RIGHT) || !can_move(g, LEFT))
     return false;
-  set_tile(g, 1, 0, 0);
-
-  set_tile(g, 0, 1, 2);
+  set_tile(g, 1, 0, EMPTY_TILE);
+  
+  // On place une deuxieme tuiles sous la premiere (en x = 0; fusion possible)
+  set_tile(g, 0, 1, TILE_2);
   if(!can_move(g, UP) || !can_move(g, DOWN) || !can_move(g, RIGHT) || can_move(g, LEFT))
     return false;
   
-  set_tile(g, 0, 1, 4);
-   if(can_move(g, UP) || !can_move(g, DOWN) || !can_move(g, RIGHT) || can_move(g, LEFT))
+  // On la change (fusion impossible)
+  set_tile(g, 0, 1, TILE_4);
+  if(can_move(g, UP) || !can_move(g, DOWN) || !can_move(g, RIGHT) || can_move(g, LEFT))
     return false;
-
-   set_tile(g, 0, 2, 2);
-   set_tile(g, 0, 3, 4);
-   if(can_move(g, UP) || can_move(g, DOWN) || !can_move(g, RIGHT) || can_move(g, LEFT))
+  // On continue de remplir la colonne de tiles a valeur croissantes(fusion impossible)
+  tile = 1;
+  for(int i = 0; i < GRID_SIDE; i++)
+    set_tile(g, 0, i, tile++);
+  if(can_move(g, UP) || can_move(g, DOWN) || !can_move(g, RIGHT) || can_move(g, LEFT))
     return false;
-   set_tile(g, 0, 3, 2);
-   
-   if(!can_move(g, UP) || !can_move(g, DOWN) || !can_move(g, RIGHT) || can_move(g, LEFT))
+  
+  // On autorise une fusion
+  for(int i = 0; i < 2; i++)
+    set_tile(g, 0, i,TILE_2);
+  
+  if(!can_move(g, UP) || !can_move(g, DOWN) || !can_move(g, RIGHT) || can_move(g, LEFT))
     return false;
-
+  
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
-      set_tile(g, i, j, 0); // On initialise toute la grille à 0
+      set_tile(g, i, j, EMPTY_TILE); // On initialise toute la grille à 0
   if(can_move(g, UP) || can_move(g, DOWN) || can_move(g, RIGHT) || can_move(g, LEFT))
     return false;
-  for(int i = 0; i < GRID_SIDE - 1; i++)
-    set_tile(g, 3, 1, 2);
-  if(!can_move(g, UP))
-     return false;
-   if(!can_move(g, DOWN))
-     return false;
-   if(!can_move(g, LEFT))
-     return false;
-   if(can_move(g, RIGHT))
+  // On remplit la dernière colonne du tableau
+  for(int i = 0; i < GRID_SIDE; i++)
+    set_tile(g, GRID_SIDE-1, i, TILE_2);
+  if(!can_move(g, UP) || !can_move(g, DOWN) || !can_move(g, LEFT) || can_move(g, RIGHT))
      return false;
 
    return true;  
@@ -426,15 +534,15 @@ bool test_add_tile(grid g){
   int rand4 = 0;
   for(int i = 0; i < GRID_SIDE; i++)
     for(int j = 0; j < GRID_SIDE; j++)
-      set_tile(g, i, j, 0); // On initialise toute la grille à 0
-  for(int k = 16; k > 0; k--)
+      set_tile(g, i, j, EMPTY_TILE); // On initialise toute la grille à 0
+  for(int k = GRID_SIDE * GRID_SIDE; k > 0; k--)
     add_tile(g);
   for(int i = 0; i <  GRID_SIDE; i++)
     for(int j = 0; j <  GRID_SIDE; j++){
-      if(get_tile(g, i, j) == 0)
+      if(get_tile(g, i, j) == EMPTY_TILE)
 	return false;
       if
-	(get_tile(g, i, j) == 2)
+	(get_tile(g, i, j) == TILE_4)
 	rand4 += 1;
     }
   if(rand4 < 1)
