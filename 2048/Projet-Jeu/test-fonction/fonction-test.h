@@ -7,7 +7,7 @@
  **/
 
 #include <stdbool.h>
-#include "../src/grid.h"
+#include <grid.h>
 
 extern bool test_get_tile(grid g);
 extern bool test_set_tile(grid g);

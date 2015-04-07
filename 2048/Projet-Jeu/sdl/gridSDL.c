@@ -7,8 +7,8 @@
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 #include <SDL/SDL_getenv.h>
-#include "../src/grid.h"
-#include "gridSDL.h"
+#include <grid.h>
+#include <gridSDL.h>
 
 #define NEW_GRID_SIDE (GRID_SIDE == 2 ? 3 : GRID_SIDE) // Permet d'avoir une taille de fenêtre par défaut
 #define TILE_SIDE 100 // Taille de la tuile

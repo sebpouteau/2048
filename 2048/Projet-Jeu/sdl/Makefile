@@ -1,5 +1,5 @@
-CC = gcc
-CFLAGS = -std=c99 -g -Wall 
+1CC = gcc
+CFLAGS = -std=c99 -g -Wall -I../include
 LDLIBS = -lgridSDL -lm -lSDL -lSDL_image -lSDL_ttf -lgrid -L ../lib/
 CPPFLAGS= 
 

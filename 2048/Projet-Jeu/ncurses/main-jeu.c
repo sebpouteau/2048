@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
-#include "../src/grid.h"
+#include <grid.h>
 #include <ncurses.h>
 #include <curses.h>
 #include <time.h>

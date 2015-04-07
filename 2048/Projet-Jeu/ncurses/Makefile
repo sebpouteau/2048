@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c99 -g -Wall 
+CFLAGS = -std=c99 -g -Wall -I../include 
 LDLIBS = -lncurses -lm -lgrid -L ../lib/
 CPPFLAGS= 
 

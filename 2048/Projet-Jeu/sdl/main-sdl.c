@@ -4,7 +4,7 @@
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 #include <time.h>
-#include "gridSDL.h"
+#include <gridSDL.h>
 
 int main(int argc, char *argv[]){
   srand(time(NULL));

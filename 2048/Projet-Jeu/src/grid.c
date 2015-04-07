@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
-#include "grid.h"
+#include <grid.h>
 
 /**
  * \file grid.c

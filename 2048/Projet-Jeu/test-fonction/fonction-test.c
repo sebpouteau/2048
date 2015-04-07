@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
-#include "../src/grid.h"
-#include "fonction-test.h"
+#include <grid.h>
+#include <fonction-test.h>
 #include <math.h>
 
 #define BEGIN_GRID 0
