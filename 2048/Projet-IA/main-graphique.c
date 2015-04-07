@@ -8,18 +8,7 @@
 
 static void display_grid(grid g);
 static void display_gameOver(bool *continuer, int *reponse_valide);
-
-dir strategy_fast(strategy str,grid g);
-
-strategy init_structure (){
-  strategy str = malloc (sizeof(struct strategy_s));
-  str->name = "strategy_seb";
-  str->mem = NULL;
-  str->free_strategy = free_memless_strat;
-  str->play_move = strategy_fast;
-  return str;
-}
- 
+strategy A2_Emery_Gouraud_Kirov_Pouteau_fast();
 
 int main(int argc, char *argv[]){
   keypad(stdscr, TRUE);
@@ -33,7 +22,7 @@ int main(int argc, char *argv[]){
     display_grid(g);
     int reponse_valide = 0;
     while(!game_over(g) && reponse_valide == 0){
-      strategy str = init_structure();
+      strategy str = A2_Emery_Gouraud_Kirov_Pouteau_fast();
       dir direction;
       ch=getch();
       switch(ch){

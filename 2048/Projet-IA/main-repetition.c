@@ -5,19 +5,11 @@
 #include "strategy.h"
 #include <math.h>
 
-#define NOMBRE_TEST 100
+#define NOMBRE_TEST 1
 
-dir strategy_fast(strategy str,grid g);
+strategy A2_Emery_Gouraud_Kirov_Pouteau_fast();
 
-strategy init_structure (){
-  strategy str = malloc (sizeof(struct strategy_s));
-  str->name = "strategy_seb";
-  str->mem = NULL;
-  str->free_strategy = free_memless_strat;
-  str->play_move = strategy_fast;
-  return str;
-}
- static long maximum_tile(grid g){
+static long maximum_tile(grid g){
   long max_tile = 1;
   for(int i = 0; i<GRID_SIDE; i++){
     for(int j = 0; j< GRID_SIDE; j++){
@@ -29,7 +21,7 @@ strategy init_structure (){
 }
 
 int main (int argc, char **argv){
-
+  
   int n = NOMBRE_TEST;
   int nb_lance = n;
   int cpt_16 = 0;
@@ -44,7 +36,7 @@ int main (int argc, char **argv){
   int cpt_8192= 0;
 	
   srand(time(NULL));
-  strategy str = init_structure();
+  strategy str = A2_Emery_Gouraud_Kirov_Pouteau_fast();
   while(n > 0){
     grid g = new_grid();
     add_tile(g);

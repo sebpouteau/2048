@@ -5,7 +5,7 @@
 #include "../Projet-Jeu/src/grid.h"
 #include <stdlib.h>
 
-#define PROFONDEUR 5
+#define PROFONDEUR 3
 #define CASE_UP 0
 #define CASE_LEFT 1
 #define CASE_DOWN 2
@@ -13,12 +13,22 @@
 #define MOVE_IMPOSSIBLE -999999999 
 #define ANY_CASE_EMPTY -9999999
 
-dir strategy_fast(strategy str, grid g);
+strategy A2_Emery_Gouraud_Kirov_Pouteau_fast ();
+static dir strategy_fast(strategy str, grid g);
 static dir meilleur_direction(grid g);
 static long int repetition_grid(grid g, int nombre, dir *d);
 static long maximum_tile(grid g);
 static long int maximum(long int l,long int l1,dir d, dir d1, dir *d2);
 static long int note_grid (grid g);
+
+strategy A2_Emery_Gouraud_Kirov_Pouteau_fast (){
+  strategy str = malloc (sizeof(struct strategy_s));
+  str->name = "strateg";
+  str->mem = NULL;
+  str->free_strategy = free_memless_strat;
+  str->play_move = strategy_fast;
+  return str;
+}
 
 void free_memless_strat (strategy strat){
   free (strat);
@@ -31,7 +41,7 @@ static dir meilleur_direction(grid g){
   return d;
  }
 
-dir strategy_fast(strategy str, grid g){
+static dir strategy_fast(strategy str, grid g){
   return meilleur_direction(g);
   
 }
