@@ -1,18 +1,34 @@
-
-CC = gcc
-CFLAGS = -std=c99 -g -Wall -I../include 
-LDLIBS = 
-CPPFLAGS= 
+LIBS=  grid sdl strategy test-fonction ncurses 
 
 
+all: install
+	for i in $(LIBS);do\
+		$(MAKE) -C $$i all;\
+	done
 
-include dep
 
-.PHONY: clean
+
+
+install:
+	for i in $(LIBS);do\
+		$(MAKE) -C $$i install;\
+	done
+
+
+
+
+
+
+check: all
+	$(MAKE) -C test-fonction check
+
+
 clean:
-	rm -f dep *.o *~ 
+	for i in $(LIBS);do\
+		$(MAKE) -C $$i clean;\
+	done
 
-dep:
-	$(CC) $(CPPFLAGS) -MM *.c >dep
+
+
 
 
