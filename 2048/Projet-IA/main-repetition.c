@@ -5,7 +5,7 @@
 #include "strategy.h"
 #include <math.h>
 
-#define NOMBRE_TEST 1
+#define NOMBRE_TEST 100
 
 strategy A2_Emery_Gouraud_Kirov_Pouteau_fast();
 

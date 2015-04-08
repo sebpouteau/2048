@@ -5,7 +5,7 @@
 #include "../Projet-Jeu/src/grid.h"
 #include <stdlib.h>
 
-#define PROFONDEUR 3
+#define PROFONDEUR 2
 #define CASE_UP 0
 #define CASE_LEFT 1
 #define CASE_DOWN 2
