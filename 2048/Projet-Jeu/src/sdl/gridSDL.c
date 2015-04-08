@@ -10,7 +10,11 @@
 #include <grid.h>
 #include <gridSDL.h>
 
-#define NEW_GRID_SIDE (GRID_SIDE == 2 ? 3 : GRID_SIDE) // Taille de fenetre par defaut
+#define PATH_TILE "../src/sdl/tiles/"
+#define PATH_HIGHSCORE "../src/sdl/highscore_sdl.txt"
+#define PATH_POLICE "../src/sdl/arial.ttf"
+
+#define NEW_GRID_SIDE (GRID_SIDE == 2 ? 3 : GRID_SIDE) // Permet d'avoir une taille de fenêtre par défaut
 #define TILE_SIDE 100 // Taille de la tuile
 #define WINDOW_WIDTH (NEW_GRID_SIDE + 1) * TILE_SIDE // Largeur de la fenetre
 #define WINDOW_HEIGHT (GRID_SIDE + 2) * TILE_SIDE // Hauteur de la fenetre
@@ -152,9 +156,9 @@ static void display_grid(grid g, SDL_Surface *surface_screen){
       position_tile.x = POSITION_TILE_X + i * TILE_SIDE;
       position_tile.y = POSITION_TILE_Y + j * TILE_SIDE;
       if(get_tile(g, i, j) == 0)
-	sprintf(name_tile, "../sdl/tiles/tile0.bmp");
+	sprintf(name_tile,"%stile0.bmp", PATH_TILE);
       else
-	sprintf(name_tile, "../sdl/tiles/tile%d.bmp", (int)pow(2, get_tile(g, i, j)));
+	sprintf(name_tile, "%stile%d.bmp", PATH_TILE, (int)pow(2, get_tile(g, i, j)));
       surface_tile = SDL_LoadBMP(name_tile);
       SDL_BlitSurface(surface_tile, NULL, surface_screen, &position_tile);
       SDL_FreeSurface(surface_tile);
@@ -166,16 +170,16 @@ static void display_grid(grid g, SDL_Surface *surface_screen){
 
 static void display_score(grid g, SDL_Surface *surface_screen){
   //-- Parametres affichage score
-  TTF_Font *police_text = TTF_OpenFont("../sdl/arial.ttf", 30);
+  TTF_Font *police_text = TTF_OpenFont(PATH_POLICE, 30);
   SDL_Color color_text = {255, 0, 0}; // Couleur rouge
   SDL_Color color_background = {255, 255, 255}; // Couleur blanche
   char char_score[100];
   int position_text_y = 2 * POSITION_BACKGROUND_Y + GRID_SIDE * TILE_SIDE;
 
   // Ouverture (et si besoin creation) du fichier contenant l'highscore
-  FILE* highscore_txt = fopen("../sdl/highscore_sdl.txt", "r+");
+  FILE* highscore_txt = fopen(PATH_HIGHSCORE, "r+");
   if(highscore_txt == NULL)
-    highscore_txt = fopen("../sdl/highscore_sdl.txt", "w");
+    highscore_txt = fopen(PATH_HIGHSCORE, "w");
 
   // Recupere le pseudo et le highscore sauvegardes precedemment
   char char_highscore[10] = "";
@@ -199,7 +203,7 @@ static void display_score(grid g, SDL_Surface *surface_screen){
   }
 
   // Affiche "Try Again"
-  TTF_Font *police_menu = TTF_OpenFont("../sdl/arial.ttf", 25);
+  TTF_Font *police_menu = TTF_OpenFont(PATH_POLICE, 25);
   char char_recommencer[30] = "Press ENTER to TRY AGAIN";
   display_text(surface_screen, char_recommencer, WINDOW_HEIGHT - 2 * (WINDOW_HEIGHT - position_text_y)/3 + 5, police_menu, color_text, color_background, false);
 
@@ -222,13 +226,13 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
 
   // Parametres Game Over
   char *char_gameover = "GAME OVER";
-  TTF_Font *police_gameover = TTF_OpenFont("../sdl/arial.ttf", (GRID_SIDE == 2 ? 30 : 53)); 
+  TTF_Font *police_gameover = TTF_OpenFont(PATH_POLICE, (GRID_SIDE == 2 ? 30 : 53)); 
 
   // Parametres Highscore
   bool end_game = true; // Boolean de la boucle de fin du jeu
   char char_highscore[10]; // Chaine de caractere contenant le highscore
   char char_nickname[10]; // Chaine de caractere contenant le pseudo
-  FILE* highscore_txt = fopen("../sdl/highscore_sdl.txt", "r+"); 
+  FILE* highscore_txt = fopen(PATH_HIGHSCORE, "r+"); 
   read_line(highscore_txt, char_nickname, char_highscore);
   fclose(highscore_txt);
   unsigned long int highscore = strtoul(char_highscore, NULL, 10); // Convertit une chaine de caractere en unsigned long int
@@ -302,9 +306,9 @@ static void display_text(SDL_Surface *surface_screen, char *char_text, int posit
 
 static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, SDL_Rect position_background_grid, char *char_highscore, bool *end_game, bool *try_again){
   // Parametres d'affichage du Game Over et du texte
-  FILE* highscore_txt = fopen("../sdl/highscore_sdl.txt", "r+"); // Ouvre le fichier highscore_sdl.txt
-  TTF_Font *police_text = TTF_OpenFont("../sdl/arial.ttf", (GRID_SIDE == 2 ? 20 : 30));
-  TTF_Font *police_gameover = TTF_OpenFont("../sdl/arial.ttf", (GRID_SIDE == 2 ? 30 : 53));
+  FILE* highscore_txt = fopen(PATH_HIGHSCORE, "r+"); // Ouvre le fichier highscore_sdl.txt
+  TTF_Font *police_text = TTF_OpenFont(PATH_POLICE, (GRID_SIDE == 2 ? 20 : 30));
+  TTF_Font *police_gameover = TTF_OpenFont(PATH_POLICE, (GRID_SIDE == 2 ? 30 : 53));
   SDL_Color color_text = {255, 255, 255}; // Couleur blanche
   SDL_Color color_background = {0, 0, 0}; // Couleur noire
   char char_nickname[10] = ""; // Chaine de caractere qui contiendra le nouveau pseudo

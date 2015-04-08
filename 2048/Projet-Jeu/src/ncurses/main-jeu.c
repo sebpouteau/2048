@@ -6,7 +6,7 @@
 #include <ncurses.h>
 #include <curses.h>
 #include <time.h>
-
+#define PATH_HIGHSCORE "../src/ncurses/highscore_ncurses.txt"
 #define MARGIN_LEFT 3
 #define MARGIN_TOP 3
 #define HEIGHT_CASE 4
@@ -160,7 +160,7 @@ static void display_grid(grid g){
 static unsigned long int read_highscore(){
   unsigned long int score[1];
   FILE *highscore = NULL;
-  highscore = fopen("../ncurses/highscore_ncurses.txt","r");
+  highscore = fopen(PATH_HIGHSCORE,"r");
   if(highscore == NULL)
     return 0;
   else{
@@ -172,7 +172,7 @@ static unsigned long int read_highscore(){
 
 static void write_highscore(unsigned long int score){
   FILE *highscore = NULL;
-  highscore = fopen("../ncurses/highscore_ncurses.txt", "w");
+  highscore = fopen(PATH_HIGHSCORE,"w");
   fprintf(highscore, "%lu", score);
   fclose(highscore);
 }
