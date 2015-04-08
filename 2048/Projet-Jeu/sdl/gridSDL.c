@@ -1,4 +1,3 @@
-#define _XOPEN_SOURCE // permet d'utiliser la fonction putenv() qui centre la fenêtre
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -9,6 +8,8 @@
 #include <SDL/SDL_getenv.h>
 #include <grid.h>
 #include <gridSDL.h>
+
+#define _XOPEN_SOURCE // permet d'utiliser la fonction putenv() qui centre la fenêtre
 
 #define NEW_GRID_SIDE (GRID_SIDE == 2 ? 3 : GRID_SIDE) // Permet d'avoir une taille de fenêtre par défaut
 #define TILE_SIDE 100 // Taille de la tuile
