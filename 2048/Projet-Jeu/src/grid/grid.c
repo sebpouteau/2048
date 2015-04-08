@@ -6,17 +6,17 @@
 
 /**
  * \file grid.c
- * \brief Implémentation de grid.h
+ * \brief Implementation de grid.h
  * \author Ysabelle Emery, \n
  *         Jimmy Gouraud, \n
  *         Yordan Kirov, \n
- *         Sébastien Pouteau.
+ *         Sebastien Pouteau.
  * \date Licence 2 d'informatique - Mars 2015
  **/
 
 
 /**
- * \brief Choix d'implémentaion de la structure:
+ * \brief Choix d'implementaion de la structure:
  *    - tableau 2D de tile 
  *    - score de la grille
  **/
@@ -26,10 +26,10 @@ struct grid_s{
 };
 
 
-// Déclaration des fonctions static
-static void move(grid g, int i, int j, int a, int b);
-static void fusion(grid g, int i, int j, int a, int b);
-static bool possible(grid g, int i, int j, int a, int b);
+// Declaration des fonctions static
+static void move(grid g, int x, int y, int addx, int addy);
+static void fusion(grid g, int x1, int y1, int x2, int y2);
+static bool possible(grid g, int x, int y, int addx, int addy);
 static void set_grid_score(grid g, unsigned long int add_score);
 
 
@@ -42,7 +42,7 @@ grid new_grid(){
   assert(g != NULL);
   g->grid = malloc(sizeof(tile*) * GRID_SIDE);
   assert(g->grid != NULL);
-  // Initialisation de chaque case du tableau à 0
+  // Initialisation de chaque case du tableau a 0
   for(int i = 0; i < GRID_SIDE; i++){
     g->grid[i] = malloc(sizeof(tile) * GRID_SIDE);
     assert(g->grid[i] != NULL);
@@ -180,28 +180,28 @@ void play(grid g, dir d){
    ========================================= */
 
 /**
- * \brief Fusionne deux cases dans toute la grille et met la deuxième case à 0
+ * \brief Fusionne deux cases dans toute la grille et met la deuxieme case a 0
  * \param g grid
- * \param i1, j1 coordonnée de la première case
- * \param i2, j2 coordonnée de la deuxième case
+ * \param i1, j1 coordonnee de la premiere case
+ * \param i2, j2 coordonnee de la deuxieme case
  **/
-static void fusion(grid g, int i1, int j1, int i2, int j2){
+static void fusion(grid g, int x1, int y1, int x2, int y2){
   assert(g != NULL);
-  if(get_tile(g, i1, j1) == 0){
-    set_tile(g, i1, j1, get_tile(g, i2, j2));
+  if(get_tile(g, x1, y1) == 0){
+    set_tile(g, x1, y1, get_tile(g, x2, y2));
   }
   else{
-    set_tile(g, i1, j1, get_tile(g, i1, j1) + 1);
+    set_tile(g, x1, y1, get_tile(g, x1, y1) + 1);
   }  
-  set_tile(g, i2, j2, 0);
+  set_tile(g, x2, y2, 0);
 }
 
 
 /**
- * \brief Permet d'incrémenter deux variables ayant des incrémentations différentes.
- * \param i1, i2 les variables à incrémenter 
- * \param incrementationI1 incrémentation du premier paramètre
- * \param incrementationI2 incrémentation du deuxième paramètre
+ * \brief Permet d'incrementer deux variables ayant des incrementations differentes.
+ * \param i1, i2 les variables a incrementer 
+ * \param incrementationI1 incrementation du premier parametre
+ * \param incrementationI2 incrementation du deuxieme parametre
  **/
 static void incrementation(int *i1, int *i2, int incrementationI1, int incrementationI2){
   *i1 += incrementationI1;
@@ -210,51 +210,51 @@ static void incrementation(int *i1, int *i2, int incrementationI1, int increment
 
 
 /**
- * \brief Déplace l'ensemble de la grille dans la direction voulue (en fonction des paramètres)
- * \param g grid visée
- * \param x indice de l'ordonnée de départ
- * \param y indice de l'abscisse de départ
- * \param addx variable d'incrémentation de l'ordonnée pour parcourir la grille
- * \param addy variable d'incrémentation de l'abscisse pour parcourir la grille
- * \pre les directions prérequis : UP    -> (grid, 0, 0, 0, 1)
+ * \brief Deplace l'ensemble de la grille dans la direction voulue (en fonction des parametres)
+ * \param g grid visee
+ * \param x indice de l'ordonnee de depart
+ * \param y indice de l'abscisse de depart
+ * \param addx variable d'incrementation de l'ordonnee pour parcourir la grille
+ * \param addy variable d'incrementation de l'abscisse pour parcourir la grille
+ * \pre les directions prerequis : UP    -> (grid, 0, 0, 0, 1)
  *                                 DOWN  -> (grid, 0, GRID_SIDE - 1, 0, -1)
  *                                 LEFT  -> (grid, 0, 0, 1, 0)
  *                                 RIGHT -> (grid, GRID_SIDE - 1, 0, -1, 0)
  **/
 static void move(grid g, int x, int y, int addx, int addy){
   assert(g != NULL);
-  // Traite toutes les lignes ou toutes les colonnes via x et j
+  // Traite toutes les lignes ou toutes les colonnes via x et y
   for(int cpt = 0; cpt < GRID_SIDE; cpt++){
     // Case actuelle
     int tmpx = x;
     int tmpy = y;
-    // Case suivante dans le sens défini (devient case compteur)
+    // Case suivante dans le sens defini (devient case compteur)
     int cptx = x + addx;
     int cpty = y + addy;
     // Traite les lignes/colonnes en les parcourant avec cpti et cptj
     while(cptx < GRID_SIDE && cpty < GRID_SIDE && 0 <= cptx && 0 <= cpty){
       
       if((tmpx == cptx && tmpy == cpty) || get_tile(g, cptx, cpty) == 0)
-	// On déplace la case compteur sur le case d'après
+	// On deplace la case compteur sur le case d'apres
 	incrementation(&cptx, &cpty, addx, addy);
       
       else if(get_tile(g, tmpx, tmpy) == 0)
-	// On fusionne la case actuelle avec la case compteur (la case actuelle récupère la valeur de la case compteur)
+	// On fusionne la case actuelle avec la case compteur (la case actuelle recupere la valeur de la case compteur)
 	fusion(g, tmpx, tmpy, cptx, cpty);
 
       else if(get_tile(g, cptx, cpty) == get_tile(g, tmpx, tmpy)){
 	// On fusionne la case actuelle avec la case compteur 
 	fusion(g, tmpx, tmpy, cptx, cpty);
 	set_grid_score(g, get_tile(g, tmpx, tmpy));
-	// On déplace la case actuelle et la case compteur dans le sens défini
+	// On deplace la case actuelle et la case compteur dans le sens defini
 	incrementation(&tmpx, &tmpy, addx, addy);
 	incrementation(&cptx, &cpty, addx, addy);
       }
-      // On change la case actuelle sur la même ligne/colonne suivant le sens défini
+      // On change la case actuelle sur la même ligne/colonne suivant le sens defini
       else
 	incrementation(&tmpx, &tmpy, addx, addy);
     }
-    // On change de ligne ou de colonne suivant le sens défini
+    // On change de ligne ou de colonne suivant le sens defini
     if(addx == -1 || addx == 1)
       y++;
     else
@@ -264,14 +264,14 @@ static void move(grid g, int x, int y, int addx, int addy){
 
 
 /**
- * \brief Teste sur l'ensemble de la grille si le deplacement dans la direction voulue est faisable (en fonction des paramètres) 
- * \param g grid visée
- * \param x indice de l'ordonnée de départ
- * \param y indice de l'abscisse de départ
- * \param addx variable d'incrémentation de l'ordonnée pour parcourir la grille
- * \param addy variable d'incrémentation de l'abscisse pour parcourir la grille
+ * \brief Teste sur l'ensemble de la grille si le deplacement dans la direction voulue est faisable (en fonction des parametres) 
+ * \param g grid visee
+ * \param x indice de l'ordonnee de depart
+ * \param y indice de l'abscisse de depart
+ * \param addx variable d'incrementation de l'ordonnee pour parcourir la grille
+ * \param addy variable d'incrementation de l'abscisse pour parcourir la grille
  * \ret true si possible, false sinon
- * \pre les directions prérequis : UP    -> (grid, 0, 0, 0, 1)
+ * \pre les directions prerequis : UP    -> (grid, 0, 0, 0, 1)
  *                                 DOWN  -> (grid, 0, GRID_SIDE - 1, 0, -1)
  *                                 LEFT  -> (grid, 0, 0, 1, 0)
  *                                 RIGHT -> (grid, GRID_SIDE - 1, 0, -1, 0)
@@ -283,7 +283,7 @@ static bool possible(grid g, int x,int y, int addx, int addy){
   for(int cpt = 0; cpt < GRID_SIDE; cpt++){
     while(x < GRID_SIDE - addx && x >= 0 - addx && y < GRID_SIDE - addy && y >= 0 - addy){
 
-      // Si deux cases collées sont indentiques alors return true
+      // Si deux cases collees sont indentiques alors return true
       if((get_tile(g, x, y) == get_tile(g, x + addx, y + addy) && get_tile(g, x, y) != 0))
 	return true;
 
@@ -293,7 +293,7 @@ static bool possible(grid g, int x,int y, int addx, int addy){
       incrementation(&x, &y, addx, addy);
     }
 
-    // Réinitialiser i ou j et incrémenter l'autre indice pour changer de ligne ou de colonne selon la direction
+    // Reinitialiser i ou j et incrementer l'autre indice pour changer de ligne ou de colonne selon la direction
     if(addx == -1 || addx == 1)
       incrementation(&y, &x, 1, tmpx - x); 
     else
@@ -306,7 +306,7 @@ static bool possible(grid g, int x,int y, int addx, int addy){
 /**
  * \brief Ajoute un score au score de la grid
  * \param g grid 
- * \param add_score score à ajouter
+ * \param add_score score a ajouter
  **/
 static void set_grid_score(grid g, unsigned long int add_score){
   assert(g != NULL);

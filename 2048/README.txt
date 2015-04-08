@@ -39,3 +39,6 @@ Compilation des IA grace à la commande make :
   make 
 
 les exécutables sont dans bin/
+
+Une bibliothèque dynamique est crée par la commande make, si vous souhaitez l'utiliser vous devez ajouter dans votre ./bash la commande:
+    export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH	    
