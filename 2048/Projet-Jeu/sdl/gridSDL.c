@@ -230,7 +230,6 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
   char char_nickname[10]; // Chaine de caractère contenant le pseudo
   FILE* highscore_txt = fopen("../sdl/highscore_sdl.txt", "r+"); 
   read_line(highscore_txt, char_nickname, char_highscore);
-  fclose(highscore_txt);
   unsigned long int highscore = strtoul(char_highscore, NULL, 10); // Convertit une chaine de caractère en unsigned long int
 
   // Affiche la grille
@@ -273,7 +272,8 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
     }
   }
 
-  // Libère la mémoire allouée
+  // Ferme le fichier contenant l'Highscore et libère la mémoire allouée
+  fclose(highscore_txt);
   TTF_CloseFont(police_gameover);
 }
 
