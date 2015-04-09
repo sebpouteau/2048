@@ -2,7 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../Projet-Jeu/src/grid.h"
+#include "../Projet-Jeu/include/grid.h"
 #include "strategy.h"
 #include <math.h>
 

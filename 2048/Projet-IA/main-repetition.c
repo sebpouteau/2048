@@ -1,11 +1,11 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../Projet-Jeu/src/grid.h"
+#include "../Projet-Jeu/include/grid.h"
 #include "strategy.h"
 #include <math.h>
 
-#define NOMBRE_TEST 100
+#define NOMBRE_TEST 10
 
 strategy A2_Emery_Gouraud_Kirov_Pouteau_fast();
 
@@ -47,7 +47,7 @@ int main (int argc, char **argv){
       if (can_move(g,d))
 	play(g, d);
     }
-    printf("max %lu\n",(long int)pow(2,maximum_tile(g)));
+    printf("max: %lu  score : %ld \n ",(long int)pow(2,maximum_tile(g)),(long int)grid_score(g));
     if(maximum_tile(g) == 4)
       cpt_16 += 1;
     if(maximum_tile(g) == 5)
