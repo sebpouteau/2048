@@ -23,6 +23,7 @@
 #define POSITION_BACKGROUND_X (POSITION_TILE_X - 10) // Position abscisse du background bleu
 #define POSITION_BACKGROUND_Y (POSITION_TILE_Y - 10) // Position ordonnee du background bleu
 
+// variable global de la couleur des tuiles
 static char *char_color;
 
 // Affiche le menu ! :3
