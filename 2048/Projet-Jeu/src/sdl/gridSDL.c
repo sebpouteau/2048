@@ -14,9 +14,8 @@
 #define PATH_HIGHSCORE "../src/sdl/highscore_sdl.txt"
 #define PATH_POLICE "../src/sdl/arial.ttf"
 
-#define NEW_GRID_SIDE (GRID_SIDE == 2 ? 3 : GRID_SIDE) // Permet d'avoir une taille de fenêtre par défaut
 #define TILE_SIDE 100 // Taille de la tuile
-#define WINDOW_WIDTH (NEW_GRID_SIDE + 1) * TILE_SIDE // Largeur de la fenetre
+#define WINDOW_WIDTH ((GRID_SIDE == 2 ? 3 : GRID_SIDE)  + 1) * TILE_SIDE // Largeur de la fenetre
 #define WINDOW_HEIGHT (GRID_SIDE + 2) * TILE_SIDE // Hauteur de la fenetre
 #define POSITION_TILE_X (WINDOW_WIDTH - GRID_SIDE * TILE_SIDE)/2 // Position abscisse de la grille
 #define POSITION_TILE_Y ((WINDOW_HEIGHT - (1 + GRID_SIDE) * TILE_SIDE)/2 + 10) // Position ordonnee de la grille 
@@ -26,7 +25,7 @@
 // variable global de la couleur des tuiles
 static char *char_color;
 
-// Affiche le menu ! :3
+// Affiche le menu
 static void display_menu(SDL_Surface *surface_screen, bool *play_continue);
 
 // Affiche la grille
@@ -255,11 +254,13 @@ static void display_grid(grid g, SDL_Surface *surface_screen){
   for(int i = 0; i < GRID_SIDE; i++){
     for(int j = 0; j < GRID_SIDE; j++){
       position_tile.x = POSITION_TILE_X + i * TILE_SIDE;
-      position_tile.y = POSITION_TILE_Y + j * TILE_SIDE;
+      position_tile.y = POSITION_TILE_Y + j * TILE_SIDE;/*
       if(get_tile(g, i, j) == 0)
 	sprintf(name_tile,"%s%stile0.bmp", PATH_TILE, char_color);
-      else
-	sprintf(name_tile, "%s%stile%d.bmp", PATH_TILE, char_color, (int)pow(2, get_tile(g, i, j)));
+	else
+      sprintf(name_tile, "%s%stile%d.bmp", PATH_TILE, char_color, (int)pow(2, get_tile(g, i, j)));*/
+      sprintf(name_tile, "tile%d.bmp", (int)get_tile(g, i, j));
+      printf("-%d-", get_tile(g, i, j));
       surface_tile = SDL_LoadBMP(name_tile);
       SDL_BlitSurface(surface_tile, NULL, surface_screen, &position_tile);
       SDL_FreeSurface(surface_tile);

@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -std=c99 -g -Wall -I../../include
-LDLIBS = -lgridSDL -lm -lSDL -lSDL_image -lSDL_ttf -lgrid -L ../../lib/
+LDLIBS = -lgridSDL -lSDL -lSDL_image -lSDL_ttf -lgrid -lm -L ../../lib/
 CPPFLAGS= 
 
 PATH_INCLUDE=../../include
