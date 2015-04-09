@@ -23,24 +23,25 @@
 #define POSITION_BACKGROUND_X (POSITION_TILE_X - 10) // Position abscisse du background bleu
 #define POSITION_BACKGROUND_Y (POSITION_TILE_Y - 10) // Position ordonnee du background bleu
 
+static char *char_color;
 
 // Affiche le menu ! :3
-static char* display_menu(SDL_Surface *surface_screen, bool* play_continue);
+static void display_menu(SDL_Surface *surface_screen, bool *play_continue);
 
 // Affiche la grille
-static void display_grid(grid g, SDL_Surface *surface_screen, char* char_color);
+static void display_grid(grid g, SDL_Surface *surface_screen);
 
 // Affiche le score
 static void display_score(grid g, SDL_Surface *surface_screen);
 
 // Affiche le game over
-static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, SDL_Rect position_background_grid, bool *try_again, char *char_color);
+static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, SDL_Rect position_background_grid, bool *try_again);
 
 // Affiche du texte selon les parametres passes
 static void display_text(SDL_Surface *surface_screen, char *char_text, int position_height, TTF_Font *police_text, SDL_Color color_text, SDL_Color color_background, bool transparence);
 
 // Recupere le pseudo saisi et l'ecrit dans char_nickname
-static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, SDL_Rect position_background_grid, char *char_highscore, bool *end_game, bool *try_again, char* char_color);
+static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, SDL_Rect position_background_grid, char *char_highscore, bool *end_game, bool *try_again);
 
 // Lit la premiere ligne dans un fichier
 static void read_line(FILE *fichier, char *char_nickname, char *char_highscore);
@@ -64,7 +65,7 @@ void game_sdl(){
   bool try_again = false; // Boolean permettant de relancer un nouveau jeu
   SDL_Event event;
 
-  char *char_color = display_menu(surface_screen, &play_continue);
+  display_menu(surface_screen, &play_continue);
 
   // Initialisation du contour bleu fonce autour de la grille
   SDL_Surface *surface_background_grid = NULL; 
@@ -82,7 +83,7 @@ void game_sdl(){
   
 
   // Affiche grille et score
-  display_grid(g, surface_screen, char_color);
+  display_grid(g, surface_screen);
   display_score(g, surface_screen);
   SDL_Flip(surface_screen);
 
@@ -131,12 +132,12 @@ void game_sdl(){
     // Re-affiche l'ecran
     SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 255, 255, 255));
     SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
-    display_grid(g, surface_screen, char_color);
+    display_grid(g, surface_screen);
     display_score(g, surface_screen);
     SDL_Flip(surface_screen);
 
     if(game_over(g)){
-      display_gameover(g, surface_screen, surface_background_grid, position_background_grid, &try_again, char_color);
+      display_gameover(g, surface_screen, surface_background_grid, position_background_grid, &try_again);
       play_continue = false;
     }
   }
@@ -153,13 +154,12 @@ void game_sdl(){
 
 // -------------------------------------------- //
 
-static char* display_menu(SDL_Surface *surface_screen, bool *play_continue){
+static void display_menu(SDL_Surface *surface_screen, bool *play_continue){
   TTF_Font *police_menu = TTF_OpenFont(PATH_POLICE, 40);
   SDL_Color color_menuR = {255, 0, 0}; // Couleur rouge
   SDL_Color color_menuG = {0, 255, 0}; // Couleur verte
   SDL_Color color_menuB = {0, 0, 255}; // Couleur bleu
   SDL_Color color_background = {255, 255, 255}; // Couleur blanche
-  char *char_color;
   display_text(surface_screen, "F1 - red tiles", WINDOW_HEIGHT / 5, police_menu, color_menuR, color_background, false);
   display_text(surface_screen, "F2 - green tiles", 2 * WINDOW_HEIGHT / 5, police_menu, color_menuG, color_background, false);
   display_text(surface_screen, "F3 - blue tiles", 3 * WINDOW_HEIGHT / 5, police_menu, color_menuB, color_background, false);
@@ -200,11 +200,10 @@ static char* display_menu(SDL_Surface *surface_screen, bool *play_continue){
     else if(event.type == SDL_MOUSEMOTION)
       continue;
   }
-  return char_color;
 }
 
 
-static void display_grid(grid g, SDL_Surface *surface_screen, char* char_color){
+static void display_grid(grid g, SDL_Surface *surface_screen){
   SDL_Surface *surface_tile = NULL;
   SDL_Rect position_tile;
   char name_tile[40];
@@ -276,7 +275,7 @@ static void display_score(grid g, SDL_Surface *surface_screen){
 
 
 
-static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, SDL_Rect position_background_grid, bool *try_again, char *char_color){
+static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, SDL_Rect position_background_grid, bool *try_again){
   // Parametres couleur texte
   SDL_Color color_text = {255, 255, 255}; // Couleur blanche
   SDL_Color color_background = {0, 0, 0}; // Couleur noire
@@ -295,7 +294,7 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
   unsigned long int highscore = strtoul(char_highscore, NULL, 10); // Convertit une chaine de caractere en unsigned long int
 
   // Affiche la grille
-  display_grid(g, surface_screen, char_color);
+  display_grid(g, surface_screen);
 
   // Ajout d'un transparent bleu sur la grille
   SDL_SetAlpha(surface_background_grid, SDL_SRCALPHA, 125);
@@ -304,7 +303,7 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
 
   // Reecriture de l'Highscore si new highscore
   if(grid_score(g) == highscore)
-    enter_nickname(g, surface_screen, surface_background_grid, position_background_grid, char_highscore, &end_game, try_again, char_color);
+    enter_nickname(g, surface_screen, surface_background_grid, position_background_grid, char_highscore, &end_game, try_again);
   else
     display_text(surface_screen, char_gameover, POSITION_TILE_Y + (GRID_SIDE * TILE_SIDE)/2, police_gameover, color_text, color_background, true); // Affiche "Game Over"
 
@@ -361,7 +360,7 @@ static void display_text(SDL_Surface *surface_screen, char *char_text, int posit
 
 
 
-static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, SDL_Rect position_background_grid, char *char_highscore, bool *end_game, bool *try_again, char* char_color){
+static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, SDL_Rect position_background_grid, char *char_highscore, bool *end_game, bool *try_again){
   // Parametres d'affichage du Game Over et du texte
   FILE* highscore_txt = fopen(PATH_HIGHSCORE, "r+"); // Ouvre le fichier highscore_sdl.txt
   TTF_Font *police_text = TTF_OpenFont(PATH_POLICE, (GRID_SIDE == 2 ? 20 : 30));
@@ -396,7 +395,7 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *sur
       write_line(highscore_txt, char_nickname, char_highscore);
 
       // Affiche la grille
-      display_grid(g, surface_screen, char_color);
+      display_grid(g, surface_screen);
 	
       // Ajout d'un transparent bleu sur la grille
       SDL_SetAlpha(surface_background_grid, SDL_SRCALPHA, 125);
