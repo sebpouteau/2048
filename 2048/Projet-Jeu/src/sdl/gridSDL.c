@@ -115,6 +115,15 @@ void game_sdl(){
       case SDLK_ESCAPE:
 	play_continue = false;
 	break;
+      case SDLK_F1:
+	char_color = "red/";
+	break;
+      case SDLK_F2:
+	char_color = "green/";
+	break;
+      case SDLK_F3:
+	char_color = "blue/";
+	break;
       default:
 	break;
       }
