@@ -9,7 +9,7 @@
 #include <stdbool.h>
 
 /** Grid dimension */
-#define GRID_SIDE 2
+#define GRID_SIDE 4
 
 
 /**

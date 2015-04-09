@@ -12,6 +12,7 @@
 
 #define PATH_TILE "../src/sdl/tiles/"
 #define PATH_ANIMATION "../src/sdl/animation_pinguin/"
+#define PATH_BUTTON_MENU "../src/sdl/menu_button/"
 #define PATH_HIGHSCORE "../src/sdl/highscore_sdl.txt"
 #define PATH_POLICE "../src/sdl/arial.ttf"
 
@@ -23,11 +24,12 @@
 #define POSITION_BACKGROUND_X (POSITION_TILE_X - 10) // Position abscisse du background bleu
 #define POSITION_BACKGROUND_Y (POSITION_TILE_Y - 10) // Position ordonnee du background bleu
 
+
 // variable global de la couleur des tuiles
 static char *char_color;
 
 // Affiche le menu
-static void display_menu(SDL_Surface *surface_screen, bool *play_continue);
+static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, bool *play_continue);
 
 // Affiche la grille
 static void display_grid(grid g, SDL_Surface *surface_screen);
@@ -66,20 +68,18 @@ void game_sdl(){
   SDL_Rect position_background_grid;
   position_background_grid.x = POSITION_BACKGROUND_X;
   position_background_grid.y = POSITION_BACKGROUND_Y;
-  SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 0, 255));
 
   // Initialisation de la grille
   grid g = new_grid();
   add_tile(g);
   add_tile(g);
-  
 
   // Parametres boucle du jeu
   bool play_continue = true; // Boolean de la boucle du jeu
   bool try_again = false; // Boolean permettant de relancer un nouveau jeu
   SDL_Event event;
 
-  display_menu(surface_screen, &play_continue);
+  display_menu(surface_screen, surface_background_grid, &play_continue);
 
   // Boucle du jeu
   while(play_continue){
@@ -87,9 +87,9 @@ void game_sdl(){
     // Permet de quitter (en cliquant sur la croix pour fermer)
     if(event.type == SDL_QUIT)
       play_continue = false;
-    // Choix de la direction a partir des touches directionnelles
     else if(event.type == SDL_KEYDOWN){
       switch(event.key.keysym.sym){
+      // Choix de la direction a partir des touches directionnelles
       case SDLK_UP:
 	if(can_move(g, UP))
 	  play(g, UP);
@@ -106,23 +106,27 @@ void game_sdl(){
 	if(can_move(g, RIGHT))
 	  play(g, RIGHT);
 	break;
-      // Rejouer
+	// Rejouer
       case SDLK_RETURN:
 	try_again = true;
 	play_continue = false;
 	break;
-      // Quitter la partie
+	// Quitter la partie
       case SDLK_ESCAPE:
 	play_continue = false;
 	break;
+      // Choix de la couleur des tuiles
       case SDLK_F1:
-	char_color = "red/";
+	char_color = "green/";
+	SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 255, 0));
 	break;
       case SDLK_F2:
-	char_color = "green/";
+	char_color = "red/";
+	SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 255, 0, 0));
 	break;
       case SDLK_F3:
 	char_color = "blue/";
+	SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 0, 255));
 	break;
       default:
 	break;
@@ -132,7 +136,7 @@ void game_sdl(){
     else if(event.type == SDL_MOUSEMOTION)
       continue;
 
-    // Re-affiche l'ecran
+    // Affiche l'ecran
     SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 255, 255, 255));
     SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
     display_grid(g, surface_screen);
@@ -155,31 +159,30 @@ void game_sdl(){
     game_sdl();
 }
 
-// -------------------------------------------- //
-// -------------------------------------------- //
-// -------------------------------------------- //
 
-static void display_menu(SDL_Surface *surface_screen, bool *play_continue){
-  TTF_Font *police_menu = TTF_OpenFont(PATH_POLICE, 40);
-  SDL_Color color_menuR = {255, 0, 0}; // Couleur rouge
-  SDL_Color color_menuG = {0, 255, 0}; // Couleur verte
-  SDL_Color color_menuB = {0, 0, 255}; // Couleur bleu
-  SDL_Color color_background = {200, 200, 200}; // Couleur gris
-  SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 200, 200, 200));
-  SDL_Flip(surface_screen);
-  SDL_Event event;
-  bool menu = true;
-  int current_time = 0, before_time = 0;
+
+static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, bool *play_continue){
+  char char_button[50];
+  sprintf(char_button, "%sF1_Green.bmp", PATH_BUTTON_MENU);
+  SDL_Surface *surface_button_F1 = SDL_LoadBMP(char_button);
+  sprintf(char_button, "%sF2_Red.bmp", PATH_BUTTON_MENU);
+  SDL_Surface *surface_button_F2 = SDL_LoadBMP(char_button);
+  sprintf(char_button, "%sF3_Blue.bmp", PATH_BUTTON_MENU);
+  SDL_Surface *surface_button_F3 = SDL_LoadBMP(char_button);
+  SDL_Rect position_button;
+  position_button.x = (WINDOW_WIDTH - surface_button_F1->w) / 2;
+  position_button.y = 0;
+
+  int num_animation = 0;
+  char char_animation[50];
   SDL_Surface *surface_animation =  NULL; 
   SDL_Rect position_animation;
   position_animation.x = 50;
-  position_animation.y = 50;/*
-  display_text(surface_screen, "F1 - red tiles", WINDOW_HEIGHT / 4, police_menu, color_menuR, color_background, false);
-  display_text(surface_screen, "F2 - green tiles", 2 * WINDOW_HEIGHT / 4, police_menu, color_menuG, color_background, false);
-  display_text(surface_screen, "F3 - blue tiles", 3 * WINDOW_HEIGHT / 4, police_menu, color_menuB, color_background, false);
-  SDL_Flip(surface_screen);*/
-  int cpt_animation = 0;
-  char char_animation[50];
+  position_animation.y = 50;
+
+  bool menu = true;
+  int current_time = 0, before_time = 0;
+  SDL_Event event;
   while(menu){
     SDL_PollEvent(&event);
     // Permet de quitter (en cliquant sur la croix pour fermer)
@@ -187,19 +190,22 @@ static void display_menu(SDL_Surface *surface_screen, bool *play_continue){
       *play_continue = false;
       menu = false;
     }
-    // Choix de la direction a partir des touches directionnelles
+    // Choix de la couleur des tiles
     else if(event.type == SDL_KEYDOWN){
       switch(event.key.keysym.sym){
       case SDLK_F1:
-	char_color = "red/";
+	char_color = "green/";
+	SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 255, 0));
 	menu = false;
 	break;
       case SDLK_F2:
-	char_color = "green/";
+	char_color = "red/";
+	SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 255, 0, 0));
 	menu = false;
 	break;
       case SDLK_F3:
 	char_color = "blue/";
+	SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 0, 255));
 	menu = false;
 	break;
       case SDLK_ESCAPE:
@@ -213,43 +219,29 @@ static void display_menu(SDL_Surface *surface_screen, bool *play_continue){
     current_time = SDL_GetTicks();
     if(current_time - before_time > 85){
       before_time = current_time;
+
       SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 200, 200, 200));
-      display_text(surface_screen, "F1 - red tiles", WINDOW_HEIGHT / 4, police_menu, color_menuR, color_background, false);
-      display_text(surface_screen, "F2 - green tiles", 2 * WINDOW_HEIGHT / 4, police_menu, color_menuG, color_background, false);
-      display_text(surface_screen, "F3 - blue tiles", 3 * WINDOW_HEIGHT / 4, police_menu, color_menuB, color_background, false);
-      cpt_animation++;
-      if(cpt_animation > 16)
-	cpt_animation = 1;
-      sprintf(char_animation, "%spinguin_%d.bmp", PATH_ANIMATION, cpt_animation);
+      position_button.y = 1 * WINDOW_HEIGHT / 4;
+      SDL_BlitSurface(surface_button_F1, NULL, surface_screen, &position_button);
+      position_button.y = 2 * WINDOW_HEIGHT / 4;
+      SDL_BlitSurface(surface_button_F2, NULL, surface_screen, &position_button);
+      position_button.y = 3 * WINDOW_HEIGHT / 4;
+      SDL_BlitSurface(surface_button_F3, NULL, surface_screen, &position_button);
+
+      num_animation++;
+      if(num_animation > 16)
+	num_animation = 1;
+      sprintf(char_animation, "%spinguin_%d.bmp", PATH_ANIMATION, num_animation);
       surface_animation = SDL_LoadBMP(char_animation);
+      SDL_SetColorKey(surface_animation, SDL_SRCCOLORKEY, SDL_MapRGB(surface_animation->format, 255, 255, 255));
       SDL_BlitSurface(surface_animation, NULL, surface_screen, &position_animation);
       SDL_Flip(surface_screen);
       SDL_FreeSurface(surface_animation);
-      /*
-      if(run_right){
-	if(position_animation.x < WINDOW_WIDTH - 100){
-	  position_animation.x += 50;
-	}
-	else{
-	  position_animation.x -= 50;
-	  run_right = false;
-	}
-      }
-      else{
-	if(position_animation.x > 50)
-	  position_animation.x -= 50;
-	else{
-	  position_animation.x += 50;
-	  run_right = true;
-	}
-      }
-      */
     }
     // S'il y a des deplacements de souris, les ignorer
     else if(event.type == SDL_MOUSEMOTION)
       continue;
   }
-  TTF_CloseFont(police_menu);
 }
 
 
@@ -261,7 +253,7 @@ static void display_grid(grid g, SDL_Surface *surface_screen){
     for(int j = 0; j < GRID_SIDE; j++){
       position_tile.x = POSITION_TILE_X + i * TILE_SIDE;
       position_tile.y = POSITION_TILE_Y + j * TILE_SIDE;
-      sprintf(name_tile, "%stile%d.bmp", PATH_TILE, (int)get_tile(g, i, j));
+      sprintf(name_tile, "%s%stile_%d.bmp", PATH_TILE, char_color, (int)get_tile(g, i, j));
       surface_tile = SDL_LoadBMP(name_tile);
       SDL_BlitSurface(surface_tile, NULL, surface_screen, &position_tile);
       SDL_FreeSurface(surface_tile);
@@ -290,7 +282,6 @@ static void display_score(grid g, SDL_Surface *surface_screen){
   read_line(highscore_txt, char_nickname, char_highscore);
   unsigned long int highscore = strtoul(char_highscore, NULL, 10); // Convertit une chaine de caractere en unsigned long int
 
-  // Affiche le score
   sprintf(char_score, "Score : %lu", grid_score(g));
   display_text(surface_screen, char_score, POSITION_BACKGROUND_Y/2, police_text, color_text, color_background, false);
 
@@ -305,12 +296,10 @@ static void display_score(grid g, SDL_Surface *surface_screen){
     display_text(surface_screen, char_score, position_text_y - 5, police_text, color_text, color_background, false);
   }
 
-  // Affiche "Try Again"
   TTF_Font *police_menu = TTF_OpenFont(PATH_POLICE, 25);
   char char_recommencer[30] = "Press ENTER to TRY AGAIN";
   display_text(surface_screen, char_recommencer, WINDOW_HEIGHT - 2 * (WINDOW_HEIGHT - position_text_y)/3 + 5, police_menu, color_text, color_background, false);
 
-  // Affiche "Give Up"
   char char_giveup[30] = "or ESC to GIVE UP";
   display_text(surface_screen, char_giveup,  WINDOW_HEIGHT - (WINDOW_HEIGHT - position_text_y)/3 + 5, police_menu, color_text, color_background, false);
 
@@ -323,15 +312,12 @@ static void display_score(grid g, SDL_Surface *surface_screen){
 
 
 static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, SDL_Rect position_background_grid, bool *try_again){
-  // Parametres couleur texte
   SDL_Color color_text = {255, 255, 255}; // Couleur blanche
   SDL_Color color_background = {0, 0, 0}; // Couleur noire
 
-  // Parametres Game Over
   char *char_gameover = "GAME OVER";
   TTF_Font *police_gameover = TTF_OpenFont(PATH_POLICE, (GRID_SIDE == 2 ? 30 : 53)); 
 
-  // Parametres Highscore
   bool end_game = true; // Boolean de la boucle de fin du jeu
   char char_highscore[10]; // Chaine de caractere contenant le highscore
   char char_nickname[10]; // Chaine de caractere contenant le pseudo
@@ -340,7 +326,6 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
   fclose(highscore_txt);
   unsigned long int highscore = strtoul(char_highscore, NULL, 10); // Convertit une chaine de caractere en unsigned long int
 
-  // Affiche la grille
   display_grid(g, surface_screen);
 
   // Ajout d'un transparent bleu sur la grille
@@ -352,7 +337,7 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
   if(grid_score(g) == highscore)
     enter_nickname(g, surface_screen, surface_background_grid, position_background_grid, char_highscore, &end_game, try_again);
   else
-    display_text(surface_screen, char_gameover, POSITION_TILE_Y + (GRID_SIDE * TILE_SIDE)/2, police_gameover, color_text, color_background, true); // Affiche "Game Over"
+    display_text(surface_screen, char_gameover, POSITION_TILE_Y + (GRID_SIDE * TILE_SIDE)/2, police_gameover, color_text, color_background, true);
 
   SDL_Flip(surface_screen);
   
@@ -370,7 +355,7 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
 	*try_again = true;
 	end_game = false;
 	break;
-      // Give Up
+      // Quitte la partie
       case SDLK_ESCAPE:
 	end_game = false;
 	break;
@@ -387,7 +372,6 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
 
 
 static void display_text(SDL_Surface *surface_screen, char *char_text, int position_height, TTF_Font *police_text, SDL_Color color_text, SDL_Color color_background, bool transparence){
-  // Parametres affichage du texte
   SDL_Surface *surface_text = NULL;
   SDL_Rect position_text;
   surface_text = TTF_RenderText_Shaded(police_text, char_text, color_text, color_background);
@@ -396,7 +380,6 @@ static void display_text(SDL_Surface *surface_screen, char *char_text, int posit
   if(transparence)
     SDL_SetColorKey(surface_text, SDL_SRCCOLORKEY, SDL_MapRGB(surface_text->format, 0, 0, 0));
 
-  // Affiche le texte
   position_text.x = (surface_screen->w - surface_text->w)/2; // Centre le texte
   position_text.y = position_height - surface_text->h/2;
   SDL_BlitSurface(surface_text, NULL, surface_screen, &position_text);
@@ -408,8 +391,7 @@ static void display_text(SDL_Surface *surface_screen, char *char_text, int posit
 
 
 static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, SDL_Rect position_background_grid, char *char_highscore, bool *end_game, bool *try_again){
-  // Parametres d'affichage du Game Over et du texte
-  FILE* highscore_txt = fopen(PATH_HIGHSCORE, "r+"); // Ouvre le fichier highscore_sdl.txt
+  FILE* highscore_txt = fopen(PATH_HIGHSCORE, "r+");
   TTF_Font *police_text = TTF_OpenFont(PATH_POLICE, (GRID_SIDE == 2 ? 20 : 30));
   TTF_Font *police_gameover = TTF_OpenFont(PATH_POLICE, (GRID_SIDE == 2 ? 30 : 53));
   SDL_Color color_text = {255, 255, 255}; // Couleur blanche
@@ -424,7 +406,6 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *sur
   int position_adjusted = ((GRID_SIDE == 2 ? 2 : 3) * TILE_SIDE)/5;
   int position_y_text = POSITION_TILE_Y + (GRID_SIDE * TILE_SIDE)/2 - position_adjusted * 5/2;
 
-  // Parametre boucle while
   SDL_Event event;
   int cpt_char = 0; // Nombre de caractere saisi par l'utilisateur
   int num_max_char = 8; // Nombre maximum de caractere pour le pseudo
@@ -436,32 +417,25 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *sur
   while(enter_new_nickname){
     // Affiche tous les elements lies au Game Over, ainsi que le nouveau pseudo saisi
     if(re_display){
-      // Modifie l'affichage du nouveau pseudo
       sprintf(char_display, "%s - %s%s", char_highscore, char_nickname, char_tmp);
-      // Ecrit le nouveau pseudo dans highscore_txt
       write_line(highscore_txt, char_nickname, char_highscore);
 
-      // Affiche la grille
       display_grid(g, surface_screen);
-	
-      // Ajout d'un transparent bleu sur la grille
+
       SDL_SetAlpha(surface_background_grid, SDL_SRCALPHA, 125);
       SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
 	
-      // Affiche "Game Over", "New Highscore" et "Enter your nickname"
       display_text(surface_screen, char_gameover, position_y_text + position_adjusted, police_gameover, color_text, color_background, true);
       sprintf(char_newHighscore, "New Highscore : %s !!", char_highscore);
       display_text(surface_screen, char_newHighscore, position_y_text + 2 * position_adjusted, police_text, color_text, color_background, true);
       display_text(surface_screen, "Enter your nickname :", position_y_text + 3 * position_adjusted, police_text, color_text, color_background, true);
 
-      // Affiche pseudo saisi
       display_text(surface_screen, char_display, position_y_text + 4 * position_adjusted, police_text, color_text, color_background, true);
 
       SDL_Flip(surface_screen);
       re_display = false;
     }
 
-    // Gestion des evenements du clavier
     SDL_WaitEvent(&event);
     if(event.type == SDL_QUIT){
       enter_new_nickname = false;
