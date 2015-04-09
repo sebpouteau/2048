@@ -29,7 +29,7 @@
 static char *char_color;
 
 // Affiche le menu
-static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, bool *play_continue);
+static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, int animation);
 
 // Affiche la grille
 static void display_grid(grid g, SDL_Surface *surface_screen);
@@ -75,77 +75,99 @@ void game_sdl(){
   add_tile(g);
 
   // Parametres boucle du jeu
-  bool play_continue = true; // Boolean de la boucle du jeu
+  bool game_loop = true; // Boolean de la boucle du jeu
   bool try_again = false; // Boolean permettant de relancer un nouveau jeu
+  bool menu = true;
+  bool game = false;
+  int current_time = 0, before_time = 0; // Permet de gerer le temps de l'animation
+  int num_animation = 0; // numéro de l'animation
   SDL_Event event;
-
-  display_menu(surface_screen, surface_background_grid, &play_continue);
-
+ 
   // Boucle du jeu
-  while(play_continue){
-    SDL_WaitEvent(&event);
-    // Permet de quitter (en cliquant sur la croix pour fermer)
-    if(event.type == SDL_QUIT)
-      play_continue = false;
-    else if(event.type == SDL_KEYDOWN){
-      switch(event.key.keysym.sym){
-      // Choix de la direction a partir des touches directionnelles
-      case SDLK_UP:
-	if(can_move(g, UP))
-	  play(g, UP);
-	break;
-      case SDLK_DOWN:
-	if(can_move(g, DOWN))
-	  play(g, DOWN);
-	break;
-      case SDLK_LEFT:
-	if(can_move(g, LEFT))
-	  play(g, LEFT);
-	break;
-      case SDLK_RIGHT:
-	if(can_move(g, RIGHT))
-	  play(g, RIGHT);
-	break;
-	// Rejouer
-      case SDLK_RETURN:
-	try_again = true;
-	play_continue = false;
-	break;
-	// Quitter la partie
-      case SDLK_ESCAPE:
-	play_continue = false;
-	break;
-      // Choix de la couleur des tuiles
-      case SDLK_F1:
-	char_color = "green/";
-	SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 255, 0));
-	break;
-      case SDLK_F2:
-	char_color = "red/";
-	SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 255, 0, 0));
-	break;
-      case SDLK_F3:
-	char_color = "blue/";
-	SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 0, 255));
-	break;
-      default:
-	break;
+  while(game_loop){
+    if(menu){
+      current_time = SDL_GetTicks();
+      if(current_time - before_time > 100){
+	before_time = current_time;
+	num_animation++;
+	if(num_animation > 16)
+	  num_animation = 1;
+	display_menu(surface_screen, surface_background_grid, num_animation);
+      }
+    }
+
+    if(SDL_PollEvent(&event)){
+      // Permet de quitter (en cliquant sur la croix pour fermer)
+      if(event.type == SDL_QUIT)
+	game_loop = false;
+      else if(event.type == SDL_KEYDOWN){
+	switch(event.key.keysym.sym){
+	  // Choix de la direction a partir des touches directionnelles
+	case SDLK_UP:
+	  if(can_move(g, UP))
+	    play(g, UP);
+	  break;
+	case SDLK_DOWN:
+	  if(can_move(g, DOWN))
+	    play(g, DOWN);
+	  break;
+	case SDLK_LEFT:
+	  if(can_move(g, LEFT))
+	    play(g, LEFT);
+	  break;
+	case SDLK_RIGHT:
+	  if(can_move(g, RIGHT))
+	    play(g, RIGHT);
+	  break;
+	  // Rejouer
+	case SDLK_RETURN:
+	  try_again = true;
+	  game_loop = false;
+	  break;
+	  // Quitter la partie
+	case SDLK_ESCAPE:
+	  game_loop = false;
+	  break;
+	  // Choix de la couleur des tuiles
+	case SDLK_F1:
+	  char_color = "green/";
+	  SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 255, 0));
+	  menu = false;
+	  game = true;
+	  break;
+	case SDLK_F2:
+	  char_color = "red/";
+	  SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 255, 0, 0));
+	  menu = false;
+	  game = true;
+	  break;
+	case SDLK_F3:
+	  char_color = "blue/";
+	  SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 0, 255));
+	  menu = false;
+	  game = true;
+	  break;
+	default:
+	  break;
+	}
       }
     }
     // S'il y a des deplacements de souris, les ignorer
     else if(event.type == SDL_MOUSEMOTION)
       continue;
-
-    // Affiche l'ecran
+    
+    if(game){
+    // Affiche le jeu
     SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 255, 255, 255));
     SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
     display_grid(g, surface_screen);
     display_score(g, surface_screen);
     SDL_Flip(surface_screen);
+    }
 
     if(game_over(g)){
       display_gameover(g, surface_screen, surface_background_grid, position_background_grid, &try_again);
-      play_continue = false;
+      game_loop = false;
     }
   }
 
@@ -161,7 +183,7 @@ void game_sdl(){
 
 
 
-static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, bool *play_continue){
+static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, int num_animation){
   char char_button[50];
   sprintf(char_button, "%sF1_Green.bmp", PATH_BUTTON_MENU);
   SDL_Surface *surface_button_F1 = SDL_LoadBMP(char_button);
@@ -171,77 +193,27 @@ static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_backg
   SDL_Surface *surface_button_F3 = SDL_LoadBMP(char_button);
   SDL_Rect position_button;
   position_button.x = (WINDOW_WIDTH - surface_button_F1->w) / 2;
-  position_button.y = 0;
 
-  int num_animation = 0;
   char char_animation[50];
   SDL_Surface *surface_animation =  NULL; 
   SDL_Rect position_animation;
   position_animation.x = 50;
   position_animation.y = 50;
 
-  bool menu = true;
-  int current_time = 0, before_time = 0;
-  SDL_Event event;
-  while(menu){
-    SDL_PollEvent(&event);
-    // Permet de quitter (en cliquant sur la croix pour fermer)
-    if(event.type == SDL_QUIT){
-      *play_continue = false;
-      menu = false;
-    }
-    // Choix de la couleur des tiles
-    else if(event.type == SDL_KEYDOWN){
-      switch(event.key.keysym.sym){
-      case SDLK_F1:
-	char_color = "green/";
-	SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 255, 0));
-	menu = false;
-	break;
-      case SDLK_F2:
-	char_color = "red/";
-	SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 255, 0, 0));
-	menu = false;
-	break;
-      case SDLK_F3:
-	char_color = "blue/";
-	SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 0, 255));
-	menu = false;
-	break;
-      case SDLK_ESCAPE:
-	menu = false;
-	*play_continue = false;
-	break;
-      default:
-	break;
-      }
-    }
-    current_time = SDL_GetTicks();
-    if(current_time - before_time > 85){
-      before_time = current_time;
+  SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 200, 200, 200));
+  position_button.y = 1 * WINDOW_HEIGHT / 4;
+  SDL_BlitSurface(surface_button_F1, NULL, surface_screen, &position_button);
+  position_button.y = 2 * WINDOW_HEIGHT / 4;
+  SDL_BlitSurface(surface_button_F2, NULL, surface_screen, &position_button);
+  position_button.y = 3 * WINDOW_HEIGHT / 4;
+  SDL_BlitSurface(surface_button_F3, NULL, surface_screen, &position_button);
 
-      SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 200, 200, 200));
-      position_button.y = 1 * WINDOW_HEIGHT / 4;
-      SDL_BlitSurface(surface_button_F1, NULL, surface_screen, &position_button);
-      position_button.y = 2 * WINDOW_HEIGHT / 4;
-      SDL_BlitSurface(surface_button_F2, NULL, surface_screen, &position_button);
-      position_button.y = 3 * WINDOW_HEIGHT / 4;
-      SDL_BlitSurface(surface_button_F3, NULL, surface_screen, &position_button);
-
-      num_animation++;
-      if(num_animation > 16)
-	num_animation = 1;
-      sprintf(char_animation, "%spinguin_%d.bmp", PATH_ANIMATION, num_animation);
-      surface_animation = SDL_LoadBMP(char_animation);
-      SDL_SetColorKey(surface_animation, SDL_SRCCOLORKEY, SDL_MapRGB(surface_animation->format, 255, 255, 255));
-      SDL_BlitSurface(surface_animation, NULL, surface_screen, &position_animation);
-      SDL_Flip(surface_screen);
-      SDL_FreeSurface(surface_animation);
-    }
-    // S'il y a des deplacements de souris, les ignorer
-    else if(event.type == SDL_MOUSEMOTION)
-      continue;
-  }
+  sprintf(char_animation, "%spinguin_%d.bmp", PATH_ANIMATION, num_animation);
+  surface_animation = SDL_LoadBMP(char_animation);
+  SDL_SetColorKey(surface_animation, SDL_SRCCOLORKEY, SDL_MapRGB(surface_animation->format, 255, 255, 255));
+  SDL_BlitSurface(surface_animation, NULL, surface_screen, &position_animation);
+  SDL_Flip(surface_screen);
+  SDL_FreeSurface(surface_animation);
 }
 
 
@@ -350,12 +322,10 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
     }
     else if(event.type == SDL_KEYDOWN){
       switch(event.key.keysym.sym){
-      // Rejouer
       case SDLK_RETURN:
 	*try_again = true;
 	end_game = false;
 	break;
-      // Quitte la partie
       case SDLK_ESCAPE:
 	end_game = false;
 	break;
