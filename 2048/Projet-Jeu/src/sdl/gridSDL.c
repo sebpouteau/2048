@@ -59,14 +59,6 @@ void game_sdl(){
   putenv("SDL_VIDEO_WINDOW_POS=center"); // Permet de centrer la fenetre du jeu
   surface_screen = SDL_SetVideoMode(WINDOW_WIDTH, WINDOW_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
   SDL_WM_SetCaption("Game 2048 - by Emery, Gouraud, Kirov & Pouteau", NULL);
-  SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 255, 255, 255));
-
-  // Parametres boucle du jeu
-  bool play_continue = true; // Boolean de la boucle du jeu
-  bool try_again = false; // Boolean permettant de relancer un nouveau jeu
-  SDL_Event event;
-
-  display_menu(surface_screen, &play_continue);
 
   // Initialisation du contour bleu fonce autour de la grille
   SDL_Surface *surface_background_grid = NULL; 
@@ -75,7 +67,6 @@ void game_sdl(){
   position_background_grid.x = POSITION_BACKGROUND_X;
   position_background_grid.y = POSITION_BACKGROUND_Y;
   SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 0, 255));
-  SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
 
   // Initialisation de la grille
   grid g = new_grid();
@@ -83,7 +74,16 @@ void game_sdl(){
   add_tile(g);
   
 
-  // Affiche grille et score
+  // Parametres boucle du jeu
+  bool play_continue = true; // Boolean de la boucle du jeu
+  bool try_again = false; // Boolean permettant de relancer un nouveau jeu
+  SDL_Event event;
+
+  display_menu(surface_screen, &play_continue);
+
+  // Affiche grille, fond et score
+  SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 255, 255, 255));
+  SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
   display_grid(g, surface_screen);
   display_score(g, surface_screen);
   SDL_Flip(surface_screen);
@@ -160,10 +160,11 @@ static void display_menu(SDL_Surface *surface_screen, bool *play_continue){
   SDL_Color color_menuR = {255, 0, 0}; // Couleur rouge
   SDL_Color color_menuG = {0, 255, 0}; // Couleur verte
   SDL_Color color_menuB = {0, 0, 255}; // Couleur bleu
-  SDL_Color color_background = {255, 255, 255}; // Couleur blanche
-  display_text(surface_screen, "F1 - red tiles", WINDOW_HEIGHT / 5, police_menu, color_menuR, color_background, false);
-  display_text(surface_screen, "F2 - green tiles", 2 * WINDOW_HEIGHT / 5, police_menu, color_menuG, color_background, false);
-  display_text(surface_screen, "F3 - blue tiles", 3 * WINDOW_HEIGHT / 5, police_menu, color_menuB, color_background, false);
+  SDL_Color color_background = {200, 200, 200}; // Couleur blanche
+  SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 200, 200, 200));
+  display_text(surface_screen, "F1 - red tiles", WINDOW_HEIGHT / 4, police_menu, color_menuR, color_background, false);
+  display_text(surface_screen, "F2 - green tiles", 2 * WINDOW_HEIGHT / 4, police_menu, color_menuG, color_background, false);
+  display_text(surface_screen, "F3 - blue tiles", 3 * WINDOW_HEIGHT / 4, police_menu, color_menuB, color_background, false);
   SDL_Flip(surface_screen);
   SDL_Event event;
   bool menu = true;
