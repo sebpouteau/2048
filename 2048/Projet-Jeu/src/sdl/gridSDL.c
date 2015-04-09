@@ -81,13 +81,6 @@ void game_sdl(){
 
   display_menu(surface_screen, &play_continue);
 
-  // Affiche grille, fond et score
-  SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 255, 255, 255));
-  SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
-  display_grid(g, surface_screen);
-  display_score(g, surface_screen);
-  SDL_Flip(surface_screen);
-
   // Boucle du jeu
   while(play_continue){
     SDL_WaitEvent(&event);
@@ -154,6 +147,8 @@ void game_sdl(){
 }
 
 // -------------------------------------------- //
+// -------------------------------------------- //
+// -------------------------------------------- //
 
 static void display_menu(SDL_Surface *surface_screen, bool *play_continue){
   TTF_Font *police_menu = TTF_OpenFont(PATH_POLICE, 40);
@@ -162,14 +157,24 @@ static void display_menu(SDL_Surface *surface_screen, bool *play_continue){
   SDL_Color color_menuB = {0, 0, 255}; // Couleur bleu
   SDL_Color color_background = {200, 200, 200}; // Couleur blanche
   SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 200, 200, 200));
-  display_text(surface_screen, "F1 - red tiles", WINDOW_HEIGHT / 4, police_menu, color_menuR, color_background, false);
-  display_text(surface_screen, "F2 - green tiles", 2 * WINDOW_HEIGHT / 4, police_menu, color_menuG, color_background, false);
-  display_text(surface_screen, "F3 - blue tiles", 3 * WINDOW_HEIGHT / 4, police_menu, color_menuB, color_background, false);
   SDL_Flip(surface_screen);
   SDL_Event event;
   bool menu = true;
+  int current_time = 0, before_time = 0;
+  SDL_Surface *animation =  NULL; 
+  animation = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_DOUBLEBUF, 50, 50, 32, 0, 0, 0, 0);
+  SDL_Rect position_animation;
+  position_animation.x = 50;
+  position_animation.y = 50;
+  SDL_FillRect(animation, NULL, SDL_MapRGB(surface_screen->format, 0, 0, 255));
+  bool run_right = true;
+  display_text(surface_screen, "F1 - red tiles", WINDOW_HEIGHT / 4, police_menu, color_menuR, color_background, false);
+  display_text(surface_screen, "F2 - green tiles", 2 * WINDOW_HEIGHT / 4, police_menu, color_menuG, color_background, false);
+  display_text(surface_screen, "F3 - blue tiles", 3 * WINDOW_HEIGHT / 4, police_menu, color_menuB, color_background, false);
+  SDL_BlitSurface(animation, NULL, surface_screen, &position_animation);
+  SDL_Flip(surface_screen);
   while(menu){
-    SDL_WaitEvent(&event);
+    SDL_PollEvent(&event);
     // Permet de quitter (en cliquant sur la croix pour fermer)
     if(event.type == SDL_QUIT){
       *play_continue = false;
@@ -198,10 +203,39 @@ static void display_menu(SDL_Surface *surface_screen, bool *play_continue){
 	break;
       }
     }
+    current_time = SDL_GetTicks();
+    if(current_time - before_time > 250){
+      before_time = current_time;
+      SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 200, 200, 200));
+      display_text(surface_screen, "F1 - red tiles", WINDOW_HEIGHT / 4, police_menu, color_menuR, color_background, false);
+      display_text(surface_screen, "F2 - green tiles", 2 * WINDOW_HEIGHT / 4, police_menu, color_menuG, color_background, false);
+      display_text(surface_screen, "F3 - blue tiles", 3 * WINDOW_HEIGHT / 4, police_menu, color_menuB, color_background, false);
+      SDL_BlitSurface(animation, NULL, surface_screen, &position_animation);
+      SDL_Flip(surface_screen);
+      if(run_right){
+	if(position_animation.x < WINDOW_WIDTH - 100){
+	  position_animation.x += 50;
+	}
+	else{
+	  position_animation.x -= 50;
+	  run_right = false;
+	}
+      }
+      else{
+	if(position_animation.x > 50)
+	  position_animation.x -= 50;
+	else{
+	  position_animation.x += 50;
+	  run_right = true;
+	}
+      }
+    }
     // S'il y a des deplacements de souris, les ignorer
     else if(event.type == SDL_MOUSEMOTION)
       continue;
   }
+  SDL_FreeSurface(animation);
+  TTF_CloseFont(police_menu);
 }
 
 
