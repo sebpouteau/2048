@@ -5,7 +5,7 @@ CPPFLAGS=
 
 
 
-all: verif-libgrid  test-graphique-fast test-seb test-repetition-fast deplacement 
+all: verif-libgrid  test-graphique-fast test-seb test-repetition-fast test-graphique-low test-repetition-low deplacement 
 
 
 
