@@ -14,8 +14,9 @@
 #define PATH_TILE "../src/sdl/tiles/"
 #define PATH_ANIMATION "../src/sdl/animation_penguin/"
 #define PATH_BUTTON_MENU "../src/sdl/menu_button/"
-#define PATH_HIGHSCORE "../src/sdl/highscore_sdl.txt"
-#define PATH_POLICE "../src/sdl/arial.ttf"
+#define PATH_FILE_HIGHSCORE "../src/sdl/highscore_sdl.txt"
+#define PATH_POLICE_GAME "../src/sdl/arial.ttf"
+#define PATH_POLICE_MENU "../src/sdl/leadcoat.ttf"
 
 #define TILE_SIDE 100 // Taille de la tuile
 #define WINDOW_MENU_WIDTH 400 // Largeur de la fenetre
@@ -241,7 +242,7 @@ static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_backg
   SDL_Rect position_button;
   int nb_button = 4;
 
-  TTF_Font *police_text = TTF_OpenFont("../src/sdl/leadcoat.ttf", 43);
+  TTF_Font *police_text = TTF_OpenFont(PATH_POLICE_MENU, 43);
   SDL_Color color_text = {0, 0, 0}; // Couleur rouge
   SDL_Color color_background = {255, 255, 255}; // Couleur blanche
 
@@ -296,16 +297,16 @@ static void display_grid(grid g, SDL_Surface *surface_screen){
 
 static void display_score(grid g, SDL_Surface *surface_screen){
   // Parametres affichage score
-  TTF_Font *police_text = TTF_OpenFont(PATH_POLICE, 30);
+  TTF_Font *police_text = TTF_OpenFont(PATH_POLICE_GAME, 30);
   SDL_Color color_text = {255, 0, 0}; // Couleur rouge
   SDL_Color color_background = {255, 255, 255}; // Couleur blanche
   char char_score[100];
   int position_text_y = 2 * POSITION_BACKGROUND_Y + GRID_SIDE * TILE_SIDE;
 
   // Ouverture (et si besoin creation) du fichier contenant l'highscore
-  FILE* highscore_txt = fopen(PATH_HIGHSCORE, "r+");
+  FILE* highscore_txt = fopen(PATH_FILE_HIGHSCORE, "r+");
   if(highscore_txt == NULL)
-    highscore_txt = fopen(PATH_HIGHSCORE, "w");
+    highscore_txt = fopen(PATH_FILE_HIGHSCORE, "w");
 
   // Recupere le pseudo et le highscore sauvegardes precedemment
   char char_highscore[10] = "";
@@ -327,7 +328,7 @@ static void display_score(grid g, SDL_Surface *surface_screen){
     display_text(surface_screen, police_text, color_text, color_background, char_score, position_text_y - 5, false);
   }
 
-  TTF_Font *police_menu = TTF_OpenFont(PATH_POLICE, 25);
+  TTF_Font *police_menu = TTF_OpenFont(PATH_POLICE_GAME, 25);
   char char_recommencer[30] = "Press ENTER to TRY AGAIN";
   display_text(surface_screen, police_menu, color_text, color_background, char_recommencer, (WINDOW_HEIGHT + 2 * position_text_y)/3 + 5, false);
 
@@ -347,12 +348,12 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
   SDL_Color color_background = {0, 0, 0}; // Couleur noire
 
   char *char_gameover = "GAME OVER";
-  TTF_Font *police_gameover = TTF_OpenFont(PATH_POLICE, (GRID_SIDE == 2 ? 30 : 53)); 
+  TTF_Font *police_gameover = TTF_OpenFont(PATH_POLICE_GAME, (GRID_SIDE == 2 ? 30 : 53)); 
 
   bool end_game = true; // Boolean de la boucle de fin du jeu
   char char_highscore[10]; // Chaine de caractere contenant le highscore
   char char_nickname[10]; // Chaine de caractere contenant le pseudo
-  FILE* highscore_txt = fopen(PATH_HIGHSCORE, "r+"); 
+  FILE* highscore_txt = fopen(PATH_FILE_HIGHSCORE, "r+"); 
   read_line(highscore_txt, char_nickname, char_highscore);
   fclose(highscore_txt);
   unsigned long int highscore = strtoul(char_highscore, NULL, 10); // Convertit une chaine de caractere en unsigned long int
@@ -420,9 +421,9 @@ static void display_text(SDL_Surface *surface_screen, TTF_Font *police_text, SDL
 
 
 static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, SDL_Rect position_background_grid, char *char_highscore, bool *end_game, bool *try_again){
-  FILE* highscore_txt = fopen(PATH_HIGHSCORE, "r+");
-  TTF_Font *police_text = TTF_OpenFont(PATH_POLICE, (GRID_SIDE == 2 ? 20 : 30));
-  TTF_Font *police_gameover = TTF_OpenFont(PATH_POLICE, (GRID_SIDE == 2 ? 30 : 53));
+  FILE* highscore_txt = fopen(PATH_FILE_HIGHSCORE, "r+");
+  TTF_Font *police_text = TTF_OpenFont(PATH_POLICE_GAME, (GRID_SIDE == 2 ? 20 : 30));
+  TTF_Font *police_gameover = TTF_OpenFont(PATH_POLICE_GAME, (GRID_SIDE == 2 ? 30 : 53));
   SDL_Color color_text = {255, 255, 255}; // Couleur blanche
   SDL_Color color_background = {0, 0, 0}; // Couleur noire
   char char_nickname[10] = ""; // Chaine de caractere qui contiendra le nouveau pseudo
