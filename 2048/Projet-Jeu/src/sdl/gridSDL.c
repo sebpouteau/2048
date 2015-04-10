@@ -197,24 +197,19 @@ void game_sdl(){
 
 
 static void display_animation(SDL_Surface *surface_screen){
-  // Paramètres animation
-  char char_animation[50];
-  SDL_Surface *surface_animation =  NULL; 
-  int tab_backward[22] = {1,2,1,2,1,2,3,4,3,5,6,5,6,5,6,7,8,7,8,7,8};
-  int tab_forward[22] = {9,10,9,10,9,10,11,12,11,12,11,12,14,13,14,15,16,15,16,15,16};
   static int num_animation = 0; // numéro de l'animation
   static int position_x = WINDOW_MENU_WIDTH - 135;
   static bool run_right = false;
+
+  char char_animation[50];
+  SDL_Surface *surface_animation =  NULL; 
   SDL_Rect position_animation;
   position_animation.x = position_x;
   position_animation.y = 14;
 
   num_animation++;
   if(num_animation > 20){
-    if(run_right == true)
-      run_right = false;
-    else
-      run_right = true;
+    run_right = (run_right? false : true);
     num_animation = 1;
   }
 
@@ -225,10 +220,12 @@ static void display_animation(SDL_Surface *surface_screen){
       position_x -= 20;
   }
 
+  int tab_backward[22] = {1,2,1,2,1,2,3,4,3,5,6,5,6,5,6,7,8,7,8,7,8};
+  int tab_forward[22] = {9,10,9,10,9,10,11,12,11,12,11,12,14,13,14,15,16,15,16,15,16};
   if(run_right)
-    sprintf(char_animation, "%spenguin%d.bmp", PATH_ANIMATION, tab_forward[num_animation]);
+    sprintf(char_animation, "%spenguin_%d.bmp", PATH_ANIMATION, tab_forward[num_animation]);
   else
-    sprintf(char_animation, "%spenguin%d.bmp", PATH_ANIMATION, tab_backward[num_animation]);
+    sprintf(char_animation, "%spenguin_%d.bmp", PATH_ANIMATION, tab_backward[num_animation]);
 
   surface_animation = SDL_LoadBMP(char_animation);
   SDL_SetColorKey(surface_animation, SDL_SRCCOLORKEY, SDL_MapRGB(surface_animation->format, 255, 255, 255));
