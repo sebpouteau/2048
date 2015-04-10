@@ -13,17 +13,23 @@
 #define MOVE_IMPOSSIBLE -999999999 
 #define ANY_CASE_EMPTY -9999999
 
-strategy A2_Emery_Gouraud_Kirov_Pouteau_fast ();
+/* define pour la note de la grille */
+#define BONUS_CORNER 3000
+#define BONUS_HIGH_MAXIMUM 600
+#define BONUS_SCORE 3000
+#define BONUS_CASE_EMPTY 750
+#define MALUS_SIGN_CHANGE 1025
+
+strategy A2_Emery_Gouraud_Kirov_Pouteau_fast();
 static dir strategy_fast(strategy str, grid g);
 static dir meilleur_direction(grid g);
 static long int repetition_grid(grid g, int nombre, dir *d);
-//static long maximum_tile(grid g);
 static long int maximum(long int l,long int l1,dir d, dir d1, dir *d2);
 static long int note_grid (grid g);
 
 strategy A2_Emery_Gouraud_Kirov_Pouteau_fast (){
   strategy str = malloc (sizeof(struct strategy_s));
-  str->name = "strateg";
+  str->name = "strategy_fast";
   str->mem = NULL;
   str->free_strategy = free_memless_strat;
   str->play_move = strategy_fast;
@@ -46,8 +52,8 @@ static dir meilleur_direction(grid g){
     }
   }
   if (cpt_case_empty < 2)
-    nombre ++;
-  repetition_grid(g,nombre,&d);
+    nombre++;
+  repetition_grid(g, nombre, &d);
   return d;
  }
 
@@ -72,6 +78,7 @@ static long int repetition_grid(grid g, int nombre,dir *d){
     int cpt = 0;
     indice_tab++;
     copy_grid(g,g_copy);
+
     if ( can_move(g_copy,i)){
       do_move(g_copy,i);
       // Génère les 2 et les 4 dans chaque possition vide
@@ -127,25 +134,24 @@ long int maximum(long int l,long int l1,dir d, dir d1, dir *d2){
 /* ================================== 
                   NOTE
    ================================== */
-/* long int monotonieUL_DL(grid g); */
-/* long int monotonieUR_DR(grid g); */
+
 long int note_grid (grid g){
  long int cpt = 0;
   int cpt_case_empty = 0;
   int cpt_changement_sign = 0;
   int max = 0;
-  /* long int (*monotonie)(grid g); */
-  /* monotonie =monotonieUL_DL; */
-
+  //Parcours de la grille
   for(int y = 0; y < GRID_SIDE; y++){
     for(int x = 0; x < GRID_SIDE; x++){
       cpt += get_tile(g,x,y);
+      // Détermination de la valeur maximum 
       if(get_tile(g, x, y)>max)
 	max = get_tile(g, x, y);
+      // Determination du nombre de case vide
       if(get_tile(g,x,y) == 0){
 	cpt_case_empty++;
       }
-     
+      // Monotonie de la grille 
       if (x < GRID_SIDE-1){
       	if(get_tile(g,x,y) < get_tile(g,x+1,y))
       	    cpt_changement_sign += get_tile(g,x+1,y) - get_tile(g,x,y);
@@ -154,35 +160,15 @@ long int note_grid (grid g){
       }
     }
   }
-    if (get_tile(g,0,0) == max)
-      cpt += 3000*max;
-    
-  /* if (get_tile(g,0,0) == max || get_tile(g,0,GRID_SIDE-1) == max ){ */
-  /*   cpt += 3000*max; */
-  /*   monotonie =monotonieUL_DL; */
-  /* } */
-  /* if (get_tile(g,GRID_SIDE-1,0) == max || get_tile(g,GRID_SIDE-1,GRID_SIDE-1) == max ){ */
-  /*   monotonie =monotonieUR_DR; */
-  /*   cpt += 3000*max; */
-  /* } */
-  /* cpt_changement_sign = monotonie(g); */
+  if (get_tile(g,0,0) == max)
+    cpt += BONUS_CORNER*max;
   
-    
- 
-  /* else if( get_tile(g, GRID_SIDE -1 , 0) == max || get_tile(g, 0, GRID_SIDE-1) == max || get_tile(g, GRID_SIDE - 1, GRID_SIDE - 1) == max ) */
-  /*   cpt += 1000*max; */
+  cpt += BONUS_HIGH_MAXIMUM*pow(2,max);
   
-  /* if(max > 256){ */
-  /*   cpt += pow(2,get_tile(g,0,0)); */
-  /*   cpt += pow(2,get_tile(g,1,0)); */
-  /* } */
-    
-  cpt += 600*pow(2,max);
+  cpt -= MALUS_SIGN_CHANGE*cpt_changement_sign;
+  cpt += BONUS_SCORE * grid_score(g);
   
-  cpt -= 1025*cpt_changement_sign;
-  cpt += 50*grid_score(g);
-  
-  cpt += 750*cpt_case_empty;
+  cpt += BONUS_CASE_EMPTY*cpt_case_empty;
   
   return cpt;
 
