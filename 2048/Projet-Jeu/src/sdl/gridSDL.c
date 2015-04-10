@@ -19,7 +19,7 @@
 
 #define TILE_SIDE 100 // Taille de la tuile
 #define WINDOW_MENU_WIDTH 400 // Largeur de la fenetre
-#define WINDOW_MENU_HEIGHT 500 // Hauteur de la fenetre
+#define WINDOW_MENU_HEIGHT 600 // Hauteur de la fenetre
 #define WINDOW_WIDTH ((GRID_SIDE == 2 ? 3 : GRID_SIDE)  + 1) * TILE_SIDE // Largeur de la fenetre
 #define WINDOW_HEIGHT (GRID_SIDE + 2) * TILE_SIDE // Hauteur de la fenetre
 #define POSITION_TILE_X (WINDOW_WIDTH - GRID_SIDE * TILE_SIDE)/2 // Position abscisse de la grille
@@ -90,7 +90,7 @@ void game_sdl(){
   // Boucle du jeu
   while(game_loop){
     if(menu){
-      surface_screen = SDL_SetVideoMode(400, 500, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+      surface_screen = SDL_SetVideoMode(WINDOW_MENU_WIDTH, WINDOW_MENU_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
       SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 255, 255, 255));
       display_menu(surface_screen, surface_background_grid);
       current_time = SDL_GetTicks();
@@ -205,7 +205,7 @@ static void display_animation(SDL_Surface *surface_screen){
   SDL_Surface *surface_animation =  NULL; 
   SDL_Rect position_animation;
   position_animation.x = position_x;
-  position_animation.y = 14;
+  position_animation.y = 10;
 
   num_animation++;
   if(num_animation > 20){
@@ -241,28 +241,38 @@ static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_backg
   SDL_Rect position_button;
   int nb_button = 4;
 
+  TTF_Font *police_text = TTF_OpenFont("../src/sdl/leadcoat.ttf", 43);
+  SDL_Color color_text = {0, 0, 0}; // Couleur rouge
+  SDL_Color color_background = {255, 255, 255}; // Couleur blanche
+
+
   for(int i = 0; i < nb_button; i++){
     if(i == 0){
       sprintf(char_button, "%s2048.bmp", PATH_BUTTON_MENU);
-      position_button.y = WINDOW_MENU_HEIGHT / (nb_button +3) - 5;
-    }    
+      position_button.y = 62;
+    }
     if(i == 1){
       sprintf(char_button, "%sF1_Green.bmp", PATH_BUTTON_MENU);
-    position_button.y = 2 * WINDOW_MENU_HEIGHT / (nb_button +1);
+    position_button.y = 3 * WINDOW_MENU_HEIGHT / 6;
     }      
     if(i == 2){
       sprintf(char_button, "%sF2_Red.bmp", PATH_BUTTON_MENU);
-    position_button.y = 3 * WINDOW_MENU_HEIGHT / (nb_button +1);
+    position_button.y = 4 * WINDOW_MENU_HEIGHT / 6;
     }      
     if(i == 3){
       sprintf(char_button, "%sF3_Blue.bmp", PATH_BUTTON_MENU);
-    position_button.y = 4 * WINDOW_MENU_HEIGHT / (nb_button +1);
+    position_button.y = 5 * WINDOW_MENU_HEIGHT / 6;
     }    
     surface_button = SDL_LoadBMP(char_button);
     position_button.x = (WINDOW_MENU_WIDTH - surface_button->w) / 2;
     SDL_BlitSurface(surface_button, NULL, surface_screen, &position_button);
+
+    display_text(surface_screen, police_text, color_text, color_background, "Choose a color to", 220, false);
+    display_text(surface_screen, police_text, color_text, color_background, "start the Game", 270, false);
     SDL_FreeSurface(surface_button);
   }
+
+  TTF_CloseFont(police_text);
 }
 
 
