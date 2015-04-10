@@ -102,28 +102,28 @@ void game_sdl(){
 	game_loop = false;
       else if(event.type == SDL_KEYDOWN){
 	switch(event.key.keysym.sym){
-	  // Choix de la direction a partir des touches directionnelles
-	case SDLK_UP:
-	  if(can_move(g, UP))
-	    play(g, UP);
-	  break;
-	case SDLK_DOWN:
-	  if(can_move(g, DOWN))
-	    play(g, DOWN);
-	  break;
-	case SDLK_LEFT:
-	  if(can_move(g, LEFT))
-	    play(g, LEFT);
-	  break;
-	case SDLK_RIGHT:
-	  if(can_move(g, RIGHT))
-	    play(g, RIGHT);
-	  break;
-	  // Rejouer
-	case SDLK_RETURN:
-	  try_again = true;
-	  game_loop = false;
-	  break;
+	    // Choix de la direction a partir des touches directionnelles
+	  case SDLK_UP:
+	    if(game && can_move(g, UP))
+	      play(g, UP);
+	    break;
+	  case SDLK_DOWN:
+	    if(game && can_move(g, DOWN))
+	      play(g, DOWN);
+	    break;
+	  case SDLK_LEFT:
+	    if(game && can_move(g, LEFT))
+	      play(g, LEFT);
+	    break;
+	  case SDLK_RIGHT:
+	    if(game && can_move(g, RIGHT))
+	      play(g, RIGHT);
+	    break;
+	    // Rejouer
+	  case SDLK_RETURN:
+	    try_again = true;
+	    game_loop = false;
+	    break;
 	  // Quitter la partie
 	case SDLK_ESCAPE:
 	  game_loop = false;
