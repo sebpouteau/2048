@@ -218,11 +218,12 @@ static void display_animation(SDL_Surface *surface_screen){
     num_animation = 1;
   }
 
-  if(num_animation < 6 || num_animation > 14)
+  if(num_animation < 6 || num_animation > 14){
     if(run_right)
       position_x += 20;
     else
       position_x -= 20;
+  }
 
   if(run_right)
     sprintf(char_animation, "%spenguin%d.bmp", PATH_ANIMATION, tab_forward[num_animation]);
