@@ -12,14 +12,14 @@
 
 
 #define PATH_TILE "../src/sdl/tiles/"
-#define PATH_ANIMATION "../src/sdl/animation_penguin/"
+#define PATH_ANIMATION "../src/sdl/animation_penguin2/"
 #define PATH_BUTTON_MENU "../src/sdl/menu_button/"
 #define PATH_HIGHSCORE "../src/sdl/highscore_sdl.txt"
 #define PATH_POLICE "../src/sdl/arial.ttf"
 
 #define TILE_SIDE 100 // Taille de la tuile
-#define WINDOW_MENU_WIDTH 4 * TILE_SIDE // Largeur de la fenetre
-#define WINDOW_MENU_HEIGHT 5 * TILE_SIDE // Hauteur de la fenetre
+#define WINDOW_MENU_WIDTH 400 // Largeur de la fenetre
+#define WINDOW_MENU_HEIGHT 500 // Hauteur de la fenetre
 #define WINDOW_WIDTH ((GRID_SIDE == 2 ? 3 : GRID_SIDE)  + 1) * TILE_SIDE // Largeur de la fenetre
 #define WINDOW_HEIGHT (GRID_SIDE + 2) * TILE_SIDE // Hauteur de la fenetre
 #define POSITION_TILE_X (WINDOW_WIDTH - GRID_SIDE * TILE_SIDE)/2 // Position abscisse de la grille
@@ -31,16 +31,17 @@
 // variable global pour la couleur des tuiles
 static char *char_color;
 
+// Affiche l'animation
+static void display_animation(SDL_Surface *surface_screen);
 
 // Affiche le menu
-static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, int animation);
+static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_background_grid);
 
 // Affiche la grille
 static void display_grid(grid g, SDL_Surface *surface_screen);
 
 // Affiche le score
 static void display_score(grid g, SDL_Surface *surface_screen);
-
 // Affiche le game over
 static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, SDL_Rect position_background_grid, bool *try_again);
 
@@ -83,20 +84,20 @@ void game_sdl(){
   bool menu = true; // Boolean pour le menu
   bool game = false; // Boolean pour le jeu
   bool change_color = false;
-  int current_time = 0, before_time = 0; // Permet de gerer le temps pour l'animation
-  int num_animation = 0; // numéro de l'animation
+  int current_time = 0, before_time = 0;
   SDL_Event event;
  
   // Boucle du jeu
   while(game_loop){
     if(menu){
+      surface_screen = SDL_SetVideoMode(400, 500, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+      SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 255, 255, 255));
+      display_menu(surface_screen, surface_background_grid);
       current_time = SDL_GetTicks();
-      if(current_time - before_time > 100){
+      if(current_time - before_time > 200){
 	before_time = current_time;
-	num_animation++;
-	if(num_animation > 16)
-	  num_animation = 1;
-	display_menu(surface_screen, surface_background_grid, num_animation);
+	display_animation(surface_screen);
+	SDL_Flip(surface_screen);
       }
     }
 
@@ -195,45 +196,75 @@ void game_sdl(){
 }
 
 
+static void display_animation(SDL_Surface *surface_screen){
+  // Paramètres animation
+  char char_animation[50];
+  SDL_Surface *surface_animation =  NULL; 
+  int tab_backward[22] = {1,2,1,2,1,2,3,4,3,5,6,5,6,5,6,7,8,7,8,7,8};
+  int tab_forward[22] = {9,10,9,10,9,10,11,12,11,12,11,12,14,13,14,15,16,15,16,15,16};
+  static int num_animation = 0; // numéro de l'animation
+  static int position_x = WINDOW_MENU_WIDTH - 135;
+  static bool run_right = false;
+  SDL_Rect position_animation;
+  position_animation.x = position_x;
+  position_animation.y = 14;
 
-static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, int num_animation){
-  surface_screen = SDL_SetVideoMode(400, 500, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
-  SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 200, 200, 200));
+  num_animation++;
+  if(num_animation > 20){
+    if(run_right == true)
+      run_right = false;
+    else
+      run_right = true;
+    num_animation = 1;
+  }
 
+  if(num_animation < 6 || num_animation > 14)
+    if(run_right)
+      position_x += 20;
+    else
+      position_x -= 20;
+
+  if(run_right)
+    sprintf(char_animation, "%spenguin%d.bmp", PATH_ANIMATION, tab_forward[num_animation]);
+  else
+    sprintf(char_animation, "%spenguin%d.bmp", PATH_ANIMATION, tab_backward[num_animation]);
+
+  surface_animation = SDL_LoadBMP(char_animation);
+  SDL_SetColorKey(surface_animation, SDL_SRCCOLORKEY, SDL_MapRGB(surface_animation->format, 255, 255, 255));
+  SDL_BlitSurface(surface_animation, NULL, surface_screen, &position_animation);
+  SDL_FreeSurface(surface_animation);
+}
+
+
+static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_background_grid){
   // Paramètres des boutons
   char char_button[50];
   SDL_Surface *surface_button;
   SDL_Rect position_button;
   int nb_button = 4;
 
-  for(int i = 1; i < nb_button; i++){
-    if(i == 1)
+  for(int i = 0; i < nb_button; i++){
+    if(i == 0){
+      sprintf(char_button, "%s2048.bmp", PATH_BUTTON_MENU);
+      position_button.y = WINDOW_MENU_HEIGHT / (nb_button +3) - 5;
+    }    
+    if(i == 1){
       sprintf(char_button, "%sF1_Green.bmp", PATH_BUTTON_MENU);
-    if(i == 2)
+    position_button.y = 2 * WINDOW_MENU_HEIGHT / (nb_button +1);
+    }      
+    if(i == 2){
       sprintf(char_button, "%sF2_Red.bmp", PATH_BUTTON_MENU);
-    if(i == 3)
+    position_button.y = 3 * WINDOW_MENU_HEIGHT / (nb_button +1);
+    }      
+    if(i == 3){
       sprintf(char_button, "%sF3_Blue.bmp", PATH_BUTTON_MENU);
+    position_button.y = 4 * WINDOW_MENU_HEIGHT / (nb_button +1);
+    }    
     surface_button = SDL_LoadBMP(char_button);
     position_button.x = (WINDOW_MENU_WIDTH - surface_button->w) / 2;
-    position_button.y = i * WINDOW_MENU_HEIGHT / nb_button;
     SDL_BlitSurface(surface_button, NULL, surface_screen, &position_button);
     SDL_FreeSurface(surface_button);
   }
-
-  // Paramètres animation
-  char char_animation[50];
-  SDL_Surface *surface_animation =  NULL; 
-  SDL_Rect position_animation;
-  position_animation.x = 50;
-  position_animation.y = 50;
-
-  sprintf(char_animation, "%spenguin_%d.bmp", PATH_ANIMATION, num_animation);
-  surface_animation = SDL_LoadBMP(char_animation);
-  SDL_SetColorKey(surface_animation, SDL_SRCCOLORKEY, SDL_MapRGB(surface_animation->format, 255, 255, 255));
-  SDL_BlitSurface(surface_animation, NULL, surface_screen, &position_animation);
-  SDL_Flip(surface_screen);
-
-  SDL_FreeSurface(surface_animation);
 }
 
 
