@@ -131,7 +131,7 @@ void game_sdl(){
 	  // Choix de la couleur des tuiles
 	case SDLK_F1:
 	  char_color = "green/";
-	  SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 255, 0));
+	  SDL_FillRect(surface_background_grid, NULL, SDL_MapRGB(surface_screen->format, 0, 150, 50)); // vert foncé
 	  menu = false;
 	  game = true;
 	  break;
@@ -184,35 +184,41 @@ void game_sdl(){
 
 
 static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, int num_animation){
-  char char_button[50];
-  sprintf(char_button, "%sF1_Green.bmp", PATH_BUTTON_MENU);
-  SDL_Surface *surface_button_F1 = SDL_LoadBMP(char_button);
-  sprintf(char_button, "%sF2_Red.bmp", PATH_BUTTON_MENU);
-  SDL_Surface *surface_button_F2 = SDL_LoadBMP(char_button);
-  sprintf(char_button, "%sF3_Blue.bmp", PATH_BUTTON_MENU);
-  SDL_Surface *surface_button_F3 = SDL_LoadBMP(char_button);
-  SDL_Rect position_button;
-  position_button.x = (WINDOW_WIDTH - surface_button_F1->w) / 2;
+  SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 200, 200, 200));
 
+  // Paramètres bouton
+  char char_button[50];
+  SDL_Surface *surface_button;
+  SDL_Rect position_button;
+  int nb_button = 4;
+
+  for(int i = 1; i < nb_button; i++){
+    if(i == 1)
+      sprintf(char_button, "%sF1_Green.bmp", PATH_BUTTON_MENU);
+    if(i == 2)
+      sprintf(char_button, "%sF2_Red.bmp", PATH_BUTTON_MENU);
+    if(i == 3)
+      sprintf(char_button, "%sF3_Blue.bmp", PATH_BUTTON_MENU);
+    surface_button = SDL_LoadBMP(char_button);
+    position_button.x = (WINDOW_WIDTH - surface_button->w) / 2;
+    position_button.y = i * WINDOW_HEIGHT / nb_button;
+    SDL_BlitSurface(surface_button, NULL, surface_screen, &position_button);
+    SDL_FreeSurface(surface_button);
+  }
+
+  // Paramètres animation
   char char_animation[50];
   SDL_Surface *surface_animation =  NULL; 
   SDL_Rect position_animation;
   position_animation.x = 50;
   position_animation.y = 50;
 
-  SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 200, 200, 200));
-  position_button.y = 1 * WINDOW_HEIGHT / 4;
-  SDL_BlitSurface(surface_button_F1, NULL, surface_screen, &position_button);
-  position_button.y = 2 * WINDOW_HEIGHT / 4;
-  SDL_BlitSurface(surface_button_F2, NULL, surface_screen, &position_button);
-  position_button.y = 3 * WINDOW_HEIGHT / 4;
-  SDL_BlitSurface(surface_button_F3, NULL, surface_screen, &position_button);
-
   sprintf(char_animation, "%spinguin_%d.bmp", PATH_ANIMATION, num_animation);
   surface_animation = SDL_LoadBMP(char_animation);
   SDL_SetColorKey(surface_animation, SDL_SRCCOLORKEY, SDL_MapRGB(surface_animation->format, 255, 255, 255));
   SDL_BlitSurface(surface_animation, NULL, surface_screen, &position_animation);
   SDL_Flip(surface_screen);
+
   SDL_FreeSurface(surface_animation);
 }
 
