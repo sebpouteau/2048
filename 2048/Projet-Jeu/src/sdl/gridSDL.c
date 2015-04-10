@@ -12,7 +12,7 @@
 
 
 #define PATH_TILE "../src/sdl/tiles/"
-#define PATH_ANIMATION "../src/sdl/animation_penguin2/"
+#define PATH_ANIMATION "../src/sdl/animation_penguin/"
 #define PATH_BUTTON_MENU "../src/sdl/menu_button/"
 #define PATH_HIGHSCORE "../src/sdl/highscore_sdl.txt"
 #define PATH_POLICE "../src/sdl/arial.ttf"
