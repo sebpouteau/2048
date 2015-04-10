@@ -90,11 +90,11 @@ void game_sdl(){
   // Boucle du jeu
   while(game_loop){
     if(menu){
-      surface_screen = SDL_SetVideoMode(WINDOW_MENU_WIDTH, WINDOW_MENU_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
-      SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 255, 255, 255));
-      display_menu(surface_screen, surface_background_grid);
       current_time = SDL_GetTicks();
       if(current_time - before_time > 200){
+	surface_screen = SDL_SetVideoMode(WINDOW_MENU_WIDTH, WINDOW_MENU_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
+	SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 255, 255, 255));
+	display_menu(surface_screen, surface_background_grid);
 	before_time = current_time;
 	display_animation(surface_screen);
 	SDL_Flip(surface_screen);
