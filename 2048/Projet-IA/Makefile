@@ -5,7 +5,7 @@ CPPFLAGS=
 
 
 
-all: verif-libgrid  test-graphique-fast test-seb test-repetition-fast test-graphique-low test-repetition-low deplacement 
+all: verif-libgrid  test-graphique-fast test-repetition-fast test-graphique-low test-repetition-low deplacement 
 
 
 
@@ -24,13 +24,13 @@ test-graphique-fast: main-graphique.o A2_Emery_Gouraud_Kirov_Pouteau_fast.o
 	$(CC) -o test-graphique-fast main-graphique.o A2_Emery_Gouraud_Kirov_Pouteau_fast.o  $(LDLIBS)
 
 test-repetition-fast: main-repetition.o A2_Emery_Gouraud_Kirov_Pouteau_fast.o
-	$(CC) -o test-repetition-fast main-repetition.o A2_Emery_Gouraud_Kirov_Pouteau_fast.o  $(LDLIBS)
+	$(CC) -o test-repetition-fast main-repetition.o A2_Emery_Gouraud_Kirov_Pouteau_low.o  $(LDLIBS)
 
-test-graphique-low: main-graphique.o 
-	$(CC) -o test-graphique-low main-graphique.o  A2_Emery_Gouraud_Kirov_Pouteau_fast.o  $(LDLIBS)
+test-graphique-low: main-graphique.o  A2_Emery_Gouraud_Kirov_Pouteau_low.o
+	$(CC) -o test-graphique-low main-graphique.o  A2_Emery_Gouraud_Kirov_Pouteau_low.o  $(LDLIBS)
 
-test-repetition-low: main-graphique.o
-	$(CC) -o test-repetition-low  main-repetition.o   $(LDLIBS)
+test-repetition-low: main-repetition.o  A2_Emery_Gouraud_Kirov_Pouteau_low.o
+	$(CC) -o test-repetition-low  main-repetition.o   A2_Emery_Gouraud_Kirov_Pouteau_low.o $(LDLIBS)
 
 
 include dep
