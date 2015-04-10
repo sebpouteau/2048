@@ -227,7 +227,7 @@ static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_backg
   position_animation.x = 50;
   position_animation.y = 50;
 
-  sprintf(char_animation, "%spinguin_%d.bmp", PATH_ANIMATION, num_animation);
+  sprintf(char_animation, "%spenguin_%d.bmp", PATH_ANIMATION, num_animation);
   surface_animation = SDL_LoadBMP(char_animation);
   SDL_SetColorKey(surface_animation, SDL_SRCCOLORKEY, SDL_MapRGB(surface_animation->format, 255, 255, 255));
   SDL_BlitSurface(surface_animation, NULL, surface_screen, &position_animation);
