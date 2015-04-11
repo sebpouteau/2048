@@ -11,6 +11,14 @@
 #include <gridSDL.h>
 
 
+/**
+ * \file gridSDL.c
+ * \brief Implementation de gridSDL.h
+ *    Ce fichier contient les fonctions de l'interface graphique SDL,
+ * du jeu du 2048.
+ **/
+
+// Chemins relatifs des différents composants graphiques (tiles, animations, bouton, police, etc.)
 #define PATH_TILE "../src/sdl/tiles/"
 #define PATH_ANIMATION "../src/sdl/animation_penguin/"
 #define PATH_BUTTON_MENU "../src/sdl/menu_button/"
@@ -18,6 +26,7 @@
 #define PATH_POLICE_GAME "../src/sdl/arial.ttf"
 #define PATH_POLICE_MENU "../src/sdl/leadcoat.ttf"
 
+// Define permettant une maintenabilité et une inhérence à GRID_SIDE de l'interface graphique
 #define TILE_SIDE 100 // Taille de la tuile
 #define WINDOW_MENU_WIDTH 400 // Largeur de la fenetre
 #define WINDOW_MENU_HEIGHT 600 // Hauteur de la fenetre
@@ -29,37 +38,24 @@
 #define POSITION_BACKGROUND_Y (POSITION_TILE_Y - 10) // Position ordonnee du background de la grille
 
 
-// variable global pour la couleur des tuiles
+// Variable global pour la couleur des tuiles
 static char *char_color;
 
-// Affiche l'animation
+// Declaration des fonctions static
 static void display_animation(SDL_Surface *surface_screen);
-
-// Affiche le menu
-static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_background_grid);
-
-// Affiche la grille
+static void display_menu(SDL_Surface *surface_screen);
 static void display_grid(grid g, SDL_Surface *surface_screen);
-
-// Affiche le score
 static void display_score(grid g, SDL_Surface *surface_screen);
-// Affiche le game over
 static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, SDL_Rect position_background_grid, bool *try_again);
-
-// Affiche du texte selon les parametres passes
 static void display_text(SDL_Surface *surface_screen, TTF_Font *police_text, SDL_Color color_text, SDL_Color color_background, char *char_text, int position_height, bool transparence);
-
-// Recupere le pseudo saisi et l'ecrit dans char_nickname
 static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, SDL_Rect position_background_grid, char *char_highscore, bool *end_game, bool *try_again);
-
-// Lit la premiere ligne dans un fichier
 static void read_line(FILE *fichier, char *char_nickname, char *char_highscore);
-
-// Ecrit la premiere ligne dans un fichier
 static void write_line(FILE *fichier, char *char_nickname, char *char_highscore);
 
 
-// ====== FONCTIONS ========
+/* =============================================
+   == IMPLEMENTATION DE L'INTERFACE GRIDSDL.H ==
+   ============================================= */
 
 void game_sdl(){
   // Initialisation de la fenetre du jeu
@@ -95,7 +91,7 @@ void game_sdl(){
       if(current_time - before_time > 200){
 	surface_screen = SDL_SetVideoMode(WINDOW_MENU_WIDTH, WINDOW_MENU_HEIGHT, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
 	SDL_FillRect(surface_screen, NULL, SDL_MapRGB(surface_screen->format, 255, 255, 255));
-	display_menu(surface_screen, surface_background_grid);
+	display_menu(surface_screen);
 	before_time = current_time;
 	display_animation(surface_screen);
 	SDL_Flip(surface_screen);
@@ -197,6 +193,14 @@ void game_sdl(){
 }
 
 
+/* =========================================
+   == IMPLEMENTATION DES FONCTIONS STATIC ==
+   ========================================= */
+
+/**
+ * \brief Affiche l'animation
+ * \param surface_screen surface sur laquelle sera affichee l'animation
+ **/
 static void display_animation(SDL_Surface *surface_screen){
   static int num_animation = 0; // numéro de l'animation
   static int position_x = WINDOW_MENU_WIDTH - 135;
@@ -221,8 +225,9 @@ static void display_animation(SDL_Surface *surface_screen){
       position_x -= 20;
   }
 
-  int tab_backward[22] = {1,2,1,2,1,2,3,4,3,5,6,5,6,5,6,7,8,7,8,7,8};
-  int tab_forward[22] = {9,10,9,10,9,10,11,12,11,12,11,12,14,13,14,15,16,15,16,15,16};
+  // tableaux contenant l'ordre des numéros de l'animation
+  int tab_backward[22] = {1,2,1,2,1,2,3,4,3,5,6,5,6,5,6,7,8,7,8,7,8}; // Retour du pingouin (de droite à gauche)
+  int tab_forward[22] = {9,10,9,10,9,10,11,12,11,12,11,12,14,13,14,15,16,15,16,15,16}; // Aller du pingouin (de gauche à droite)
   if(run_right)
     sprintf(char_animation, "%spenguin_%d.bmp", PATH_ANIMATION, tab_forward[num_animation]);
   else
@@ -235,7 +240,11 @@ static void display_animation(SDL_Surface *surface_screen){
 }
 
 
-static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_background_grid){
+/**
+ * \brief Affiche le menu
+ * \param surface_screen surface sur laquelle sera affiche le menu
+ **/
+static void display_menu(SDL_Surface *surface_screen){
   // Paramètres des boutons
   char char_button[50];
   SDL_Surface *surface_button;
@@ -243,9 +252,8 @@ static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_backg
   int nb_button = 4;
 
   TTF_Font *police_text = TTF_OpenFont(PATH_POLICE_MENU, 43);
-  SDL_Color color_text = {0, 0, 0}; // Couleur rouge
+  SDL_Color color_text = {0, 0, 0}; // Couleur noire
   SDL_Color color_background = {255, 255, 255}; // Couleur blanche
-
 
   for(int i = 0; i < nb_button; i++){
     if(i == 0){
@@ -267,7 +275,6 @@ static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_backg
     surface_button = SDL_LoadBMP(char_button);
     position_button.x = (WINDOW_MENU_WIDTH - surface_button->w) / 2;
     SDL_BlitSurface(surface_button, NULL, surface_screen, &position_button);
-
     display_text(surface_screen, police_text, color_text, color_background, "Choose a color to", 220, false);
     display_text(surface_screen, police_text, color_text, color_background, "start the Game", 270, false);
     SDL_FreeSurface(surface_button);
@@ -277,6 +284,11 @@ static void display_menu(SDL_Surface *surface_screen, SDL_Surface *surface_backg
 }
 
 
+/**
+ * \brief Affiche la grille
+ * \param g grid
+ * \param surface_screen surface sur laquelle sera affiche la grille
+ **/
 static void display_grid(grid g, SDL_Surface *surface_screen){
   SDL_Surface *surface_tile = NULL;
   SDL_Rect position_tile;
@@ -294,7 +306,11 @@ static void display_grid(grid g, SDL_Surface *surface_screen){
 }
 
 
-
+/**
+ * \brief Affiche le score
+ * \param g grid
+ * \param surface_screen surface sur laquelle sera affiche le score
+ **/
 static void display_score(grid g, SDL_Surface *surface_screen){
   // Parametres affichage score
   TTF_Font *police_text = TTF_OpenFont(PATH_POLICE_GAME, 30);
@@ -342,7 +358,13 @@ static void display_score(grid g, SDL_Surface *surface_screen){
 }
 
 
-
+/**
+ * \brief Affiche le Game Over
+ * \param surface_screen surface sur laquelle sera affiche le Game Over
+ * \param surface_background_grid surface du background de la grille
+ * \param position_background_grid position du background
+ * \param try_again pointeur de boolean permettant de relancer le jeu
+ **/
 static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, SDL_Rect position_background_grid, bool *try_again){
   SDL_Color color_text = {255, 255, 255}; // Couleur blanche
   SDL_Color color_background = {0, 0, 0}; // Couleur noire
@@ -400,7 +422,17 @@ static void display_gameover(grid g, SDL_Surface *surface_screen, SDL_Surface *s
 }
 
 
-
+/**
+ * \brief Affiche le texte voulue avec comme caracteristique la police, la couleur, la couleur du background 
+      et la position souhaitées (ainsi que la possibilite de mettre la couleur du background en transparence)
+ * \param surface_screen surface sur laquelle sera affiche le texte
+ * \param police_text police du texte
+ * \param color_text couleur du texte
+ * \param color_background couleur du background
+ * \param char_texte chaine de caractere contenant le texte à afficher
+ * \param position_height position en hauteur du texte
+ * \param transparence boolean permettant de mettre la couleur du background du texte en transparence
+ **/
 static void display_text(SDL_Surface *surface_screen, TTF_Font *police_text, SDL_Color color_text, SDL_Color color_background, char *char_text, int position_height, bool transparence){
   SDL_Surface *surface_text = NULL;
   SDL_Rect position_text;
@@ -419,7 +451,16 @@ static void display_text(SDL_Surface *surface_screen, TTF_Font *police_text, SDL
 }
 
 
-
+/**
+ * \brief Récupère le pseudo saisi par l'utilisateur et l'écrit dans le fichier contenant l'highscore
+ * \param g grid
+ * \param surface_screen surface sur laquelle sera affiche le pseudo saisi
+ * \param surface_background_grid surface du background de la grille
+ * \param position_background_grid position du background
+ * \param char_highscore chaine de caractere contenant l'highscore
+ * \param end_game pointeur de boolean permettant de quitter le jeu
+ * \param try_again pointeur de boolean permettant de relancer le jeu
+ **/
 static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *surface_background_grid, SDL_Rect position_background_grid, char *char_highscore, bool *end_game, bool *try_again){
   FILE* highscore_txt = fopen(PATH_FILE_HIGHSCORE, "r+");
   TTF_Font *police_text = TTF_OpenFont(PATH_POLICE_GAME, (GRID_SIDE == 2 ? 20 : 30));
@@ -454,12 +495,11 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *sur
 
       SDL_SetAlpha(surface_background_grid, SDL_SRCALPHA, 125);
       SDL_BlitSurface(surface_background_grid, NULL, surface_screen, &position_background_grid);
-	
+    
       display_text(surface_screen, police_gameover, color_text, color_background, char_gameover, position_y_text + position_adjusted, true);
       sprintf(char_newHighscore, "New Highscore : %s !!", char_highscore);
       display_text(surface_screen, police_text, color_text, color_background, char_newHighscore, position_y_text + 2 * position_adjusted, true);
       display_text(surface_screen, police_text, color_text, color_background, "Enter your nickname :", position_y_text + 3 * position_adjusted,true);
-
       display_text(surface_screen, police_text, color_text, color_background, char_display, position_y_text + 4 * position_adjusted, true);
 
       SDL_Flip(surface_screen);
@@ -518,7 +558,12 @@ static void enter_nickname(grid g, SDL_Surface *surface_screen, SDL_Surface *sur
 }
 
 
-
+/**
+ * \brief Lit dans le fichier passé en paramètre, les 10 premiers caractères et les stockent dans char_nickname,
+      et stockent les 10 caractères suivants dans le char_highscore.
+ * \param char_nickname chaine de caractere qui contiendra le pseudo
+ * \param char_highscore chaine de caractere qui contiendra l'highscore
+ **/
 static void read_line(FILE *fichier, char *char_nickname, char *char_highscore){
   rewind(fichier); // Revient au debut du fichier
 
@@ -542,8 +587,13 @@ static void read_line(FILE *fichier, char *char_nickname, char *char_highscore){
 }
 
 
-
-
+/**
+ * \brief Ecrit dans le fichier passé en paramètre, 
+       la chaine de caractères char_nickname (suivie d'espaces afin de stocker 10 caractères), 
+       et la chaine de caractères char_highscore, (suivie d'espaces afin de stocker 10 caractères),
+ * \param char_nickname chaine de caractere qui contiendra le pseudo
+ * \param char_highscore chaine de caractere qui contiendra l'highscore
+ **/
 static void write_line(FILE *fichier, char *char_nickname, char *char_highscore){
   rewind(fichier); // Revient au debut du fichier
 
