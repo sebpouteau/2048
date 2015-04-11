@@ -17,14 +17,15 @@ deplacement:
 	if [ ! -d "bin" ];then mkdir bin; fi
 	mv test* bin/
 
-test-seb:  strategy_seb3.o
-	$(CC) -o test-seb strategy_seb3.o   $(LDLIBS)
-
+test-seb:  main-repetition.o strategy_seb3.o
+	$(CC) -o test-seb main-repetition.o strategy_seb3.o   $(LDLIBS)
+test-seb2: main-graphique.o strategy_seb3.o
+	$(CC) -o test-seb2 main-graphique.o strategy_seb3.o  $(LDLIBS)
 test-graphique-fast: main-graphique.o A2_Emery_Gouraud_Kirov_Pouteau_fast.o
 	$(CC) -o test-graphique-fast main-graphique.o A2_Emery_Gouraud_Kirov_Pouteau_fast.o  $(LDLIBS)
 
 test-repetition-fast: main-repetition.o A2_Emery_Gouraud_Kirov_Pouteau_fast.o
-	$(CC) -o test-repetition-fast main-repetition.o A2_Emery_Gouraud_Kirov_Pouteau_low.o  $(LDLIBS)
+	$(CC) -o test-repetition-fast main-repetition.o A2_Emery_Gouraud_Kirov_Pouteau_fast.o  $(LDLIBS)
 
 test-graphique-low: main-graphique.o  A2_Emery_Gouraud_Kirov_Pouteau_low.o
 	$(CC) -o test-graphique-low main-graphique.o  A2_Emery_Gouraud_Kirov_Pouteau_low.o  $(LDLIBS)

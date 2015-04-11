@@ -7,7 +7,6 @@
 #+latex_class_options: [a4paper]
 
 
-
 #+title: *RAPPORT PROJET 2048*
 #+author: Emery, Gouraud, Kirov, Pouteau
 #+startup: indent

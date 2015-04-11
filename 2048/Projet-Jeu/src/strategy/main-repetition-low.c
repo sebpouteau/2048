@@ -7,7 +7,8 @@
 
 #define NOMBRE_TEST 1
 
-strategy A2_Emery_Gouraud_Kirov_Pouteau_fast();
+strategy A2_Emery_Gouraud_Kirov_Pouteau_low();
+strategy A2_Emery_Gouraud_Kirov_Pouteau_low();
 
 static long maximum_tile(grid g){
   long max_tile = 1;
@@ -20,9 +21,15 @@ static long maximum_tile(grid g){
   return max_tile;
 }
 
+static void usage(char * commande){
+  fprintf(stderr,"%s <nombre repetition > \n", commande);
+  exit(EXIT_FAILURE);
+}
+
 int main (int argc, char **argv){
-  
-  int n = NOMBRE_TEST;
+  if (argc != 2)     
+    usage(argv[0]);
+  int n = atoi(argv[1]);
   int nb_lance = n;
   int cpt_16 = 0;
   int cpt_32 = 0;
@@ -34,9 +41,9 @@ int main (int argc, char **argv){
   int cpt_2048 = 0;
   int cpt_4096 = 0;
   int cpt_8192= 0;
-	
+  
   srand(time(NULL));
-  strategy str = A2_Emery_Gouraud_Kirov_Pouteau_fast();
+  strategy str = A2_Emery_Gouraud_Kirov_Pouteau_low();
   while(n > 0){
     grid g = new_grid();
     add_tile(g);

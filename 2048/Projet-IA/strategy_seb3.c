@@ -5,9 +5,23 @@
 #include "../Projet-Jeu/include/grid.h"
 #include <stdlib.h>
 #include <stdio.h>
+static int map[2][4][4]={
+  {
+    {3,2,1,0},
+    {2,1,0,-1},
+    {1,0,-1,-2},
+    {0,-1,-2,-3}
+  },
+  {
+    {0,1,2,3},
+    {-1,0,1,2},
+    {-2,-1,0,1},
+    {-3,-2,-1,0}
+  }
+};
 
 #define NOMBRE_TEST 10
-#define PROFONDEUR 2
+#define PROFONDEUR 3
 #define CASE_UP 0
 #define CASE_LEFT 1
 #define CASE_DOWN 2
@@ -21,6 +35,7 @@ static long int repetition_grid(grid g, int nombre, dir *d);
 static long maximum_tile(grid g);
 static long int maximum(long int l,long int l1,dir d, dir d1, dir *d2);
 static long int note_grid (grid g);
+static int monotonie(grid g);
 
 strategy A2_Emery_Gouraud_Kirov_Pouteau_fast (){
   strategy str = malloc (sizeof(struct strategy_s));
@@ -121,27 +136,67 @@ long int maximum(long int l,long int l1,dir d, dir d1, dir *d2){
 
 
 long int note_grid (grid g){
-  long int cpt = 0;
-  int cpt_case_empty = 0;
-  for(int y = 0; y < GRID_SIDE; y++){
-    for(int x = 0; x < GRID_SIDE; x++){
-      cpt += get_tile(g,x,y);
-      if(get_tile(g,x,y) == 0){
-	cpt_case_empty++;
+  /* long int cpt = 0; */
+  /* int cpt_case_empty = 0; */
+  /* for(int y = 0; y < GRID_SIDE; y++){ */
+  /*   for(int x = 0; x < GRID_SIDE; x++){ */
+  /*     cpt += get_tile(g,x,y); */
+  /*     if(get_tile(g,x,y) == 0){ */
+  /* 	cpt_case_empty++; */
+  /*     } */
+  /*   } */
+  /* } */
+
+  /* int max = (int)maximum_tile(g); */
+  /* if( get_tile(g, 0, 0) == max || get_tile(g, GRID_SIDE -1 , 0) == max || get_tile(g, 0, GRID_SIDE-1) == max || get_tile(g, GRID_SIDE - 1, GRID_SIDE - 1) == max ) */
+  /*   cpt += 1000*max; */
+  /* if (get_tile(g,0,0) == max) */
+  /*   cpt+=800*max; */
+  
+  /* int cpt_changement_sign = monotonie(g); */
+  /* cpt += 500*max;     */
+  /* cpt -= 3000*cpt_changement_sign; */
+  /* cpt += 10*grid_score(g); */
+  
+  /* cpt += 1000*cpt_case_empty; */
+  /* return cpt; */
+  int max=0;
+
+  for(unsigned int i = 0 ; i < 2 ; i++){
+
+    int sum=0; //Somme : type int -> peut être négative dans certains cas.                                                                                                                    
+
+    for(unsigned int j = 0 ; j < GRID_SIDE ; j++)
+      for(unsigned int k = 0 ; k < GRID_SIDE ; k++){
+        sum+=map[i][j][k]*pow(2,get_tile(g,j,k));
+      }
+
+    if(i==0){
+      if(sum > max){
+	max=sum;
+      }
+      else{
+	max=-sum;
+      }
+    }
+    else{
+      if(sum > max){
+	max=sum;
+      }
+      else if(-sum > max){
+        max=-sum;
       }
     }
   }
+  return max;
 
-  int max = (int)maximum_tile(g);
-  if( get_tile(g, 0, 0) == max || get_tile(g, GRID_SIDE -1 , 0) == max || get_tile(g, 0, GRID_SIDE-1) == max || get_tile(g, GRID_SIDE - 1, GRID_SIDE - 1) == max )
-    cpt += 1000*max;
-  if (get_tile(g,0,0) == max)
-    cpt+=800*max;
-  int cpt_changement_sign = 0;
-
+}
+/*
+static int monotonie(grid g){
+  
   for(int y = 0; y < GRID_SIDE; y++)
     for(int x = 0; x < GRID_SIDE-1; x++){
-      if(x%2 == 0){
+      if(y%2 == 0){
 	if(get_tile(g,x,y) < get_tile(g,x+1,y))
 	  cpt_changement_sign++;
       }
@@ -149,14 +204,15 @@ long int note_grid (grid g){
 	if(get_tile(g,x,y) > get_tile(g,x+1,y))
 	  cpt_changement_sign++;
     }
-  cpt += 500*max;    
-  cpt -= 3000*cpt_changement_sign;
-  cpt += 10*grid_score(g);
-  
-  cpt += 1000*cpt_case_empty;
-  return cpt;
+  for(int y = 0; y < GRID_SIDE-1; y++)
+    for(int x = 0; x < GRID_SIDE; x++){
+      if ( get_tile(g,x,y) < get_tile(g,x,y+1))
+	cpt_changement_sign++;
+    }
+  return cpt_sign;
 }
-  
+
+*/
 static long maximum_tile(grid g){
   long max_tile = 1;
   for(int i = 0; i<GRID_SIDE; i++){
@@ -169,8 +225,10 @@ static long maximum_tile(grid g){
 }
 
 
-
-
+/* =================================
+              main
+   ================================= */
+/*
 int main (int argc, char **argv){
   
   int n = NOMBRE_TEST;
@@ -237,3 +295,4 @@ int main (int argc, char **argv){
 }
 
 
+*/
