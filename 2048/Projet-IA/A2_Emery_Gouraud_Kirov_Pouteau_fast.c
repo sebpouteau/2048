@@ -52,8 +52,8 @@ static dir best_move(strategy str, grid g){
     }
   }
   if(cpt_case_empty < 2)
-    dept++;
-  repetition_grid(g, nombre, &d);
+    depth++;
+  repetition_grid(g, depth, &d);
   return d;
 }
 
@@ -116,10 +116,10 @@ static long int repetition_grid(grid g, int nombre,dir *d){
 
 long int maximum(long int max0,long int max1,dir dir0, dir dir1, dir *d2){
   if(max0 >= max1){
-    *dir2 = dir0;
+    *d2 = dir0;
     return max0;
   }
-  *dir2 = dir1;
+  *d2 = dir1;
   return max1;
 }
 
