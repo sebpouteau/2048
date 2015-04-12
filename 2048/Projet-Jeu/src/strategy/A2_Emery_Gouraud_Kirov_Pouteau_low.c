@@ -23,9 +23,10 @@
 strategy A2_Emery_Gouraud_Kirov_Pouteau_low();
 static dir best_move(strategy str, grid g);
 static long int repetition_grid(grid g, int depth, dir *d);
-static long int maximum(long int l, long int l1, dir d, dir d1, dir *d2);
+static long int maximum(long int max0, long int max1, dir dir0, dir dir1, dir *dir2);
 static long int grid_note(grid g);
 static long int monotonicity(grid g, int x, int y);
+
 
 strategy A2_Emery_Gouraud_Kirov_Pouteau_low(){
   strategy str = malloc(sizeof(struct strategy_s));
@@ -36,9 +37,11 @@ strategy A2_Emery_Gouraud_Kirov_Pouteau_low(){
   return str;
 }
 
+
 void free_memless_strat(strategy strat){
   free(strat);
 }
+
 
 static dir best_move(strategy str, grid g){
   int depth = DEPTH;
@@ -60,6 +63,7 @@ static dir best_move(strategy str, grid g){
   repetition_grid(g, depth, &d);
   return d;
 }
+
 
 static long int repetition_grid(grid g, int depth, dir *d){
   if(game_over(g)){
@@ -84,22 +88,22 @@ static long int repetition_grid(grid g, int depth, dir *d){
 	for(int x = 0; x < GRID_SIDE; x++)
 	  if(get_tile(g_copy, x, y) == 0){
 	    set_tile(g_copy,x, y, 1);
-	    // Rappel la fonction et multiplie le resultat par 9  car 90% de chance d'avoir un 2
+	    // Rappelle la fonction et multiplie le resultat par 9 car 90% de chance d'avoir un 2
 	    note += (long int) 9 * repetition_grid(g_copy, depth - 1, d);
 	    set_tile(g_copy, x, y, 2);
-	    // Rappel la fonction et multiplie le resultat par 9  car 10% de chance d'avoir un 4
+	    // Rappelle la fonction et multiplie le resultat par 1 car 10% de chance d'avoir un 4
 	    note += (long int) repetition_grid(g_copy, depth - 1, d);
 	    set_tile(g_copy, x, y, 0);
 	    cpt += 10;    
 	  }
-      // si pas de case vide alors ont met une mauvaise note
+      // Si pas de case vide alors on met une mauvaise note
       if(cpt == 0)
 	tab[indice_tab] = ANY_CASE_EMPTY;
-      // renvoye 
+      // Renvoie la moyenne des notes dans la case du tableau correspondant
       else
 	tab[indice_tab] = (long int)(note / cpt);
     }  
-    // si le mouvement est impossible ont met une mauvaise note
+    // Si le mouvement est impossible on met une mauvaise note
     else{
       tab[indice_tab] = MOVE_IMPOSSIBLE;
     }
@@ -107,20 +111,21 @@ static long int repetition_grid(grid g, int depth, dir *d){
   delete_grid(g_copy);
   dir mdU_L;
   dir mdD_R;
-  //selctionne la meilleur valeur obtenu apres un UP et un LEFT et stock la direction dans mdU_L
+  // Selectionne la meilleure valeur obtenue apres un UP et un LEFT et stock la direction dans mdU_L
   long int max_UD = maximum(tab[CASE_UP], tab[CASE_LEFT], UP, LEFT, &mdU_L);
-  //selectionne la meilleur valeur obtenu apres un DOWN et un RIGHT et la direction stock dans mdW_R
+  // Selectionne la meilleure valeur obtenue apres un DOWN et un RIGHT et stock la direction dans mdW_R
   long int max_LR = maximum(tab[CASE_DOWN], tab[CASE_RIGHT], DOWN, RIGHT, &mdD_R);
-  // renvoye la meilleur valeur obtenur apres un mdU_L et un mdD_R et stock la direction dans d
+  // Renvoie la meilleure valeur obtenue apres un mdU_L et un mdD_R et stock la direction dans d
   return maximum(max_UD, max_LR, mdU_L, mdD_R, d);  
 }
 
-long int maximum(long int max0, long int max1, dir dir0, dir dir1, dir *d2){
+
+static long int maximum(long int max0, long int max1, dir dir0, dir dir1, dir *dir2){
   if(max0 >= max1){
-    *d2 = dir0;
+    *dir2 = dir0;
     return max0;
   }
-  *d2 = dir1;
+  *dir2 = dir1;
   return max1;
 }
 
@@ -129,12 +134,12 @@ long int maximum(long int max0, long int max1, dir dir0, dir dir1, dir *d2){
                  NOTE
    ================================== */
 
-long int grid_note(grid g){
+static long int grid_note(grid g){
   long int cpt = 0;
   int cpt_case_empty = 0;
   int cpt_sign_change = 0;
   int max = 0;
-  //Parcours de la grille
+  // Parcours de la grille
   for(int y = 0; y < GRID_SIDE; y++){
     for(int x = 0; x < GRID_SIDE; x++){
       cpt += get_tile(g, x, y);
@@ -162,7 +167,8 @@ long int grid_note(grid g){
   return cpt;
 }
 
-long int monotonicity(grid g, int x, int y){
+
+static long int monotonicity(grid g, int x, int y){
   int cpt_sign_change = 0;
   if(x < GRID_SIDE - 1){
     if(get_tile(g, x, y) < get_tile(g, x + 1, y))
