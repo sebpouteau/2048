@@ -97,8 +97,8 @@ static long int repetition_grid(grid g, int depth, dir *d){
 	tab[indice_tab] = ANY_CASE_EMPTY;
       // Renvoie la moyenne des notes dans la case du tableau correspondant
       else
-	tab[indice_tab] = (long int) note / cpt;
-    }
+	tab[indice_tab] = (long int)(note / cpt);
+    }  
     // Si le mouvement est impossible on met une mauvaise note
     else{
       tab[indice_tab] = MOVE_IMPOSSIBLE;
@@ -111,7 +111,7 @@ static long int repetition_grid(grid g, int depth, dir *d){
   long int max_UD = maximum(tab[CASE_UP], tab[CASE_LEFT], UP, LEFT, &mdU_L);
   // Selectionne la meilleure valeur obtenue apres un DOWN et un RIGHT et stock la direction dans mdW_R
   long int max_LR = maximum(tab[CASE_DOWN], tab[CASE_RIGHT], DOWN, RIGHT, &mdD_R);
-  // renvoie la meilleure valeur obtenue apres un mdU_L et un mdD_R et stock la direction dans d
+  // Renvoie la meilleure valeur obtenue apres un mdU_L et un mdD_R et stock la direction dans d
   return maximum(max_UD, max_LR, mdU_L, mdD_R, d);  
 }
 
@@ -127,7 +127,7 @@ static long int maximum(long int max0, long int max1, dir dir0, dir dir1, dir *d
 
 
 /* ================================== 
-                NOTE
+                 NOTE
    ================================== */
 
 static long int grid_note(grid g){

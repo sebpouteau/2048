@@ -26,7 +26,7 @@ Pour vérifier que toutes les fonctions marchent, lancer le test avec :
  make check
 
 Les librairies créées sont placées dans lib/
-Les exécutables sont placés dans bin/	
+Les exécutables sont placés dans bin/	(jeu_ncurses ou jeu_sdl)
 
 /* ================================= 
                 L'IA

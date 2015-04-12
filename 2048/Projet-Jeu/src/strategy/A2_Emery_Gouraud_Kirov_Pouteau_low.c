@@ -131,7 +131,7 @@ static long int maximum(long int max0, long int max1, dir dir0, dir dir1, dir *d
 
 
 /* ================================== 
-                 NOTE
+                NOTE
    ================================== */
 
 static long int grid_note(grid g){
@@ -147,9 +147,8 @@ static long int grid_note(grid g){
       if(get_tile(g, x, y) > max)
 	max = get_tile(g, x, y);
       // Determination du nombre de case vide
-      if(get_tile(g, x, y) == 0){
+      if(get_tile(g, x, y) == 0)
 	cpt_case_empty++;
-      }
       // Monotonicite de la grille 
       cpt_sign_change += monotonicity(g, x, y);
     }
@@ -163,7 +162,7 @@ static long int grid_note(grid g){
   cpt += BONUS_CASE_EMPTY * cpt_case_empty;
   // Malus si pas monotone
   cpt -= MALUS_SIGN_CHANGE * cpt_sign_change;
-
+  
   return cpt;
 }
 
