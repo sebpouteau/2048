@@ -1,13 +1,13 @@
 CC = gcc
 CFLAGS = -std=c99 -g -Wall -fPIC -I../../include
-LDLIBS = -lA2_Emery_Gouraud_Kirov_Pouteau_fast -lA2_Emery_Gouraud_Kirov_Pouteau_low -lgrid  -lm -lncurses  -L ../../lib/ 
+LDLIBS = -lA2_emery_gouraud_kirov_pouteau_fast -lA2_emery_gouraud_kirov_pouteau_low -lgrid  -lm -lncurses  -L ../../lib/ 
 CPPFLAGS= 
 
-PATH_INCLUDE=../../include
+PATH_INCLUDe=../../include
 PATH_LIB= ../../lib
 PATH_BIN= ../../bin
 
-all:$(PATH_LIB)/libA2_Emery_Gouraud_Kirov_Pouteau_fast.so $(PATH_LIB)/libA2_Emery_Gouraud_Kirov_Pouteau_low.so  $(PATH_LIB)/libA2_Emery_Gouraud_Kirov_Pouteau_fast.a  $(PATH_LIB)/libA2_Emery_Gouraud_Kirov_Pouteau_low.a   $(PATH_BIN)/IA-graphique-fast $(PATH_BIN)/IA-repetition-fast $(PATH_BIN)/IA-graphique-low $(PATH_BIN)/IA-repetition-low 
+all:$(PATH_LIB)/libA2_emery_gouraud_kirov_pouteau_fast.so $(PATH_LIB)/libA2_emery_gouraud_kirov_pouteau_low.so  $(PATH_LIB)/libA2_emery_gouraud_kirov_pouteau_fast.a  $(PATH_LIB)/libA2_emery_gouraud_kirov_pouteau_low.a   $(PATH_BIN)/IA-graphique-fast $(PATH_BIN)/IA-repetition-fast $(PATH_BIN)/IA-graphique-low $(PATH_BIN)/IA-repetition-low 
 
 
 
@@ -24,19 +24,19 @@ $(PATH_BIN)/IA-repetition-low: main-repetition-low.o $(PATH_LIB)/*
 	$(CC) -o $(PATH_BIN)/IA-repetition-low  main-repetition-low.o   $(LDLIBS)
 
 
-install:$(PATH_LIB)/libA2_Emery_Gouraud_Kirov_Pouteau_fast.a $(PATH_LIB)/libA2_Emery_Gouraud_Kirov_Pouteau_low.a
+install:$(PATH_LIB)/libA2_emery_gouraud_kirov_pouteau_fast.a $(PATH_LIB)/libA2_emery_gouraud_kirov_pouteau_low.a
 
-$(PATH_LIB)/libA2_Emery_Gouraud_Kirov_Pouteau_fast.a: A2_Emery_Gouraud_Kirov_Pouteau_fast.o
-	ar -cr $(PATH_LIB)/libA2_Emery_Gouraud_Kirov_Pouteau_fast.a A2_Emery_Gouraud_Kirov_Pouteau_fast.o
+$(PATH_LIB)/libA2_emery_gouraud_kirov_pouteau_fast.a: A2_emery_gouraud_kirov_pouteau_fast.o
+	ar -cr $(PATH_LIB)/libA2_emery_gouraud_kirov_pouteau_fast.a A2_emery_gouraud_kirov_pouteau_fast.o
 
-$(PATH_LIB)/libA2_Emery_Gouraud_Kirov_Pouteau_fast.so: A2_Emery_Gouraud_Kirov_Pouteau_fast.o
-	gcc -shared -fPIC A2_Emery_Gouraud_Kirov_Pouteau_fast.o -lm -o $(PATH_LIB)/../libA2_Emery_Gouraud_Kirov_Pouteau_fast.so
+$(PATH_LIB)/libA2_emery_gouraud_kirov_pouteau_fast.so: A2_emery_gouraud_kirov_pouteau_fast.o
+	gcc -shared -fPIC A2_emery_gouraud_kirov_pouteau_fast.o -lm -o $(PATH_LIB)/../libA2_emery_gouraud_kirov_pouteau_fast.so
 
-$(PATH_LIB)/libA2_Emery_Gouraud_Kirov_Pouteau_low.a: A2_Emery_Gouraud_Kirov_Pouteau_low.o
-	ar -cr $(PATH_LIB)/libA2_Emery_Gouraud_Kirov_Pouteau_low.a A2_Emery_Gouraud_Kirov_Pouteau_low.o
+$(PATH_LIB)/libA2_emery_gouraud_kirov_pouteau_low.a: A2_emery_gouraud_kirov_pouteau_low.o
+	ar -cr $(PATH_LIB)/libA2_emery_gouraud_kirov_pouteau_low.a A2_emery_gouraud_kirov_pouteau_low.o
 
-$(PATH_LIB)/libA2_Emery_Gouraud_Kirov_Pouteau_low.so: A2_Emery_Gouraud_Kirov_Pouteau_low.o
-	gcc -shared -fPIC A2_Emery_Gouraud_Kirov_Pouteau_low.o -lm -o $(PATH_LIB)/../libA2_Emery_Gouraud_Kirov_Pouteau_low.so
+$(PATH_LIB)/libA2_emery_gouraud_kirov_pouteau_low.so: A2_emery_gouraud_kirov_pouteau_low.o
+	gcc -shared -fPIC A2_emery_gouraud_kirov_pouteau_low.o -lm -o $(PATH_LIB)/../libA2_emery_gouraud_kirov_pouteau_low.so
 
 include dep
 

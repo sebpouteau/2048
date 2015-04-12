@@ -7,8 +7,7 @@
 
 #define NOMBRE_TEST 1
 
-strategy A2_Emery_Gouraud_Kirov_Pouteau_low();
-strategy A2_Emery_Gouraud_Kirov_Pouteau_low();
+strategy A2_emery_gouraud_kirov_pouteau_low();
 
 static long maximum_tile(grid g){
   long max_tile = 1;
@@ -43,7 +42,7 @@ int main (int argc, char **argv){
   int cpt_8192= 0;
   
   srand(time(NULL));
-  strategy str = A2_Emery_Gouraud_Kirov_Pouteau_low();
+  strategy str = A2_emery_gouraud_kirov_pouteau_low();
   while(n > 0){
     grid g = new_grid();
     add_tile(g);

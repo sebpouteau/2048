@@ -8,13 +8,13 @@
 
 static void display_grid(grid g);
 static void display_gameOver(bool *continuer, int *reponse_valide);
-strategy A2_Emery_Gouraud_Kirov_Pouteau_fast();
+strategy A2_emery_gouraud_kirov_pouteau_fast();
 
 int main(int argc, char *argv[]){
   keypad(stdscr, TRUE);
   bool continuer = true;
   srand(time(NULL));
-  strategy str = A2_Emery_Gouraud_Kirov_Pouteau_fast();
+  strategy str =  A2_emery_gouraud_kirov_pouteau_fast();
   while(continuer){
     grid g = new_grid();
     add_tile(g);

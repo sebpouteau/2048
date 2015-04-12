@@ -20,7 +20,7 @@
 #define BONUS_CASE_EMPTY 750
 #define MALUS_SIGN_CHANGE 1025
 
-strategy A2_Emery_Gouraud_Kirov_Pouteau_low();
+strategy A2_emery_gouraud_kirov_pouteau_low();
 static dir best_move(strategy str, grid g);
 static long int repetition_grid(grid g, int depth, dir *d);
 static long int maximum(long int max0, long int max1, dir dir0, dir dir1, dir *dir2);
@@ -28,7 +28,7 @@ static long int grid_note(grid g);
 static long int monotonicity(grid g, int x, int y);
 
 
-strategy A2_Emery_Gouraud_Kirov_Pouteau_low(){
+strategy A2_emery_gouraud_kirov_pouteau_low(){
   strategy str = malloc(sizeof(struct strategy_s));
   str->name = "strategy_low";
   str->mem = NULL;
