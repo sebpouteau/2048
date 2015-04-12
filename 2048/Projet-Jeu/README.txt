@@ -16,8 +16,7 @@ Aller dans Projet-Jeu/
 
 /!\ WARNING /!\
 Vérifiez au préalable que vous avez bien les bibliothèques ncurses et SDL d'installées.
-Ainsi que deux bibliothèques tierces (SDL_image et SDL_ttf),
-sinon il y aura un échec lors de la compilation.
+Ainsi que deux bibliothèques tierces (SDL_image et SDL_ttf), sinon il y aura un échec lors de la compilation.
 
 
 Compilation du Projet 2048 grace à la commande make :
@@ -39,6 +38,6 @@ Compilation des IA grace à la commande make :
 les exécutables sont dans bin/  (IA-repetition-fast/low "nombre de repetition"  && IA-graphique-fast/low)
 Les librairies créées sont placées dans lib/
 
-Les bibliothèque dynamique créées sont placées à la racine
+Les bibliothèques dynamiques créées sont placées à la racine
 Une bibliothèque dynamique est crée par la commande make, si vous souhaitez l'utiliser vous devez ajouter dans votre ./bash la commande:
-    export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH	    
+    export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
