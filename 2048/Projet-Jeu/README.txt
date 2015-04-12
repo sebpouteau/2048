@@ -1,4 +1,4 @@
-### PROJET 2048 ###
+        ### PROJET 2048 ###
 (Licence 2 d'informatique - Année 2015)
 
 
@@ -33,12 +33,12 @@ Les exécutables sont placés dans bin/
                 L'IA
    ================================= */
 
-Aller dans Projet-IA/
-
 Compilation des IA grace à la commande make :
   make 
 
-les exécutables sont dans bin/
+les exécutables sont dans bin/  (IA-repetition-fast/low "nombre de repetition"  && IA-graphique-fast/low)
+Les librairies créées sont placées dans lib/
 
+Les bibliothèque dynamique créées sont placées à la racine
 Une bibliothèque dynamique est crée par la commande make, si vous souhaitez l'utiliser vous devez ajouter dans votre ./bash la commande:
     export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH	    
