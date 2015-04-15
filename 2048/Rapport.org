@@ -189,18 +189,18 @@ SDL_ttf et SDL_getenv), nous avons créer l'interface graphique du 2048 sur
 une fenêtre indépendante. Cette fenêtre s'ouvre centré à l'écran, et s'adapte
 à la taille de la grille (=GRID_SIDE=) définit dans le grid.h.
 Le texte apparait parfaitement centré et est inhérent à =GRID_SIDE=. La police
-du texte est aussi en adéquation avec la taille de la grille.//
+du texte est aussi en adéquation avec la taille de la grille.\\
 L'interface graphique propose aussi de recommencer la partie (touche "Entrée"),
 mais aussi d'abandonner (touche "Echap" ou la croix en haut à droite) et ferme 
-le programme.//
+le programme.\\
 Lorsque la partie se termine (c'est-à-dire lorsqu'aucun déplacement n'est possible),
-le joueur (s'il a obtenu un nouvel Highscore) a la possibilité de mémoriser son 
+le joueur (s'il a obtenu un nouvel Highscore) à la possibilité de mémoriser son 
 pseudo. S'il n'entre pas son pseudo (par exemple : en relançant la partie ou en quittant le programme),
-le pseudo qui sera mis par défaut sera "Anyone".//
+le pseudo qui sera mis par défaut sera "Anyone".\\
 Le code est commenté de façon à être compréhensible, et le nom des variables
-est en anglais.//
+est en anglais.\\
 Il n'y a aucune fuite de mémoire, mise à part celle de base liée à la
-SDL et référencée.//
+SDL et référencée.\\
 
 Nous avons intégré des options supplémentaire. Le jeu se lance sur un
 menu qui permet de choisir le dégrader des tuiles du jeu. De plus, nous
@@ -237,20 +237,45 @@ En parallèle, elle modifie une variable de direction passée par référence.
 Le mouvement à effectuer est alors cette variable directionnelle.
 
 
-**** Intelligence Artificielle Rapide
+*** Intelligence Artificielle Rapide
 Dans l'intelligence artificielle rapide, nous avons décidé de faire une 
 exploration de 2 et d'étendre à 3 lorsque qu'il ne reste que 0 ou 1 case 
 vide dans la grille.
-**** Intelligence Artificielle Lente
+
+\noindent
+#+BEGIN_EXAMPLE
+Sur 1000 lancés :
+
+Nombre de fois 16 : 0
+Nombre de fois 32 : 0
+Nombre de fois 64 : 0
+Nombre de fois 128 : 0
+Nombre de fois 256 : 0
+Nombre de fois 512 : 9
+Nombre de fois 1024 : 81
+Nombre de fois 2048 : 585
+Nombre de fois 4096 : 322
+Nombre de fois 8192 : 3
+
+#+END_EXAMPLE
+*** Intelligence Artificielle Lente
 Dans l'intelligence artificielle rente, nous avons décidé de faire
 une exploration de profondeur:
 - 2 par defaut
 - 3 pour lorsque qu'il reste moins de 6 cases vide
 - 4 pour lorsque qu'il reste moins de 3 cases vide
 - 5 pour lorsque qu'il reste moins de 2 cases vide
+
+\newpage
+*** Fonction de notation 
+\noindent
+Nous avons une fonction de note general qui utilise une autre fonction.\\
+
 **** Fonction de notation 
 Nous avons une fonction de note générale
 
+
+_Fonction =grid_note=_:
 #+BEGIN_SRC c
 static long int grid_note(grid g){
   long int cpt = 0;
@@ -270,20 +295,42 @@ static long int grid_note(grid g){
       // Monotonicite de la grille 
       cpt_sign_change += monotonicity(g, x, y);
     }
-  }
-  // Bonus coin superieur gauche
-  if(get_tile(g, 0, 0) == max)
-    cpt += BONUS_CORNER * max;
-  // Autres bonus
-  cpt += BONUS_HIGH_MAXIMUM * pow(2, max);
-  cpt += BONUS_SCORE * grid_score(g);
-  cpt += BONUS_CASE_EMPTY * cpt_case_empty;
-  // Malus si pas monotone
-  cpt -= MALUS_SIGN_CHANGE * cpt_sign_change;
+    // Bonus coin superieur gauche
+    if(get_tile(g, 0, 0) == max)
+      cpt += BONUS_CORNER * max;
+    // Autres bonus
+    cpt += BONUS_HIGH_MAXIMUM * pow(2, max);
+    cpt += BONUS_SCORE * grid_score(g);
+    cpt += BONUS_CASE_EMPTY * cpt_case_empty;
+    // Malus si pas monotone
+    cpt -= MALUS_SIGN_CHANGE * cpt_sign_change;
 
-  return cpt;
-}
+    return cpt;
+  }
 #+END_SRC
+
+Notre fonction de notation =grid_note=, elle parcour une fois la grille et determine durant le parcours:
+ - La somme des tuile de la grille
+ - Récupère la valeur maximal de la grille
+ - Compte le nombre de cases vides
+ - Evalue la monotonicité de la grille grace a la focntion monotonicité ci-dessous
+
+
+
+Ensuite la fonction attribue des /bonus/ et des /malus/ en fonction de la disposition de la grille.\\
+_Bonus_:
+ - Si le coins en haut à gauche possède la tuile maximal
+ - Selon le nombre de cases vides ( Plus il y en a mieux c'est)
+ - Selon le score
+ - Selon la tuile maximum
+_Malus_:
+ - Selon sa monotonicité
+\vspace{0.5cm}
+
+_Fonction Monotonicité_:
+=======
+  
+
 Nous avons besoin d'une fonction qui note la monotonicité de la grille,
 c'est-à-dire que nous vérifions que les grilles sont ordonnées de manière
 à avoir les meilleures tuiles en haut à gauche.
@@ -299,11 +346,27 @@ static long int monotonicity(grid g, int x, int y){
   return cpt_sign_change;
 }
 #+END_SRC
-\begin
+
+Nous avons besoin d'une foncion qui note la monotonicité de la grille
+c'est à dire nous vérifions que les grilles sont ordonnées de manière
+à ce que les meilleures soit en haut des colonnes et à gauche des lignes.
+Elle compte le nombre de cases mal ordonnées.\\
+
+\hspace{1.2cm} +\leftarrow\\
++\uparrow
+\begin{tabular}{ | c | c | c | c | }
 
 
-* Architecture du Projet
+\hline
+64 & 32 & 16 & 8 \\ \hline
+32 & 16 & 8  & 4 \\ \hline
+16 & 8  & 4  & 2 \\ \hline
+8  & 4  & 2  & 0 \\ \hline
+\end{tabular}
+
+
 \newpage
+* Architecture du Projet
 #+BEGIN_EXAMPLE
   Projet-Jeu 
        |                                                                                      
@@ -362,3 +425,70 @@ static long int monotonicity(grid g, int x, int y){
                   
 
 #+END_EXAMPLE
+
+  On a choisit une architecture classique pour notre projet.
+   - Un dossier include/ pour toutes les interfaces
+   - Un dossier src/ contenant
+     - Un dossier grid/ contenant les implementation du jeu général
+     - Un dossier ncurses/ contenant l'implementation de l'interface du terminal
+     - Un dossier sdl/ contenant l'implementation de l'interface graphique et les différentes images necessaires.
+     - Un dossier strategy/ contenant nos deux strategies fast/low et differentes implementation pour observer le deroulement des intelligence artificielle.
+     - Un dossier test-fonction/ contenant l'implementation des tests
+
+
+* Répartition du travail
+
+Nous avons tout les quatres travailler à implémentation de grid.c
+Nous nous sommes tous entraidé à la réalisation de ce projet (comme le Rapport, correction final des fichiers ..) 
+Ensuite nous nous sommes répartit le travail comme suit:
+
+_Ysabelle Emery_:
+- Réalsiation des test de départ 
+- Correction des erreurs et relecture complète des fichiers
+- realisation de toutes les images du projet
+- Participation à la ncurses
+- Correction de tous les test pour les rendre extensible avec =GRID_SIDE= 
+
+_Jimmy Gouraud_:
+- Correction orthographique du projet avec Relecture et mise des variables en anglais
+- Réalisation quasiment entière de l'implementation de l'interface graphique SDL
+- Intégration d'un menu et d'une animation à l'interface
+- Réalisation de commentaire
+
+_Yordan Kirov_:
+- Travail sur les tests 
+- Conception de différentes fonction de notation de grille pour l'intelligence artificielle
+- Réalisation de commentaire
+- Travail sur le \LaTeX
+
+_Sébastien Pouteau_:
+- Réalisation de l'interface ncurses et correction pour la rendre extensible ( après première evaluation)
+- Réalisation de la fonction =do_move= et =can_move= factorisé
+- Réalisation de tout les Makefile et arborescence du projet et creation du dépot
+- Réalisation des tests de la première version 
+- Realisation de l'étude de profondeur des fonctions de l'intelligence artificelle
+- Normalisation des fichiers de strategie
+
+* Problème rencontrer
+Liste des problèmes rencontrés:
+- Syncronisation entre l'équipe
+- Utilisation des outils au début (comme svn, gdb, Makefile .. ) 
+- Problème de comprehension du contrat de certaine fonction
+- Génération des librairie dynamique
+
+* Critique des outils
+
+- GDB: Difficulté de prise en main, mais permet un débeugage efficace
+- SVN: 
+  - Probleme lors des commit/up sur nos machines
+  - Problème de conflit entre les versions
+  - Permet une bonne gestion d'un projet
+  - permet d'avoir acces au ancienne version
+ 
+- Doxygène: Normalisation de tous les contrats des fonctions assez fastidieux. Mais produit une documentation complète
+- \LaTeX: 
+
+
+
+
+
