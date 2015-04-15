@@ -1,4 +1,3 @@
-
 #+LATEX_HEADER: \usepackage{color}
 #+LATEX_HEADER: \usepackage{listings}
 #+LATEX_HEADER: \usepackage{indentfirst}
@@ -13,21 +12,21 @@
 \newpage
 * Introduction
 
-Dans le cadre de l'UE Environnement de DÃ©veloppement et Projet de
-Programmation 1, nous avons Ã©tÃ© amenÃ© Ã  crÃ©er un jeu 2048.\\
-*Ce jeu consiste* Ã  obtenir une tuile de valeur 2048 en fusionnant des
-tuiles de mÃªme valeur de maniÃ¨re Ã  en obtenir une deux fois plus
-grande. Le jeu commence avec deux tuiles de valeur alÃ©atoire (2 ou 4). Il se joue
-sur une grille de 4x4, avec quatre dÃ©placements possibles (Haut, Bas, Droite, Gauche). 
-A chaque dÃ©placement un tuile de valeur 2 ou 4 apparaÃ®t alÃ©atoirement sur la grille.\\
-Ce jeu est une application mobile sortie en mars 2014, programmÃ© par
-Gabriele Circulli, un web-designer italien. Il s'est inspirÃ© du jeu
+Dans le cadre de l'UE Environnement de Développement et Projet de
+Programmation 1, nous avons été amené à créer un jeu 2048.\\
+*Ce jeu consiste* à obtenir une tuile de valeur 2048 en fusionnant des
+tuiles de même valeur de manière à en obtenir une deux fois plus
+grande. Le jeu commence avec deux tuiles de valeur aléatoire (2 ou 4). Il se joue
+sur une grille de 4x4, avec quatre déplacements possibles (Haut, Bas, Droite, Gauche). 
+A chaque déplacement un tuile de valeur 2 ou 4 apparaÃ®t aléatoirement sur la grille.\\
+Ce jeu est une application mobile sortie en mars 2014, programmé par
+Gabriele Circulli, un web-designer italien. Il s'est inspiré du jeu
 1024 dont le principe est identique sauf le but qui est
-d'atteindre pour le coup 1024. Ce jeu 1024 est lui-mÃªme basÃ© sur Threes un jeu du
-mÃªme style.\\
+d'atteindre pour le coup 1024. Ce jeu 1024 est lui-même basé sur Threes un jeu du
+même style.\\
 
 \noindent
-Lien pour tester les diffÃ©rents jeux: 
+Lien pour tester les différents jeux: 
 
  [[http://gabrielecirulli.github.io/2048/][- lien 2048]]
 
@@ -37,24 +36,23 @@ Lien pour tester les diffÃ©rents jeux:
 \newpage
 
 * Description Projet
-
-Le projet a Ã©tÃ© sÃ©parÃ© en deux parties diffÃ©rentes.
-- RÃ©alisation de l'implÃ©mentation du 2048 et crÃ©ation d'une interface
+Le projet a été séparé en deux parties différentes.
+- Réalisation de l'implémentation du 2048 et création d'une interface
   graphique sur le terminal.
-- RÃ©alisation d'une interface graphique indÃ©pendante et conception de
-  deux IA capable de rÃ©soudre le 2048.
+- Réalisation d'une interface graphique indépendante et conception de
+  deux IA capable de résoudre le 2048.
 
 
-** ImplÃ©mentation du 2048
+** Implémentation du 2048
 *** Fonction de Base
-ImplÃ©mentation des fonctions dÃ©criteq dans l'interface fournit
+Implémentation des fonctions décriteq dans l'interface fournit
 /grid.h/.
 
 #+BEGIN_SRC c
-/* CrÃ©er une nouvelle grille */
+/* Créer une nouvelle grille */
 grid new_grid ();
 
-/* Supprime la grille passÃ©e en paramÃ¨tre*/
+/* Supprime la grille passée en paramètre*/
 void delete_grid (grid g); 
 
 /* Copie une grille src dans une grille dst */
@@ -72,13 +70,13 @@ void set_tile (grid g, int x, int y, tile t);
 /* Verifie que la direction 'd' est valide */ 
 bool can_move (grid g, dir d); 
 
-/* Renvoie game_over si il n'y a plus de dÃ©placement possible */
+/* Renvoie game_over si il n'y a plus de déplacement possible */
 bool game_over (grid g);
 
 /* Effectue un mouvement selon la direction 'd' */
 void do_move (grid g, dir d);
 
-/* Ajoute une tuile alÃ©atoirement de valeur 2 ou 4 sur la grille. */
+/* Ajoute une tuile aléatoirement de valeur 2 ou 4 sur la grille. */
 void add_tile (grid g); 
 
 /* Effectue le mouvement et ajoute une tuile */
@@ -87,22 +85,22 @@ void play (grid g, dir d);
 
 \vspace{0.5cm}
 Ces fonctions permettent le bon fonctionnement du jeu.  
-Nous avons essayÃ© de simplifier toutes ces fonctions de bases. Pour
-cela, et afin d'Ã©viter des duplications de code notamment dans
-=can_move= et =do_move=, nous avons fait appel Ã  des fonctions static.
+Nous avons essayé de simplifier toutes ces fonctions de bases. Pour
+cela, et afin d'éviter des duplications de code notamment dans
+=can_move= et =do_move=, nous avons fait appel à des fonctions static.
  
 \newpage
 *** Fonction static
 \noindent
-_DÃ©claration des fonctions static de grid.c_:
+_Déclaration des fonctions static de grid.c_:
 #+BEGIN_SRC c 
-/* Permet d'incrÃ©menter deux variables ayant des incrÃ©mentations diffÃ©rentes. */
+/* Permet d'incrémenter deux variables ayant des incrémentations différentes. */
 static void 
 incrementation(int *i1, int *i2, int incrementationI1, int incrementationI2)
 
 /*
- * DÃ©place l'ensemble de la grille dans la direction voulue 
- * Les directions prÃ©requis :   UP    -> (grid, 0, 0, 0, 1)
+ * Déplace l'ensemble de la grille dans la direction voulue 
+ * Les directions prérequis :   UP    -> (grid, 0, 0, 0, 1)
  *                              DOWN  -> (grid, 0, GRID_SIDE - 1, 0, -1)
  *                              LEFT  -> (grid, 0, 0, 1, 0)
  *                              RIGHT -> (grid, GRID_SIDE - 1, 0, -1, 0)
@@ -111,15 +109,15 @@ static void move(grid g, int i, int j, int a, int b);
 
 /*
  * Teste sur l'ensemble de la grille si le deplacement dans la direction 
- * voulue est faisable (en fonction des paramÃ¨tres) 
- * Les directions prÃ©requis :   UP    -> (grid, 0, 0, 0, 1)
+ * voulue est faisable (en fonction des paramètres) 
+ * Les directions prérequis :   UP    -> (grid, 0, 0, 0, 1)
  *                              DOWN  -> (grid, 0, GRID_SIDE - 1, 0, -1)
  *                              LEFT  -> (grid, 0, 0, 1, 0)
  *                              RIGHT -> (grid, GRID_SIDE - 1, 0, -1, 0)
  */
 static bool possible(grid g, int i, int j, int a, int b);
 
-/* Fusionne deux cases et met la deuxiÃ¨me case Ã  0 */
+/* Fusionne deux cases et met la deuxième case à 0 */
 static void fusion(grid g, int i, int j, int a, int b);
 
 /* Ajoute add_score au score de la grid */
@@ -129,76 +127,191 @@ static void set_grid_score(grid g, unsigned long int add_score);
 \bigskip
 _Description de l'utilisation des fonctions static_: 
 - move :
-  Elle sert Ã  simplifier la fonction =do_move=, car elle effectue tous 
-  les dÃ©placements en fonction des paramÃ¨tres fournis. Par consÃ©quent,
-  =do_move= est reduite a appelÃ© simplement =move= avec les bons paramÃ¨tre.
+  Elle sert à simplifier la fonction =do_move=, car elle effectue tous 
+  les déplacements en fonction des paramètres fournis. Par conséquent,
+  =do_move= est reduite a appelé simplement =move= avec les bons paramètre.
 - fusion :
-  Elle est utilisÃ©e pour faire les fusions dans la fonction =move=.
+  Elle est utilisée pour faire les fusions dans la fonction =move=.
 - incrementation :
-  Elle permet d'Ã©vitÃ© la repÃ©tition de code due a l'incrementation des
+  Elle permet d'évité la repétition de code due a l'incrementation des
   variable dans =move= et =possible=.
 - possible : 
   Elle permet de simplifier la fonction =can_move=, car lorsqu'on lui passe
-  certains paramÃ¨tres, elle vÃ©rifie la possibilitÃ© de faire un
-  mouvement. Ce qui reduit la fonction =can_move= Ã  appeler la
-  fonction =possible= avec les bons paramÃ¨tres.
+  certains paramètres, elle vérifie la possibilité de faire un
+  mouvement. Ce qui reduit la fonction =can_move= à appeler la
+  fonction =possible= avec les bons paramètres.
 \newpage
 *** Interface Graphique sur terminal
-Nous avons choisi d'utilisÃ© la bibliothÃ¨que Ncurses pour pouvoir
-gÃ©nÃ©rer notre grille dans le terminal.\\
-Le jeu se joue avec les flÃ¨ches directionnelles. Nous avons intÃ©grÃ©
-des couleurs afin d'Ã©gayer l'affichage de notre jeu.\\
-Nous proposons Ã©galement des options supplÃ©mentaires:
+
+Nous avons choisi d'utilisé la bibliothèque Ncurses pour pouvoir
+générer notre grille dans le terminal.\\
+Le jeu se joue avec les flèches directionnelles. Nous avons intégré
+des couleurs afin d'égayer l'affichage de notre jeu.\\
+Nous proposons également des options supplémentaires:
 - q: permet de quitter le jeu
 - r: permet de recommencer le jeu
-De plus, si vous perdez, on vous offre la possibilitÃ© de soit rejouer,
+De plus, si vous perdez, on vous offre la possibilité de soit rejouer,
 soit quitter le jeu.\\
-Nous avons Ã©galement intÃ©grÃ© par esprit de challenge un Highscore. \\
-L'affichage graphique s'adapte Ã  la taille de la grille. Mais ne
-modifie pas la taille du terminal d'oÃ¹ il est lancÃ©.
+Nous avons également intégré par esprit de challenge un Highscore. \\
+L'affichage graphique s'adapte à la taille de la grille. Mais ne
+modifie pas la taille du terminal d'où il est lancé.
+*** Réalisation de test
 
-
-*** RÃ©alisation de test
-
-Les tests sont dÃ©clenchÃ©s par la commande *make check*.
+Les tests sont déclenchés par la commande *make check*.
 \bigskip\\
-Nous avons utilisÃ© gcov, ce qui nous a permis de savoir que notre
-programme de test vÃ©rifie 94.96% de notre fichier grid.c.
+Nous avons utilisé gcov, ce qui nous a permis de savoir que notre
+programme de test vérifie 94.96% de notre fichier grid.c.
 Les 5% manquant sont dus au fait que l'on ne teste pas la fonction
-=play= car elle utilise simplement deux autres fonctions testÃ©es prÃ©cedemment.
+=play= car elle utilise simplement deux autres fonctions testées précedemment.
  
 #+BEGIN_EXAMPLE
 File 'grid.c'
-Ligne exÃ©cutÃ©es: 94.96% de 139
+Ligne exécutées: 94.96% de 139
 Creating 'grid.c.gcov'
 #+END_EXAMPLE
 \noindent
-Nous avons testÃ© indÃ©pendamment chaque dÃ©placement, pour savoir
-prÃ©cisement quel dÃ©placement pourrait provoquer une erreur. 
+Nous avons testé indépendamment chaque déplacement, pour savoir
+précisement quel déplacement pourrait provoquer une erreur. 
 
 
-** Interface Graphique et Intelligence Artificielle
+Les tests ont été réalisé de manière a être extansible c'est à dire
+que quelque soit la valeur de =GRID_SIDE= les tests permettent de
+tester les différentes fonctions.
 
+
+
+** Interface Graphique 
 *** Interface Graphique SDL
 
-A partir de la bibliothÃ¨que SDL et de ses bibliothÃ¨ques tierces (SDL_image, 
-SDL_ttf et SDL_getenv), nous avons crÃ©er l'interface graphique du 2048 sur 
-une fenÃªtre indÃ©pendante. Cette fenÃªtre s'ouvre centrÃ© Ã  l'Ã©cran, et s'adapte
-Ã  la taille de la grille (=GRID_SIDE=) dÃ©finit dans le grid.h.
-Le texte apparait parfaitement centrÃ© et est inhÃ©rent Ã  =GRID_SIDE=. La police
-du texte est aussi en adÃ©quation avec la taille de la grille.//
-L'interface graphique propose aussi de recommencer la partie (touche "EntrÃ©e"),
-mais aussi d'abandonner (touche "Echap" ou la croix en haut Ã  droite) et ferme 
+A partir de la bibliothèque SDL et de ses bibliothèques tierces (SDL_image, 
+SDL_ttf et SDL_getenv), nous avons créer l'interface graphique du 2048 sur 
+une fenêtre indépendante. Cette fenêtre s'ouvre centré à l'écran, et s'adapte
+à la taille de la grille (=GRID_SIDE=) définit dans le grid.h.
+Le texte apparait parfaitement centré et est inhérent à =GRID_SIDE=. La police
+du texte est aussi en adéquation avec la taille de la grille.//
+L'interface graphique propose aussi de recommencer la partie (touche "Entrée"),
+mais aussi d'abandonner (touche "Echap" ou la croix en haut à droite) et ferme 
 le programme.//
-Lorsque la partie se termine (c'est-Ã -dire lorsqu'aucun dÃ©placement n'est possible),
-le joueur (s'il a obtenu un nouvel Highscore), a la possibilitÃ© de mÃ©moriser son 
+Lorsque la partie se termine (c'est-à-dire lorsqu'aucun déplacement n'est possible),
+le joueur (s'il a obtenu un nouvel Highscore), a la possibilité de mémoriser son 
 pseudo. S'il n'entre pas son pseudo (en relanÃ§ant la partie ou en quittant le programme),
-le pseudo qui sera mis par dÃ©faut sera "Anyone".//
-Le code est commentÃ© de faÃ§on Ã  Ãªtre comprÃ©hensible, et les noms des variables
+le pseudo qui sera mis par défaut sera "Anyone".//
+Le code est commenté de faÃ§on à être compréhensible, et les noms des variables
 est en anglais.//
-Aucune fuite de mÃ©moire n'est Ã  dÃ©plorer, mise Ã  part celle de base liÃ©e Ã  la
-SDL et rÃ©fÃ©rencÃ©e.//
+Aucune fuite de mémoire n'est à déplorer, mise à part celle de base liée à la
+SDL et référencée.//
+
+Nous avons intégré des options supplémentaire. Le jeu se lance sur un
+menu qui permet de choisir le degrader des tuiles du jeu. Deplus nous
+durant la partie on peut égalament changer la couleur grâce aux
+touches "f1" "f2" et "f3".//
+Nous avons intégré une petite animation dans le menu de départ.
 
 \newpage
-* Architecture du Projet
+*** Intelligence Artificielle
+Nous avons implémenté deux intélligence artificielle une qui doit
+réalisé le meilleur score en 10secondes et une autre en moins de 2
+minutes.
 
+Pour observer nos intélligence artificielle a l'oeuvre nous avons
+conçu deux programmes de visualisation. La première permettant de
+répeter n fois l'intélligence artificielle et une autres permettant
+de l'observer grâce à un affichage ncurses, un mouvement est fait a
+chaque fois que l'on presse la touche "UP".
+
+_Le principe de notre fonction d'exploration_:
+Elle créé un tableau de 4 cases permettant de stocker les scores issus
+des 4 directions. Si la profondeur est de 0 alors elle renvoye la note
+de la grille encour. Tout d'abord la fonction effectue un mouvement puis
+elle génère l'appartion de 2 puis se rappele avec n-1 en pronfondeur
+puis elle fait de même avec l'appartion de 4. Elle stock alors la
+moyenne des scores obtenu dans la cases du tableau correspondant a la
+direction de départ. Et en fin elle retourne le meilleur score entre
+les directions possibles. En parallèle elle modifie une variable
+direction passer par reference. Le mouvement à effectuer est alors
+cette variable direction.
+
+
+Nos deux Intélligences artificielle explore a une profondeur de 2.
+
+**** Intélligence Artificielle Rapide
+Dans l'intélligence artificielle rapide, nous avons désidé de faire
+une exploration de 3 lorsque qu'il ne reste 0 ou 1 case vide dans la
+grille.
+**** Intélligence Artificielle Lente
+Dans l'intélligence artificielle rapide, nous avons désidé de faire
+une exploration de:
+- 3 pour lorsque qu'il reste moins de 6 cases vide
+- 4 pour lorsque qu'il reste moins de 3 cases vide
+- 5 pour lorsque qu'il reste moins de 2 cases vide
+**** Fonction de notation 
+
+* Architecture du Projet
+\newpage
+#+BEGIN_EXAMPLE
+
+  Projet-Jeu 
+       |                                                                                      
+       + - README.txt                                             
+       + - Makefile                                           
+       + - include                                      
+       |    |                                      
+       |    + - grid.h                                      
+       |    + - strategy.h                                      
+       |    + - gridSDL.h                                      
+       |
+       + - src
+            |                                           
+            + - grid                                           
+            |     |                                      
+            |     + - Makefile                                      
+            |     + - grid.c                                      
+            |
+            + - test-fonction                                      
+            |     |                                      
+            |     + - Makefile                                      
+            |     + - fonction-test.c                                      
+            |     + - main-fonction-test.c                                      
+            |                                          
+            + - ncurses
+            |     |
+            |     + - Makefile                                      
+            |     + - main-ncurses.c                                      
+            |     + - highscore_ncurses.txt                                      
+            |                                           
+            + - sdl
+            |     |                                      
+            |     + - Makefile                                      
+            |     + - gridSDL.c                                      
+            |     + - main-sdl.c
+            |     + - arial.ttf                                      
+            |     + - leadcoat.ttf                                      
+            |     + - animation_penguin                                     
+            |     |     + ...                               
+            |     |                                      
+            |     + - menu_button                                     
+            |     |     + ...                               
+            |     |                                      
+            |     + - tiles
+            |           |                                 
+            |           + - blue
+            |           |     + ...                               
+            |           |                                 
+            |           + - green
+            |           |     + ...                               
+            |           | 
+            |           + - red
+            |                 + ...                               
+            |                                           
+            + - startegy
+                  |                                      
+                  + - Makefile                                      
+                  + - A2_emery_gouraud_kirov_pouteau_fast.c
+                  + - A2_emery_gouraud_kirov_pouteau_fast.c
+                  + - main-graphique-fast.c
+                  + - main-repetition-fast.c
+                  + - main-graphique-low.c
+                  + - main-repetition-low.c
+                  
+
+#+END_EXAMPLE
