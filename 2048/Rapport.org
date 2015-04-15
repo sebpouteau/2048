@@ -141,20 +141,6 @@ _Description de l'utilisation des fonctions static_:
   mouvement. Ce qui reduit la fonction =can_move= à appeler la
   fonction =possible= avec les bons paramètres.
 \newpage
-*** Interface Graphique sur terminal
-
-Nous avons choisi d'utilisé la bibliothèque Ncurses pour pouvoir
-générer notre grille dans le terminal.\\
-Le jeu se joue avec les flèches directionnelles. Nous avons intégré
-des couleurs afin d'égayer l'affichage de notre jeu.\\
-Nous proposons également des options supplémentaires:
-- q: permet de quitter le jeu
-- r: permet de recommencer le jeu
-De plus, si vous perdez, on vous offre la possibilité de soit rejouer,
-soit quitter le jeu.\\
-Nous avons également intégré par esprit de challenge un Highscore. \\
-L'affichage graphique s'adapte à la taille de la grille. Mais ne
-modifie pas la taille du terminal d'où il est lancé.
 *** Réalisation de test
 
 Les tests sont déclenchés par la commande *make check*.
@@ -181,6 +167,21 @@ tester les différentes fonctions.
 
 
 ** Interface Graphique 
+*** Interface Graphique sur terminal
+
+Nous avons choisi d'utilisé la bibliothèque Ncurses pour pouvoir
+générer notre grille dans le terminal.\\
+Le jeu se joue avec les flèches directionnelles. Nous avons intégré
+des couleurs afin d'égayer l'affichage de notre jeu.\\
+Nous proposons également des options supplémentaires:
+- q: permet de quitter le jeu
+- r: permet de recommencer le jeu
+De plus, si vous perdez, on vous offre la possibilité de soit rejouer,
+soit quitter le jeu.\\
+Nous avons également intégré par esprit de challenge un Highscore. \\
+L'affichage graphique s'adapte à la taille de la grille. Mais ne
+modifie pas la taille du terminal d'où il est lancé.
+
 *** Interface Graphique SDL
 
 A partir de la bibliothèque SDL et de ses bibliothèques tierces (SDL_image, 
@@ -196,7 +197,7 @@ Lorsque la partie se termine (c'est-à-dire lorsqu'aucun déplacement n'est possib
 le joueur (s'il a obtenu un nouvel Highscore), a la possibilité de mémoriser son 
 pseudo. S'il n'entre pas son pseudo (en relanÃ§ant la partie ou en quittant le programme),
 le pseudo qui sera mis par défaut sera "Anyone".//
-Le code est commenté de faÃ§on à être compréhensible, et les noms des variables
+Le code est commenté de façon à être compréhensible, et le nom des variables
 est en anglais.//
 Aucune fuite de mémoire n'est à déplorer, mise à part celle de base liée à la
 SDL et référencée.//
@@ -208,9 +209,10 @@ touches "f1" "f2" et "f3".//
 Nous avons intégré une petite animation dans le menu de départ.
 
 \newpage
-*** Intelligence Artificielle
-Nous avons implémenté deux intélligence artificielle une qui doit
-réalisé le meilleur score en 10secondes et une autre en moins de 2
+** Intelligence Artificielle
+
+Nous avons implémenté deux intelligences artificielles, une qui doit
+réalisé le meilleur score en moins de 10 secondes et une autre en moins de 2
 minutes.
 
 Pour observer nos intélligence artificielle a l'oeuvre nous avons
@@ -222,34 +224,88 @@ chaque fois que l'on presse la touche "UP".
 _Le principe de notre fonction d'exploration_:
 Elle créé un tableau de 4 cases permettant de stocker les scores issus
 des 4 directions. Si la profondeur est de 0 alors elle renvoye la note
-de la grille encour. Tout d'abord la fonction effectue un mouvement puis
-elle génère l'appartion de 2 puis se rappele avec n-1 en pronfondeur
-puis elle fait de même avec l'appartion de 4. Elle stock alors la
-moyenne des scores obtenu dans la cases du tableau correspondant a la
-direction de départ. Et en fin elle retourne le meilleur score entre
-les directions possibles. En parallèle elle modifie une variable
+de la grille en cour. Tout d'abord la fonction effectue un mouvement
+dans une direction  à la profondeur n puis elle génère l'appartion de la tuile 2 sur une case vide de la grille
+et la fonction se rappelle avec une profondeur de n-1. Elle fait de
+même avec l'appartion d'un 4 sur la même case vide. Elle effectue cette
+serie d'opération sur toutes les cases vides de la grille courante.
+Une fois qu'elle a parcouru toutes les case vide elle calcule la
+moyenne des notes obtenu.Elle la stock alors dans la case
+du tableau correspondant à la direction effuectuer. Elle choisie
+ensuite la meilleurs note parmis les 4 directions et la renvoye. En
+parallèle elle modifie une variable de 
 direction passer par reference. Le mouvement à effectuer est alors
 cette variable direction.
 
 
-Nos deux Intélligences artificielle explore a une profondeur de 2.
-
-**** Intélligence Artificielle Rapide
+**** Intelligence Artificielle Rapide
 Dans l'intélligence artificielle rapide, nous avons désidé de faire
-une exploration de 3 lorsque qu'il ne reste 0 ou 1 case vide dans la
+une exploration de 2 et d'etendre à 3 lorsque qu'il ne reste que  0 ou 1 case vide dans la
 grille.
-**** Intélligence Artificielle Lente
-Dans l'intélligence artificielle rapide, nous avons désidé de faire
-une exploration de:
+**** Intelligence Artificielle Lente
+Dans l'intélligence artificielle Lente, nous avons désidé de faire
+une exploration de profondeur:
+- 2 par defaut
 - 3 pour lorsque qu'il reste moins de 6 cases vide
 - 4 pour lorsque qu'il reste moins de 3 cases vide
 - 5 pour lorsque qu'il reste moins de 2 cases vide
 **** Fonction de notation 
+Nous avons une focntion de note general
+
+#+BEGIN_SRC c
+static long int grid_note(grid g){
+  long int cpt = 0;
+  int cpt_case_empty = 0;
+  int cpt_sign_change = 0;
+  int max = 0;
+  // Parcours de la grille
+  for(int y = 0; y < GRID_SIDE; y++){
+    for(int x = 0; x < GRID_SIDE; x++){
+      cpt += get_tile(g, x, y);
+      // Determination de la valeur maximum 
+      if(get_tile(g, x, y) > max)
+	max = get_tile(g, x, y);
+      // Determination du nombre de case vide
+      if(get_tile(g, x, y) == 0)
+	cpt_case_empty++;
+      // Monotonicite de la grille 
+      cpt_sign_change += monotonicity(g, x, y);
+    }
+  }
+  // Bonus coin superieur gauche
+  if(get_tile(g, 0, 0) == max)
+    cpt += BONUS_CORNER * max;
+  // Autres bonus
+  cpt += BONUS_HIGH_MAXIMUM * pow(2, max);
+  cpt += BONUS_SCORE * grid_score(g);
+  cpt += BONUS_CASE_EMPTY * cpt_case_empty;
+  // Malus si pas monotone
+  cpt -= MALUS_SIGN_CHANGE * cpt_sign_change;
+
+  return cpt;
+}
+#+END_SRC
+Nous avons besoin d'une foncion qui note la monotonicité de la grille
+c'est à dire nous vérifions que les grilles sont ordonnées de manière
+à ce que les meilleures soit en haut des colonnes et à gauche des lignes.
+#+BEGIN_SRC c
+static long int monotonicity(grid g, int x, int y){
+  int cpt_sign_change = 0;
+  if(x < GRID_SIDE - 1){
+    if(get_tile(g, x, y) < get_tile(g, x + 1, y))
+      cpt_sign_change += get_tile(g, x + 1, y) - get_tile(g, x, y);
+    if(get_tile(g, y, x) < get_tile(g, y, x + 1))
+      cpt_sign_change += get_tile(g, y, x + 1) - get_tile(g, y, x);
+  }  
+  return cpt_sign_change;
+}
+#+END_SRC
+\begin
+
 
 * Architecture du Projet
 \newpage
 #+BEGIN_EXAMPLE
-
   Projet-Jeu 
        |                                                                                      
        + - README.txt                                             
@@ -293,21 +349,13 @@ une exploration de:
             |     |     + ...                               
             |     |                                      
             |     + - tiles
-            |           |                                 
-            |           + - blue
-            |           |     + ...                               
-            |           |                                 
-            |           + - green
-            |           |     + ...                               
-            |           | 
-            |           + - red
-            |                 + ...                               
+            |           + ...                               
             |                                           
             + - startegy
                   |                                      
                   + - Makefile                                      
                   + - A2_emery_gouraud_kirov_pouteau_fast.c
-                  + - A2_emery_gouraud_kirov_pouteau_fast.c
+                  + - A2_emery_gouraud_kirov_pouteau_low.c
                   + - main-graphique-fast.c
                   + - main-repetition-fast.c
                   + - main-graphique-low.c

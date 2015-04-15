@@ -1,4 +1,3 @@
-#define _XOPEN_SOURCE // permet d'utiliser la fonction putenv() qui centre la fenetre
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -60,7 +59,6 @@ static void write_line(FILE *fichier, char *char_nickname, char *char_highscore)
 void game_sdl(){
   // Initialisation de la fenetre du jeu
   SDL_Surface *surface_screen = NULL;
-  putenv("SDL_VIDEO_WINDOW_POS=center"); // Permet de centrer la fenetre du jeu
   SDL_WM_SetCaption("Game 2048 - by Emery, Gouraud, Kirov & Pouteau", NULL);
 
   // Initialisation du contour autour de la grille (sa couleur dependra du choix de l'utilisateur)
