@@ -265,7 +265,20 @@ une exploration de profondeur:
 - 3 pour lorsque qu'il reste moins de 6 cases vide
 - 4 pour lorsque qu'il reste moins de 3 cases vide
 - 5 pour lorsque qu'il reste moins de 2 cases vide
+#+BEGIN_EXAMPLE 
+Sur 100 lancés : 
 
+Nombre de fois 16 : 0
+Nombre de fois 32 : 0
+Nombre de fois 64 : 0
+Nombre de fois 128 : 0
+Nombre de fois 256 : 0
+Nombre de fois 512 : 0
+Nombre de fois 1024 : 5
+Nombre de fois 2048 : 43
+Nombre de fois 4096 : 51
+Nombre de fois 8192 : 1
+#+END_EXAMPLE
 \newpage
 *** Fonction de notation 
 \noindent
