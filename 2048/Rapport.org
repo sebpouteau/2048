@@ -18,7 +18,7 @@ Programmation 1, nous avons été amené à créer un jeu 2048.\\
 tuiles de même valeur de manière à en obtenir une deux fois plus
 grande. Le jeu commence avec deux tuiles de valeur aléatoire (2 ou 4). Il se joue
 sur une grille de 4x4, avec quatre déplacements possibles (Haut, Bas, Droite, Gauche). 
-A chaque déplacement un tuile de valeur 2 ou 4 apparaÃ®t aléatoirement sur la grille.\\
+A chaque déplacement une tuile de valeur 2 ou 4 apparait aléatoirement sur la grille.\\
 Ce jeu est une application mobile sortie en mars 2014, programmé par
 Gabriele Circulli, un web-designer italien. Il s'est inspiré du jeu
 1024 dont le principe est identique sauf le but qui est
@@ -40,12 +40,12 @@ Le projet a été séparé en deux parties différentes.
 - Réalisation de l'implémentation du 2048 et création d'une interface
   graphique sur le terminal.
 - Réalisation d'une interface graphique indépendante et conception de
-  deux IA capable de résoudre le 2048.
+  deux IA capables de résoudre le 2048.
 
 
 ** Implémentation du 2048
 *** Fonction de Base
-Implémentation des fonctions décriteq dans l'interface fournit
+Implémentation des fonctions décrites dans l'interface fournis
 /grid.h/.
 
 #+BEGIN_SRC c
@@ -133,12 +133,12 @@ _Description de l'utilisation des fonctions static_:
 - fusion :
   Elle est utilisée pour faire les fusions dans la fonction =move=.
 - incrementation :
-  Elle permet d'évité la repétition de code due a l'incrementation des
-  variable dans =move= et =possible=.
+  Elle permet d'éviter la repétition de code due à l'incrémentation des
+  variables dans =move= et =possible=.
 - possible : 
   Elle permet de simplifier la fonction =can_move=, car lorsqu'on lui passe
   certains paramètres, elle vérifie la possibilité de faire un
-  mouvement. Ce qui reduit la fonction =can_move= à appeler la
+  mouvement. Ce qui réduit la fonction =can_move= à appeler la
   fonction =possible= avec les bons paramètres.
 \newpage
 *** Réalisation de test
@@ -148,8 +148,8 @@ Les tests sont déclenchés par la commande *make check*.
 Nous avons utilisé gcov, ce qui nous a permis de savoir que notre
 programme de test vérifie 94.96% de notre fichier grid.c.
 Les 5% manquant sont dus au fait que l'on ne teste pas la fonction
-=play= car elle utilise simplement deux autres fonctions testées précedemment.
- 
+=play= car elle utilise simplement deux autres fonctions testées précédemment.
+
 #+BEGIN_EXAMPLE
 File 'grid.c'
 Ligne exécutées: 94.96% de 139
@@ -157,10 +157,10 @@ Creating 'grid.c.gcov'
 #+END_EXAMPLE
 \noindent
 Nous avons testé indépendamment chaque déplacement, pour savoir
-précisement quel déplacement pourrait provoquer une erreur. 
+précisément quel déplacement pourrait provoquer une erreur. 
 
 
-Les tests ont été réalisé de manière a être extansible c'est à dire
+Les tests ont été réalisé de manière a être extensible c'est-à-dire
 que quelque soit la valeur de =GRID_SIDE= les tests permettent de
 tester les différentes fonctions.
 
@@ -169,7 +169,7 @@ tester les différentes fonctions.
 ** Interface Graphique 
 *** Interface Graphique sur terminal
 
-Nous avons choisi d'utilisé la bibliothèque Ncurses pour pouvoir
+Nous avons choisi d'utiliser la bibliothèque Ncurses pour pouvoir
 générer notre grille dans le terminal.\\
 Le jeu se joue avec les flèches directionnelles. Nous avons intégré
 des couleurs afin d'égayer l'affichage de notre jeu.\\
@@ -178,7 +178,7 @@ Nous proposons également des options supplémentaires:
 - r: permet de recommencer le jeu
 De plus, si vous perdez, on vous offre la possibilité de soit rejouer,
 soit quitter le jeu.\\
-Nous avons également intégré par esprit de challenge un Highscore. \\
+Nous avons également intégré, par esprit de challenge, un Highscore. \\
 L'affichage graphique s'adapte à la taille de la grille. Mais ne
 modifie pas la taille du terminal d'où il est lancé.
 
@@ -194,19 +194,19 @@ L'interface graphique propose aussi de recommencer la partie (touche "Entrée"),
 mais aussi d'abandonner (touche "Echap" ou la croix en haut à droite) et ferme 
 le programme.//
 Lorsque la partie se termine (c'est-à-dire lorsqu'aucun déplacement n'est possible),
-le joueur (s'il a obtenu un nouvel Highscore), a la possibilité de mémoriser son 
-pseudo. S'il n'entre pas son pseudo (en relanÃ§ant la partie ou en quittant le programme),
+le joueur (s'il a obtenu un nouvel Highscore) a la possibilité de mémoriser son 
+pseudo. S'il n'entre pas son pseudo (par exemple : en relançant la partie ou en quittant le programme),
 le pseudo qui sera mis par défaut sera "Anyone".//
 Le code est commenté de façon à être compréhensible, et le nom des variables
 est en anglais.//
-Aucune fuite de mémoire n'est à déplorer, mise à part celle de base liée à la
+Il n'y a aucune fuite de mémoire, mise à part celle de base liée à la
 SDL et référencée.//
 
 Nous avons intégré des options supplémentaire. Le jeu se lance sur un
-menu qui permet de choisir le degrader des tuiles du jeu. Deplus nous
-durant la partie on peut égalament changer la couleur grâce aux
-touches "f1" "f2" et "f3".//
-Nous avons intégré une petite animation dans le menu de départ.
+menu qui permet de choisir le dégrader des tuiles du jeu. De plus, nous
+pouvons égalament changer la couleur grâce aux touches "F1" "F2" et "F3" durant la partie.
+Cela n'est pas clairement précisé, car il s'agit en faite d'un easter egg.//
+Nous avons pour finir, intégré une petite animation dans le menu du jeu.
 
 \newpage
 ** Intelligence Artificielle
@@ -215,42 +215,41 @@ Nous avons implémenté deux intelligences artificielles, une qui doit
 réalisé le meilleur score en moins de 10 secondes et une autre en moins de 2
 minutes.
 
-Pour observer nos intélligence artificielle a l'oeuvre nous avons
+Pour observer nos intelligence artificielle à l'oeuvre nous avons
 conçu deux programmes de visualisation. La première permettant de
-répeter n fois l'intélligence artificielle et une autres permettant
-de l'observer grâce à un affichage ncurses, un mouvement est fait a
+répeter n fois l'intelligence artificielle et une autre permettant
+de l'observer grâce à un affichage Ncurses, un mouvement est fait à
 chaque fois que l'on presse la touche "UP".
 
 _Le principe de notre fonction d'exploration_:
 Elle créé un tableau de 4 cases permettant de stocker les scores issus
-des 4 directions. Si la profondeur est de 0 alors elle renvoye la note
-de la grille en cour. Tout d'abord la fonction effectue un mouvement
-dans une direction  à la profondeur n puis elle génère l'appartion de la tuile 2 sur une case vide de la grille
-et la fonction se rappelle avec une profondeur de n-1. Elle fait de
-même avec l'appartion d'un 4 sur la même case vide. Elle effectue cette
-serie d'opération sur toutes les cases vides de la grille courante.
-Une fois qu'elle a parcouru toutes les case vide elle calcule la
-moyenne des notes obtenu.Elle la stock alors dans la case
-du tableau correspondant à la direction effuectuer. Elle choisie
-ensuite la meilleurs note parmis les 4 directions et la renvoye. En
-parallèle elle modifie une variable de 
-direction passer par reference. Le mouvement à effectuer est alors
-cette variable direction.
+des 4 directions. Si la profondeur est de 0 alors elle renvoie la note
+de la grille en cours. Tout d'abord, la fonction effectue un mouvement
+dans une direction à la profondeur n, puis elle génère l'apparition de 
+la tuile 2 sur une case vide de la grille et la fonction se rappelle 
+avec une profondeur de n-1. Elle fait de même avec l'apparition d'un 4 
+sur la même case vide. Elle effectue cette série d'opérations sur toutes 
+les cases vides de la grille courante. Une fois qu'elle a parcouru toutes 
+les cases vides, elle calcule la moyenne des notes obtenues. Elle la stock 
+alors dans la case du tableau correspondant à la direction effectué. 
+Elle choisie ensuite la meilleure note parmi les 4 directions et la renvoie. 
+En parallèle, elle modifie une variable de direction passée par référence. 
+Le mouvement à effectuer est alors cette variable directionnelle.
 
 
 **** Intelligence Artificielle Rapide
-Dans l'intélligence artificielle rapide, nous avons désidé de faire
-une exploration de 2 et d'etendre à 3 lorsque qu'il ne reste que  0 ou 1 case vide dans la
-grille.
+Dans l'intelligence artificielle rapide, nous avons décidé de faire une 
+exploration de 2 et d'étendre à 3 lorsque qu'il ne reste que 0 ou 1 case 
+vide dans la grille.
 **** Intelligence Artificielle Lente
-Dans l'intélligence artificielle Lente, nous avons désidé de faire
+Dans l'intelligence artificielle rente, nous avons décidé de faire
 une exploration de profondeur:
 - 2 par defaut
 - 3 pour lorsque qu'il reste moins de 6 cases vide
 - 4 pour lorsque qu'il reste moins de 3 cases vide
 - 5 pour lorsque qu'il reste moins de 2 cases vide
 **** Fonction de notation 
-Nous avons une focntion de note general
+Nous avons une fonction de note générale
 
 #+BEGIN_SRC c
 static long int grid_note(grid g){
@@ -285,9 +284,9 @@ static long int grid_note(grid g){
   return cpt;
 }
 #+END_SRC
-Nous avons besoin d'une foncion qui note la monotonicité de la grille
-c'est à dire nous vérifions que les grilles sont ordonnées de manière
-à ce que les meilleures soit en haut des colonnes et à gauche des lignes.
+Nous avons besoin d'une fonction qui note la monotonicité de la grille,
+c'est-à-dire que nous vérifions que les grilles sont ordonnées de manière
+à avoir les meilleures tuiles en haut à gauche.
 #+BEGIN_SRC c
 static long int monotonicity(grid g, int x, int y){
   int cpt_sign_change = 0;
