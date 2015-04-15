@@ -269,11 +269,7 @@ une exploration de profondeur:
 \newpage
 *** Fonction de notation 
 \noindent
-Nous avons une fonction de note general qui utilise une autre fonction.\\
-
-**** Fonction de notation 
-Nous avons une fonction de note générale
-
+Nous avons une fonction de note général qui utilise une autre fonction.\\
 
 _Fonction =grid_note=_:
 #+BEGIN_SRC c
@@ -309,20 +305,20 @@ static long int grid_note(grid g){
   }
 #+END_SRC
 
-Notre fonction de notation =grid_note=, elle parcour une fois la grille et determine durant le parcours:
- - La somme des tuile de la grille
- - Récupère la valeur maximal de la grille
+Notre fonction de notation =grid_note= parcours une fois la grille et durant le parcours elle :
+ - détermine la somme des tuiles de la grille
+ - Récupère la valeur maximale de la grille
  - Compte le nombre de cases vides
- - Evalue la monotonicité de la grille grace a la focntion monotonicité ci-dessous
+ - Evalue la monotonicité de la grille grace à la fonction =monotonicity= ci-dessous
 
 
 
 Ensuite la fonction attribue des /bonus/ et des /malus/ en fonction de la disposition de la grille.\\
 _Bonus_:
- - Si le coins en haut à gauche possède la tuile maximal
- - Selon le nombre de cases vides ( Plus il y en a mieux c'est)
+ - Si le coin en haut à gauche possède la tuile maximale
+ - Selon le nombre de cases vides (Plus il y en a, mieux c'est)
  - Selon le score
- - Selon la tuile maximum
+ - Selon la tuile maximale
 _Malus_:
  - Selon sa monotonicité
 \vspace{0.5cm}
@@ -426,48 +422,51 @@ Elle compte le nombre de cases mal ordonnées.\\
 
 #+END_EXAMPLE
 
-  On a choisit une architecture classique pour notre projet.
+  On a choisi une architecture classique pour notre projet.
    - Un dossier include/ pour toutes les interfaces
    - Un dossier src/ contenant
-     - Un dossier grid/ contenant les implementation du jeu général
-     - Un dossier ncurses/ contenant l'implementation de l'interface du terminal
-     - Un dossier sdl/ contenant l'implementation de l'interface graphique et les différentes images necessaires.
-     - Un dossier strategy/ contenant nos deux strategies fast/low et differentes implementation pour observer le deroulement des intelligence artificielle.
-     - Un dossier test-fonction/ contenant l'implementation des tests
+     - Un dossier grid/ contenant les implémentation du jeu général
+     - Un dossier ncurses/ contenant l'implémentation de l'interface du terminal
+     - Un dossier sdl/ contenant l'implémentation de l'interface graphique et les différentes images nécessaires.
+     - Un dossier strategy/ contenant nos deux stratégies fast/low et différentes implémentation pour observer le 
+       déroulement des intelligences artificielles.
+     - Un dossier test-fonction/ contenant l'implémentation des tests
 
 
 * Répartition du travail
 
-Nous avons tout les quatres travailler à implémentation de grid.c
-Nous nous sommes tous entraidé à la réalisation de ce projet (comme le Rapport, correction final des fichiers ..) 
-Ensuite nous nous sommes répartit le travail comme suit:
+Nous avons tous les quatres travaillé sur l'implémentation de grid.c
+Nous nous sommes tous entraidé lors de la réalisation de ce projet (comme pour le rapport, la correction finale des fichiers, etc.) 
+Ensuite nous nous sommes répartis le travail comme suit:
 
 _Ysabelle Emery_:
-- Réalsiation des test de départ 
-- Correction des erreurs et relecture complète des fichiers
-- realisation de toutes les images du projet
-- Participation à la ncurses
-- Correction de tous les test pour les rendre extensible avec =GRID_SIDE= 
+- Participation à l'implémentation de la Ncurses
+- Réalisation des premiers tests (avant la relecture par les autres groupes)
+- Correction des erreurs et relecture des fichiers
+- Création de toutes les images nécessaires à l'interface graphique (tiles, boutons, sprite de l'animation, etc.)
+- Modification de tous les test afin de les rendre extensible à =GRID_SIDE= (aprés la relecture)
 
 _Jimmy Gouraud_:
-- Correction orthographique du projet avec Relecture et mise des variables en anglais
-- Réalisation quasiment entière de l'implementation de l'interface graphique SDL
-- Intégration d'un menu et d'une animation à l'interface
-- Réalisation de commentaire
+- Réalisation de l'implémentation de l'interface graphique SDL
+- Modification de la SDL afin de la rendre extensible à =GRID_SIDE= (aprés la relecture)
+- Création des commentaires et correction orthographique du projet 
+- Relecture, mise en page du page et conversion des variables en anglais
+- Intégration d'un menu et d'une animation pour l'interface graphique
 
 _Yordan Kirov_:
-- Travail sur les tests 
-- Conception de différentes fonction de notation de grille pour l'intelligence artificielle
-- Réalisation de commentaire
+- Participation à la création des tests
+- Création des commentaires
+- Conception de différentes fonctions de notation de grille pour l'intelligence artificielle
+- Pondération des différentes fonctions de notation de grille
 - Travail sur le \LaTeX
 
 _Sébastien Pouteau_:
-- Réalisation de l'interface ncurses et correction pour la rendre extensible ( après première evaluation)
-- Réalisation de la fonction =do_move= et =can_move= factorisé
-- Réalisation de tout les Makefile et arborescence du projet et creation du dépot
-- Réalisation des tests de la première version 
-- Realisation de l'étude de profondeur des fonctions de l'intelligence artificelle
-- Normalisation des fichiers de strategie
+- Création de l'interface Ncurses et modification afin de la rendre extensible (aprés la relecture)
+- Factorisation de la fonction =do_move= et =can_move= (qui sont les fonctions finales utilisées)
+- Conception de tous les Makefiles, de l'arborescence du projet, ainsi que de la création du dépot
+- Réalisation des premiers tests (avant la relecture)
+- Création de l'étude de profondeur des fonctions de l'intelligence artificielle
+- Normalisation des fichiers de stratégie
 
 * Problème rencontrer
 Liste des problèmes rencontrés:
