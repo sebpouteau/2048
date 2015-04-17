@@ -261,7 +261,7 @@ Nombre de fois 8192 : 3
 *** Intelligence Artificielle Lente
 Dans l'intelligence artificielle rente, nous avons décidé de faire
 une exploration de profondeur:
-- 2 par defaut
+- 2 par défaut
 - 3 pour lorsque qu'il reste moins de 6 cases vide
 - 4 pour lorsque qu'il reste moins de 3 cases vide
 - 5 pour lorsque qu'il reste moins de 2 cases vide
@@ -483,19 +483,19 @@ _Sébastien Pouteau_:
 
 * Problème rencontrer
 Liste des problèmes rencontrés:
-- Syncronisation entre l'équipe
+- Synchronisation entre l'équipe
 - Utilisation des outils au début (comme svn, gdb, Makefile .. ) 
-- Problème de comprehension du contrat de certaine fonction
-- Génération des librairie dynamique
+- Problème de compréhension du contrat de certaine fonction
+- Génération des librairies dynamique
 
 * Critique des outils
 
-- GDB: Difficulté de prise en main, mais permet un débeugage efficace
+- GDB: Difficulté de prise en main, mais permet un débuggage efficace
 - SVN: 
-  - Probleme lors des commit/up sur nos machines
+  - Problème lors des commit/up sur nos machines
   - Problème de conflit entre les versions
   - Permet une bonne gestion d'un projet
-  - permet d'avoir acces au ancienne version
+  - permet d'avoir accés au ancienne version
  
 - Doxygène: Normalisation de tous les contrats des fonctions assez fastidieux. Mais produit une documentation complète
 - \LaTeX: 
