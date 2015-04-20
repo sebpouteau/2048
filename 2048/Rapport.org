@@ -14,7 +14,7 @@
 
 Dans le cadre de l'UE Environnement de Développement et Projet de
 Programmation 1, nous avons été amené à créer un jeu 2048.\\
-*Ce jeu consiste* à obtenir une tuile de valeur 2048 en fusionnant des
+Ce jeu consiste à obtenir une tuile de valeur 2048 en fusionnant des
 tuiles de même valeur de manière à en obtenir une deux fois plus
 grande. Le jeu commence avec deux tuiles de valeur aléatoire (2 ou 4). Il se joue
 sur une grille de 4x4, avec quatre déplacements possibles (Haut, Bas, Droite, Gauche). 
@@ -33,9 +33,9 @@ Lien pour tester les différents jeux:
  [[http://1024game.org][- lien 1024]]
 
  [[http://threesjs.com][- lien Threes]]
-\newpage
 
-* Description Projet
+\vspace{1cm}
+\noindent
 Le projet a été séparé en deux parties différentes.
 - Réalisation de l'implémentation du 2048 et création d'une interface
   graphique sur le terminal.
@@ -43,7 +43,81 @@ Le projet a été séparé en deux parties différentes.
   deux IA capables de résoudre le 2048.
 
 
-** Implémentation du 2048
+\newpage
+
+* Architecture du Projet
+#+BEGIN_EXAMPLE
+  Projet-Jeu 
+       |                                                                                      
+       + - README.txt                                             
+       + - Makefile                                           
+       + - include                                      
+       |    |                                      
+       |    + - grid.h                                      
+       |    + - strategy.h                                      
+       |    + - gridSDL.h                                      
+       |
+       + - src
+            |                                           
+            + - grid                                           
+            |     |                                      
+            |     + - Makefile                                      
+            |     + - grid.c                                      
+            |
+            + - test-fonction                                      
+            |     |                                      
+            |     + - Makefile                                      
+            |     + - fonction-test.c                                      
+            |     + - main-fonction-test.c                                      
+            |                                          
+            + - ncurses
+            |     |
+            |     + - Makefile                                      
+            |     + - main-ncurses.c                                      
+            |     + - highscore_ncurses.txt                                      
+            |                                           
+            + - sdl
+            |     |                                      
+            |     + - Makefile                                      
+            |     + - gridSDL.c                                      
+            |     + - main-sdl.c
+            |     + - arial.ttf                                      
+            |     + - leadcoat.ttf                                      
+            |     + - animation_penguin                                     
+            |     |     + ...                               
+            |     |                                      
+            |     + - menu_button                                     
+            |     |     + ...                               
+            |     |                                      
+            |     + - tiles
+            |           + ...                               
+            |                                           
+            + - startegy
+                  |                                      
+                  + - Makefile                                      
+                  + - A2_emery_gouraud_kirov_pouteau_fast.c
+                  + - A2_emery_gouraud_kirov_pouteau_low.c
+                  + - main-graphique-fast.c
+                  + - main-repetition-fast.c
+                  + - main-graphique-low.c
+                  + - main-repetition-low.c
+                  
+
+#+END_EXAMPLE
+
+  On a choisi une architecture classique pour notre projet.
+   - Un dossier include/ pour toutes les interfaces
+   - Un dossier src/ contenant
+     - Un dossier grid/ contenant les implémentation du jeu général
+     - Un dossier ncurses/ contenant l'implémentation de l'interface du terminal
+     - Un dossier sdl/ contenant l'implémentation de l'interface graphique et les différentes images nécessaires.
+     - Un dossier strategy/ contenant nos deux stratégies fast/low et différentes implémentation pour observer le 
+       déroulement des intelligences artificielles.
+     - Un dossier test-fonction/ contenant l'implémentation des tests
+
+
+\newpage
+* Implémentation du 2048
 *** Fonction de Base
 Implémentation des fonctions décrites dans l'interface fournis
 /grid.h/.
@@ -165,8 +239,7 @@ que quelque soit la valeur de =GRID_SIDE= les tests permettent de
 tester les différentes fonctions.
 
 
-
-** Interface Graphique 
+* Interface Graphique 
 *** Interface Graphique sur terminal
 
 Nous avons choisi d'utiliser la bibliothèque Ncurses pour pouvoir
@@ -184,8 +257,8 @@ modifie pas la taille du terminal d'où il est lancé.
 
 *** Interface Graphique SDL
 
-A partir de la bibliothèque SDL et de ses bibliothèques tierces (SDL_image, 
-SDL_ttf et SDL_getenv), nous avons créer l'interface graphique du 2048 sur 
+A partir de la bibliothèque SDL et de ses bibliothèques tierces (=SDL_image=, 
+=SDL_ttf= et =SDL_getenv=), nous avons créer l'interface graphique du 2048 sur 
 une fenêtre indépendante. Cette fenêtre s'ouvre centré à l'écran, et s'adapte
 à la taille de la grille (=GRID_SIDE=) définit dans le grid.h.
 Le texte apparait parfaitement centré et est inhérent à =GRID_SIDE=. La police
@@ -205,11 +278,11 @@ SDL et référencée.\\
 Nous avons intégré des options supplémentaire. Le jeu se lance sur un
 menu qui permet de choisir le dégrader des tuiles du jeu. De plus, nous
 pouvons égalament changer la couleur grâce aux touches "F1" "F2" et "F3" durant la partie.
-Cela n'est pas clairement précisé, car il s'agit en faite d'un easter egg.//
+Cela n'est pas clairement précisé, car il s'agit en faite d'un easter egg.\\
 Nous avons pour finir, intégré une petite animation dans le menu du jeu.
 
 \newpage
-** Intelligence Artificielle
+* Intelligence Artificielle
 
 Nous avons implémenté deux intelligences artificielles, une qui doit
 réalisé le meilleur score en moins de 10 secondes et une autre en moins de 2
@@ -219,7 +292,7 @@ Pour observer nos intelligence artificielle à l'oeuvre nous avons
 conçu deux programmes de visualisation. La première permettant de
 répeter n fois l'intelligence artificielle et une autre permettant
 de l'observer grâce à un affichage Ncurses, un mouvement est fait à
-chaque fois que l'on presse la touche "UP".
+chaque fois que l'on presse la touche "UP".\\
 
 _Le principe de notre fonction d'exploration_:
 Elle créé un tableau de 4 cases permettant de stocker les scores issus
@@ -265,6 +338,9 @@ une exploration de profondeur:
 - 3 pour lorsque qu'il reste moins de 6 cases vide
 - 4 pour lorsque qu'il reste moins de 3 cases vide
 - 5 pour lorsque qu'il reste moins de 2 cases vide
+
+\vspace{0.5cm}
+
 #+BEGIN_EXAMPLE 
 Sur 100 lancés : 
 
@@ -279,7 +355,7 @@ Nombre de fois 2048 : 43
 Nombre de fois 4096 : 51
 Nombre de fois 8192 : 1
 #+END_EXAMPLE
-\newpage
+
 *** Fonction de notation 
 \noindent
 Nous avons une fonction de note général qui utilise une autre fonction.\\
@@ -317,7 +393,7 @@ static long int grid_note(grid g){
     return cpt;
   }
 #+END_SRC
-
+\newpage
 Notre fonction de notation =grid_note= parcours une fois la grille et durant le parcours elle :
  - détermine la somme des tuiles de la grille
  - Récupère la valeur maximale de la grille
@@ -327,22 +403,24 @@ Notre fonction de notation =grid_note= parcours une fois la grille et durant le 
 
 
 Ensuite la fonction attribue des /bonus/ et des /malus/ en fonction de la disposition de la grille.\\
-_Bonus_:
+\\ _Bonus_:
  - Si le coin en haut à gauche possède la tuile maximale
  - Selon le nombre de cases vides (Plus il y en a, mieux c'est)
  - Selon le score
  - Selon la tuile maximale
-_Malus_:
+\\ _Malus_:
  - Selon sa monotonicité
 \vspace{0.5cm}
 
-_Fonction Monotonicité_:
-=======
-  
+\noindent
+_Fonction Monotonicité_:\\
+ 
 
-Nous avons besoin d'une fonction qui note la monotonicité de la grille,
-c'est-à-dire que nous vérifions que les grilles sont ordonnées de manière
-à avoir les meilleures tuiles en haut à gauche.
+Nous avons besoin d'une foncion qui note la monotonicité de la grille
+c'est à dire nous vérifions que les grilles sont ordonnées de manière
+à ce que les meilleures soit en haut des colonnes et à gauche des lignes.
+Elle compte le nombre de cases mal ordonnées.\\
+
 #+BEGIN_SRC c
 static long int monotonicity(grid g, int x, int y){
   int cpt_sign_change = 0;
@@ -355,11 +433,7 @@ static long int monotonicity(grid g, int x, int y){
   return cpt_sign_change;
 }
 #+END_SRC
-
-Nous avons besoin d'une foncion qui note la monotonicité de la grille
-c'est à dire nous vérifions que les grilles sont ordonnées de manière
-à ce que les meilleures soit en haut des colonnes et à gauche des lignes.
-Elle compte le nombre de cases mal ordonnées.\\
+ 
 
 \hspace{1.2cm} +\leftarrow\\
 +\uparrow
@@ -375,104 +449,34 @@ Elle compte le nombre de cases mal ordonnées.\\
 
 
 \newpage
-* Architecture du Projet
-#+BEGIN_EXAMPLE
-  Projet-Jeu 
-       |                                                                                      
-       + - README.txt                                             
-       + - Makefile                                           
-       + - include                                      
-       |    |                                      
-       |    + - grid.h                                      
-       |    + - strategy.h                                      
-       |    + - gridSDL.h                                      
-       |
-       + - src
-            |                                           
-            + - grid                                           
-            |     |                                      
-            |     + - Makefile                                      
-            |     + - grid.c                                      
-            |
-            + - test-fonction                                      
-            |     |                                      
-            |     + - Makefile                                      
-            |     + - fonction-test.c                                      
-            |     + - main-fonction-test.c                                      
-            |                                          
-            + - ncurses
-            |     |
-            |     + - Makefile                                      
-            |     + - main-ncurses.c                                      
-            |     + - highscore_ncurses.txt                                      
-            |                                           
-            + - sdl
-            |     |                                      
-            |     + - Makefile                                      
-            |     + - gridSDL.c                                      
-            |     + - main-sdl.c
-            |     + - arial.ttf                                      
-            |     + - leadcoat.ttf                                      
-            |     + - animation_penguin                                     
-            |     |     + ...                               
-            |     |                                      
-            |     + - menu_button                                     
-            |     |     + ...                               
-            |     |                                      
-            |     + - tiles
-            |           + ...                               
-            |                                           
-            + - startegy
-                  |                                      
-                  + - Makefile                                      
-                  + - A2_emery_gouraud_kirov_pouteau_fast.c
-                  + - A2_emery_gouraud_kirov_pouteau_low.c
-                  + - main-graphique-fast.c
-                  + - main-repetition-fast.c
-                  + - main-graphique-low.c
-                  + - main-repetition-low.c
-                  
-
-#+END_EXAMPLE
-
-  On a choisi une architecture classique pour notre projet.
-   - Un dossier include/ pour toutes les interfaces
-   - Un dossier src/ contenant
-     - Un dossier grid/ contenant les implémentation du jeu général
-     - Un dossier ncurses/ contenant l'implémentation de l'interface du terminal
-     - Un dossier sdl/ contenant l'implémentation de l'interface graphique et les différentes images nécessaires.
-     - Un dossier strategy/ contenant nos deux stratégies fast/low et différentes implémentation pour observer le 
-       déroulement des intelligences artificielles.
-     - Un dossier test-fonction/ contenant l'implémentation des tests
-
-
-* Répartition du travail
+* Oragnisation, Problème rencontré et critique
+** Répartition du travail
 
 Nous avons tous les quatres travaillé sur l'implémentation de grid.c
 Nous nous sommes tous entraidé lors de la réalisation de ce projet (comme pour le rapport, la correction finale des fichiers, etc.) 
-Ensuite nous nous sommes répartis le travail comme suit:
-
+Ensuite nous nous sommes répartis le travail comme suit:\\
+\\
 _Ysabelle Emery_:
 - Participation à l'implémentation de la Ncurses
 - Réalisation des premiers tests (avant la relecture par les autres groupes)
 - Correction des erreurs et relecture des fichiers
 - Création de toutes les images nécessaires à l'interface graphique (tiles, boutons, sprite de l'animation, etc.)
 - Modification de tous les test afin de les rendre extensible à =GRID_SIDE= (aprés la relecture)
-
+\\
 _Jimmy Gouraud_:
 - Réalisation de l'implémentation de l'interface graphique SDL
 - Modification de la SDL afin de la rendre extensible à =GRID_SIDE= (aprés la relecture)
 - Création des commentaires et correction orthographique du projet 
 - Relecture, mise en page du page et conversion des variables en anglais
 - Intégration d'un menu et d'une animation pour l'interface graphique
-
+\\
 _Yordan Kirov_:
 - Participation à la création des tests
 - Création des commentaires
 - Conception de différentes fonctions de notation de grille pour l'intelligence artificielle
 - Pondération des différentes fonctions de notation de grille
 - Travail sur le \LaTeX
-
+\\
 _Sébastien Pouteau_:
 - Création de l'interface Ncurses et modification afin de la rendre extensible (aprés la relecture)
 - Factorisation de la fonction =do_move= et =can_move= (qui sont les fonctions finales utilisées)
@@ -481,14 +485,14 @@ _Sébastien Pouteau_:
 - Création de l'étude de profondeur des fonctions de l'intelligence artificielle
 - Normalisation des fichiers de stratégie
 
-* Problème rencontrer
+** Problème rencontré
 Liste des problèmes rencontrés:
 - Synchronisation entre l'équipe
 - Utilisation des outils au début (comme svn, gdb, Makefile .. ) 
 - Problème de compréhension du contrat de certaine fonction
 - Génération des librairies dynamique
 
-* Critique des outils
+** Critique des outils
 
 - GDB: Difficulté de prise en main, mais permet un débuggage efficace
 - SVN: 
@@ -499,6 +503,8 @@ Liste des problèmes rencontrés:
  
 - Doxygène: Normalisation de tous les contrats des fonctions assez fastidieux. Mais produit une documentation complète
 - \LaTeX: 
+
+
 
 
 
