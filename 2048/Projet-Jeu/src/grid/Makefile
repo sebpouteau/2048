@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -std=c99 -g -Wall -I../../include
-LDLIBS = -lm -L ../../lib/
+CFLAGS = -std=c99 -g -ftest-coverage -fprofile-arcs -Wall -I../../include
+LDLIBS = -lm -lgcov -L ../../lib/
 CPPFLAGS= 
 
 PATH_INCLUDE=../../include
@@ -18,7 +18,7 @@ include dep
 
 .PHONY: clean
 clean:
-	rm -f dep *.o *~  
+	rm -f dep *.o *~ *.g* 
 
 dep:
 	$(CC) $(CPPFLAGS) -MM *.c >dep

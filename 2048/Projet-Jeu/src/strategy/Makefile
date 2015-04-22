@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -std=c99 -g -Wall -fPIC -I../../include
-LDLIBS = -lA2_emery_gouraud_kirov_pouteau_fast -lA2_emery_gouraud_kirov_pouteau_low -lgrid  -lm -lncurses  -L ../../lib/ 
+LDLIBS = -lA2_emery_gouraud_kirov_pouteau_fast -lA2_emery_gouraud_kirov_pouteau_low -lgridNcurses -lgrid -lgcov -lm -lncurses  -L ../../lib/ 
 CPPFLAGS= 
 
 PATH_INCLUDe=../../include
@@ -38,7 +38,7 @@ include dep
 
 .PHONY: clean
 clean:
-	rm -f dep *.o *~ 
+	rm -f dep *.o *~ *.g*
 
 dep:
 	$(CC) $(CPPFLAGS) -MM *.c > dep

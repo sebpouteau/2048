@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -std=c99 -g -Wall -I../../include
-LDLIBS = -lgridSDL -lSDL -lSDL_image -lSDL_ttf -lgrid -lm -L ../../lib/
+LDLIBS =  -lgridSDL -lSDL -lSDL_image -lSDL_ttf -lgrid -lm -lgcov -L ../../lib/
 CPPFLAGS= 
 
 PATH_INCLUDE=../../include
@@ -21,7 +21,7 @@ include dep
 
 .PHONY: clean
 clean:
-	rm -f dep *.o *~ jeu main-sdl-test 
+	rm -f dep *.o *~ jeu main-sdl-test *.g*
 
 dep:
 	$(CC) $(CPPFLAGS) -MM *.c >dep
