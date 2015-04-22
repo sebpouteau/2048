@@ -6,8 +6,29 @@
 #include <strategy.h>
 #include <math.h>
 
+/** 
+ * \file main-graphique-fast.c
+ * \brief fait jouer en graphique l'IA Rapide
+ */
+ 
+/**
+ * \brief affiche la grille
+ * \param g grille
+ * \return 
+ */
 static void display_grid(grid g);
+
+/**
+ * \brief affiche le game_over
+ * \param *continue_game,*valid_answer pointeur sur un bool
+ * \return 
+ */
 static void display_gameOver(bool *continuer, int *reponse_valide);
+
+/**
+ * \brief Strategie utilisé
+ * \return stretegy
+ */
 strategy A2_emery_gouraud_kirov_pouteau_fast();
 
 int main(int argc, char *argv[]){

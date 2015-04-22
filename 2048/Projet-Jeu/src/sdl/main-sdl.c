@@ -6,6 +6,10 @@
 #include <time.h>
 #include <gridSDL.h>
 
+/** 
+ * \file main-sdl.c
+ * \brief Jeu en interface graphique SDL
+ */
 int main(int argc, char *argv[]){
   srand(time(NULL));
   SDL_Init(SDL_INIT_VIDEO);

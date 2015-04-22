@@ -6,9 +6,21 @@
 #include <math.h>
 
 #define NOMBRE_TEST 1
+/** 
+ * \file main-repetition-fast.c
+ * \brief fait jouer n fois l'IA Rapide
+ */
 
+/**
+ * \brief Strategie utilisé
+ * \return stretegy
+ */
 strategy A2_emery_gouraud_kirov_pouteau_fast();
 
+/**
+ * \brief recupere le maximum 
+ * \return long
+ */
 static long maximum_tile(grid g){
   long max_tile = 1;
   for(int i = 0; i<GRID_SIDE; i++){
@@ -20,6 +32,10 @@ static long maximum_tile(grid g){
   return max_tile;
 }
 
+/**
+ * \brief fonction d'usage erreur si mauvais appel de l'executable 
+ * \return 
+ */
 static void usage(char * commande){
   fprintf(stderr,"%s <nombre repetition > \n", commande);
   exit(EXIT_FAILURE);
