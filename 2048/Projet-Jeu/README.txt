@@ -28,6 +28,7 @@ Pour vérifier que toutes les fonctions marchent, lancer le test avec :
 Les librairies créées sont placées dans lib/
 Les exécutables sont placés dans bin/	(jeu_ncurses ou jeu_sdl)
 
+
 /* ================================= 
                 L'IA
    ================================= */
@@ -35,9 +36,23 @@ Les exécutables sont placés dans bin/	(jeu_ncurses ou jeu_sdl)
 Compilation des IA grace à la commande make :
   make 
 
-les exécutables sont dans bin/  (IA-repetition-fast/low "nombre de repetition"  && IA-graphique-fast/low)
 Les librairies créées sont placées dans lib/
+Les exécutables sont dans bin/  (IA-repetition-fast/low "nombre de repetition"  && IA-graphique-fast/low)
 
-Les bibliothèques dynamiques créées sont placées à la racine
-Une bibliothèque dynamique est crée par la commande make, si vous souhaitez l'utiliser vous devez ajouter dans votre ./bash la commande:
-    export LD_LIBRARY_PATH=../lib:$LD_LIBRARY_PATH
+
+
+/* ================================= 
+            DOCUMENTATION
+   ================================= */
+
+Commande pour obtenir la Documentation:
+  make doc
+
+La documentation en html:
+   - Aller dans le dossier html/
+   - Ouvrir le fichier index.html
+
+La documentation en pdf:
+   - Aller dans le dossier latex/
+   - Faire la commande 'make' 
+   - Ouvrir le fichier refman.pdf
