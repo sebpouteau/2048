@@ -16,4 +16,7 @@ clean:
 	$(MAKE) -C $(LIBS) clean;\
 	if [ -d "lib" ];then rm -rf lib; fi
 	if [ -d "bin" ];then rm -rf bin; fi
-
+	if [ -d "html" ];then rm -rf html; fi
+	if [ -d "latex" ];then rm -rf latex; fi
+doc: 
+	doxygen Doxyfile

@@ -31,10 +31,37 @@
 #define KEY_Q 113
 #define KEY_N 121
 #define KEY_R 114
+/**
+ * \file main-jeu.c
+ * \brief fichier permetant le jeu en ncurses
+ **/
+ 
 
+/**
+ * \brief affiche la grille
+ * \param g grille
+ * \return 
+ */
 static void display_grid(grid g);
+
+/**
+ * \brief affiche le game_over
+ * \param *continue_game,*valid_answer pointeur sur un bool
+ * \return 
+ */
 static void display_game_over(bool *continue_game, int *valid_answer);
+
+/**
+ * \brief recupere le highscore
+ * \return unsigned long int
+ */
 static unsigned long int read_highscore();
+
+/**
+ * \brief ecrit le highscore
+ * \param score le score a ecrire
+ * \return
+ */
 static void write_highscore(unsigned long int score);
 
 

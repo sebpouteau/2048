@@ -19,12 +19,57 @@
 #define BONUS_SCORE 60
 #define BONUS_CASE_EMPTY 750
 #define MALUS_SIGN_CHANGE 1025
+/**
+ * \file A2_emery_gouraud_kirov_pouteau_fast.c
+ * \brief Stratégie rapide
+ **/
+ 
 
+/**
+ * \brief Strategie utilisé
+ * \return stretegy
+ */
 strategy A2_emery_gouraud_kirov_pouteau_fast();
+
+/**
+ * \brief Permet de recupérer la meilleur direction
+ * \param str stratégie utilisé
+ * \param g grille 
+ * \return direction
+ */
 static dir best_move(strategy str, grid g);
+
+/**
+ * \brief Etude en profondeur 
+ * \param g grille
+ * \param depth profondeur de l'étude voulue
+ * \param *d pointeur sur une direction
+ * \return long int
+ */
 static long int repetition_grid(grid g, int depth, dir *d);
+
+/**
+ * \brief trouve le maximum
+ * \param max0,max1 les deux maximum
+ * \param dir0,dir1 direction des maximum
+ * \param *dir2 pointeur sur une direction 
+ * \return long int
+ */
 static long int maximum(long int max0, long int max1, dir dir0, dir dir1, dir *dir2);
+
+/**
+ * \brief note la configuration du grille
+ * \param g grille
+ * \return long int
+ */
 static long int grid_note(grid g);
+
+/**
+ * \brief note la monotonicité d'une case par rapport à celle qui l'entoure
+ * \param g
+ * \param x,y coordonnée de la case
+ * \return long int
+ */
 static long int monotonicity(grid g, int x, int y);
 
 
