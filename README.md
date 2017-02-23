@@ -1,5 +1,5 @@
 # PROJET 2048
-(Licence 2 d'informatique - Année 2015)
+(Licence 2 Informatique - Année 2015)
 
 
 Réalisé par:
