@@ -1,49 +1,43 @@
-        ### PROJET 2048 ###
+# PROJET 2048
 (Licence 2 d'informatique - Année 2015)
 
 
 Réalisé par:
-  Ysabelle Emery,
-  Jimmy Gouraud,
-  Yordan Kirov,
-  Sébastien Pouteau.
+- Ysabelle Emery,
+- Jimmy Gouraud,
+- Yordan Kirov,
+- Sébastien Pouteau.
 
-/* ================================= 
-                LE JEU
-   ================================= */
+## LE JEU
 
 Aller dans Projet-Jeu/
 
 /!\ WARNING /!\
 Vérifiez au préalable que vous avez bien les bibliothèques ncurses et SDL d'installées.
-Ainsi que deux bibliothèques tierces (SDL_image et SDL_ttf), sinon il y aura un échec lors de la compilation.
+Ainsi que deux bibliothèques tierces (SDL_image et SDL_ttf).
 
 
 Compilation du Projet 2048 grace à la commande make :
-  make 
+  make
 
-Pour vérifier que toutes les fonctions marchent, lancer le test avec :
+Pour vérifier que toutes les fonctions fonctionnent, lancer le test avec :
  make check
 
 Les librairies créées sont placées dans lib/
 Les exécutables sont placés dans bin/	(jeu_ncurses ou jeu_sdl)
 
 
-/* ================================= 
-                L'IA
-   ================================= */
+## L'IA
 
 Compilation des IA grace à la commande make :
-  make 
+  make
 
 Les librairies créées sont placées dans lib/
 Les exécutables sont dans bin/  (IA-repetition-fast/low "nombre de repetition"  && IA-graphique-fast/low)
 
 
 
-/* ================================= 
-            DOCUMENTATION
-   ================================= */
+## DOCUMENTATION
 
 Commande pour obtenir la Documentation:
   make doc
@@ -54,5 +48,5 @@ La documentation en html:
 
 La documentation en pdf:
    - Aller dans le dossier latex/
-   - Faire la commande 'make' 
+   - 'make'
    - Ouvrir le fichier refman.pdf
